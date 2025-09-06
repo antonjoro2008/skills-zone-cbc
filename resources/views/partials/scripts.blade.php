@@ -177,7 +177,6 @@
                 
                 const data = await response.json();
                 console.log(data);
-                alert(data);
                 
                 if (data.success) {
                     // Store complete user data, token, and dashboard data
@@ -189,6 +188,7 @@
                     currentUser = data.data.user;
                     updateAuthState();
                     closeModal('loginModal');
+                    alert('Login successful');
                     
                     // Redirect to dashboard
                     window.location.href = '/dashboard';

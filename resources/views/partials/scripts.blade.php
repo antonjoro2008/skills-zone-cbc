@@ -610,8 +610,8 @@
             
             const alertTitle = document.getElementById('alertTitle');
             const alertMessage = document.getElementById('alertMessage');
-            const alertIcon = document.querySelector('#alertModal .w-16 i');
-            const alertContainer = document.querySelector('#alertModal .w-16');
+            const alertIcon = document.querySelector('#alertModal .text-center .w-16 i');
+            const alertContainer = document.querySelector('#alertModal .text-center .w-16');
             
             console.log('Alert elements found:', {
                 title: alertTitle,

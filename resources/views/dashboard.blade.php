@@ -260,6 +260,9 @@
     }
     
     function getAssessmentIcon(assessmentName) {
+        if(assessmentName === null || assessmentName === '' || assessmentName === undefined) {
+            return { icon: 'fas fa-clipboard-list', bg: 'bg-gray-100', text: 'text-gray-600' };
+        }
         const name = assessmentName.toLowerCase();
         if (name.includes('javascript') || name.includes('js')) {
             return { icon: 'fas fa-code', bg: 'bg-blue-100', text: 'text-blue-600' };

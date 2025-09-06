@@ -176,6 +176,8 @@
                 });
                 
                 const data = await response.json();
+                console.log(data);
+                alert(data);
                 
                 if (data.success) {
                     // Store complete user data, token, and dashboard data

@@ -490,8 +490,8 @@
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Amount (KES)</label>
-                        <input type="number" id="buyTokensAmount" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter amount in KES" min="100" max="100000" step="100" required oninput="calculateTokens()">
-                        <p class="text-xs text-gray-500 mt-1">Minimum: KES 100, Maximum: KES 100,000</p>
+                        <input type="number" id="buyTokensAmount" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter amount in KES" min="1" max="100000" step="1" required oninput="calculateTokens()">
+                        <p class="text-xs text-gray-500 mt-1">Minimum: KES 1, Maximum: KES 100,000</p>
                     </div>
                     
                     <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
@@ -500,7 +500,7 @@
                             <div class="text-sm text-blue-800">
                                 <p class="font-semibold mb-2">Token Purchase Info:</p>
                                 <ul class="list-disc list-inside space-y-1">
-                                    <li>1 Token = KES 100</li>
+                                    <li>1 Token = KES 1</li>
                                     <li>You will receive a payment prompt on your phone</li>
                                     <li>Enter your M-PESA PIN to complete the transaction</li>
                                     <li>Tokens will be added to your account immediately</li>

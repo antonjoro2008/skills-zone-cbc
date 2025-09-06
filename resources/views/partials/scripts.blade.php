@@ -176,7 +176,6 @@
                 });
                 
                 const data = await response.json();
-                console.log(data);
                 
                 if (data.success) {
                     // Store complete user data, token, and dashboard data
@@ -188,7 +187,6 @@
                     currentUser = data.data.user;
                     updateAuthState();
                     closeModal('loginModal');
-                    alert('Login successful');
                     
                     // Redirect to dashboard
                     window.location.href = '/dashboard';
@@ -506,7 +504,7 @@
         // Token calculation function
         function calculateTokens() {
             const amount = parseFloat(document.getElementById('buyTokensAmount').value) || 0;
-            const tokens = Math.floor(amount / 100); // 100 KES = 1 token
+            const tokens = Math.floor(amount / 1); // 1 KES = 1 token
             
             document.getElementById('displayAmount').textContent = `KES ${amount.toLocaleString()}`;
             document.getElementById('displayTokens').textContent = `${tokens} token${tokens !== 1 ? 's' : ''}`;
@@ -525,8 +523,8 @@
             const phoneNumber = document.getElementById('buyTokensMpesaPhone').value;
             
             // Validate inputs
-            if (!amount || amount < 100) {
-                showAlert('Invalid Amount', 'Please enter an amount of at least KES 100.', 'error');
+            if (!amount || amount < 1) {
+                showAlert('Invalid Amount', 'Please enter an amount of at least KES 1.', 'error');
                 return;
             }
             
@@ -535,7 +533,7 @@
                 return;
             }
             
-            const tokens = Math.floor(amount / 100);
+            const tokens = Math.floor(amount / 1);
             
             // Show loading state
             const submitBtn = event.target.querySelector('button[type="submit"]');
@@ -608,8 +606,8 @@
             
             const alertTitle = document.getElementById('alertTitle');
             const alertMessage = document.getElementById('alertMessage');
-            const alertIcon = document.querySelector('#alertModal div.w-16 i');
-            const alertContainer = document.querySelector('#alertModal div.w-16');
+            const alertIcon = document.querySelector('#alertModal .w-16 i');
+            const alertContainer = document.querySelector('#alertModal .w-16');
             
             // Check if all required elements exist
             if (!alertTitle || !alertMessage || !alertIcon || !alertContainer) {

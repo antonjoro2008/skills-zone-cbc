@@ -381,8 +381,8 @@
             return;
         }
         
-        if (amount < 100 || amount > 100000) {
-            showAlert('Invalid Amount', 'Amount must be between KES 100 and KES 100,000', 'error');
+        if (amount < 1 || amount > 100000) {
+            showAlert('Invalid Amount', 'Amount must be between KES 1 and KES 100,000', 'error');
             return;
         }
         
@@ -392,8 +392,8 @@
             return;
         }
         
-        // Calculate tokens (1 token = KES 100)
-        const tokens = Math.floor(amount / 100);
+        // Calculate tokens (1 token = KES 1)
+        const tokens = Math.floor(amount / 1);
         
         // Get current user data
         const storedUser = localStorage.getItem('user');
@@ -454,7 +454,7 @@
         
         if (amountInput && displayAmount && displayTokens) {
             const amount = parseFloat(amountInput.value) || 0;
-            const tokens = Math.floor(amount / 100); // 100 KES = 1 token
+            const tokens = Math.floor(amount / 1); // 1 KES = 1 token
             
             displayAmount.textContent = `KES ${amount.toLocaleString()}`;
             displayTokens.textContent = `${tokens} token${tokens !== 1 ? 's' : ''}`;

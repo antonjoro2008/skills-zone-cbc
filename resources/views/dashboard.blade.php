@@ -114,6 +114,24 @@
             </div>
         </div>
     </div>
+
+    <!-- Dashboard Alert Modal -->
+    <div id="dashboardAlertModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative transform scale-95 opacity-0 transition-all duration-300" id="dashboardAlertModalContent">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4" id="dashboardAlertContainer">
+                        <i class="fas fa-exclamation-triangle text-white text-2xl" id="dashboardAlertIcon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2" id="dashboardAlertTitle">Alert</h3>
+                    <p class="text-gray-600 mb-6" id="dashboardAlertMessage">This is an alert message.</p>
+                    <button onclick="closeDashboardAlert()" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                        <i class="fas fa-check mr-2"></i>OK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -122,22 +140,22 @@
     function showAlert(title, message, type = 'warning') {
         console.log('Dashboard showAlert called with:', title, message, type);
         
-        // Check if alert modal exists
-        const alertModal = document.getElementById('alertModal');
-        console.log('Alert modal found:', alertModal);
+        // Check if dashboard alert modal exists
+        const alertModal = document.getElementById('dashboardAlertModal');
+        console.log('Dashboard alert modal found:', alertModal);
         
         if (!alertModal) {
-            console.error('Alert modal not found. Falling back to default alert.');
+            console.error('Dashboard alert modal not found. Falling back to default alert.');
             alert(`${title}: ${message}`);
             return;
         }
         
-        const alertTitle = document.getElementById('alertTitle');
-        const alertMessage = document.getElementById('alertMessage');
-        const alertIcon = document.querySelector('#alertModal .text-center .w-16 i');
-        const alertContainer = document.querySelector('#alertModal .text-center .w-16');
+        const alertTitle = document.getElementById('dashboardAlertTitle');
+        const alertMessage = document.getElementById('dashboardAlertMessage');
+        const alertIcon = document.getElementById('dashboardAlertIcon');
+        const alertContainer = document.getElementById('dashboardAlertContainer');
         
-        console.log('Alert elements found:', {
+        console.log('Dashboard alert elements found:', {
             title: alertTitle,
             message: alertMessage,
             icon: alertIcon,
@@ -146,7 +164,7 @@
         
         // Check if all required elements exist
         if (!alertTitle || !alertMessage || !alertIcon || !alertContainer) {
-            console.error('Alert modal elements not found. Falling back to default alert.');
+            console.error('Dashboard alert modal elements not found. Falling back to default alert.');
             alert(`${title}: ${message}`);
             return;
         }
@@ -173,12 +191,27 @@
         
         // Show the modal
         alertModal.classList.remove('hidden');
-        const content = alertModal.querySelector('#alertModalContent');
+        const content = document.getElementById('dashboardAlertModalContent');
         if (content) {
             setTimeout(() => {
                 content.style.transform = 'scale(1)';
                 content.style.opacity = '1';
             }, 10);
+        }
+    }
+
+    // Close dashboard alert function
+    function closeDashboardAlert() {
+        const alertModal = document.getElementById('dashboardAlertModal');
+        const content = document.getElementById('dashboardAlertModalContent');
+        if (content) {
+            content.style.transform = 'scale(0.95)';
+            content.style.opacity = '0';
+            setTimeout(() => {
+                alertModal.classList.add('hidden');
+            }, 300);
+        } else {
+            alertModal.classList.add('hidden');
         }
     }
 

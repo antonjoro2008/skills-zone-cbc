@@ -118,6 +118,70 @@
 
 @section('scripts')
 <script>
+    // Custom alert function for dashboard
+    function showAlert(title, message, type = 'warning') {
+        console.log('Dashboard showAlert called with:', title, message, type);
+        
+        // Check if alert modal exists
+        const alertModal = document.getElementById('alertModal');
+        console.log('Alert modal found:', alertModal);
+        
+        if (!alertModal) {
+            console.error('Alert modal not found. Falling back to default alert.');
+            alert(`${title}: ${message}`);
+            return;
+        }
+        
+        const alertTitle = document.getElementById('alertTitle');
+        const alertMessage = document.getElementById('alertMessage');
+        const alertIcon = document.querySelector('#alertModal .w-16 i');
+        const alertContainer = document.querySelector('#alertModal .w-16');
+        
+        console.log('Alert elements found:', {
+            title: alertTitle,
+            message: alertMessage,
+            icon: alertIcon,
+            container: alertContainer
+        });
+        
+        // Check if all required elements exist
+        if (!alertTitle || !alertMessage || !alertIcon || !alertContainer) {
+            console.error('Alert modal elements not found. Falling back to default alert.');
+            alert(`${title}: ${message}`);
+            return;
+        }
+        
+        // Set title and message
+        alertTitle.textContent = title;
+        alertMessage.textContent = message;
+        
+        // Set icon and colors based on type
+        if (type === 'error') {
+            alertIcon.className = 'fas fa-times-circle text-white text-2xl';
+            alertContainer.className = 'w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4';
+        } else if (type === 'success') {
+            alertIcon.className = 'fas fa-check-circle text-white text-2xl';
+            alertContainer.className = 'w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4';
+        } else if (type === 'info') {
+            alertIcon.className = 'fas fa-info-circle text-white text-2xl';
+            alertContainer.className = 'w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4';
+        } else {
+            // Default warning
+            alertIcon.className = 'fas fa-exclamation-triangle text-white text-2xl';
+            alertContainer.className = 'w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4';
+        }
+        
+        // Show the modal
+        alertModal.classList.remove('hidden');
+        const content = alertModal.querySelector('#alertModalContent');
+        if (content) {
+            setTimeout(() => {
+                content.style.transform = 'scale(1)';
+                content.style.opacity = '1';
+            }, 10);
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // Load user data and dashboard data from localStorage
         const storedUser = localStorage.getItem('user');

@@ -596,8 +596,12 @@
 
         // Custom alert function
         function showAlert(title, message, type = 'warning') {
+            console.log('showAlert called with:', title, message, type);
+            
             // Check if alert modal exists
             const alertModal = document.getElementById('alertModal');
+            console.log('Alert modal found:', alertModal);
+            
             if (!alertModal) {
                 console.error('Alert modal not found. Falling back to default alert.');
                 alert(`${title}: ${message}`);
@@ -608,6 +612,13 @@
             const alertMessage = document.getElementById('alertMessage');
             const alertIcon = document.querySelector('#alertModal .w-16 i');
             const alertContainer = document.querySelector('#alertModal .w-16');
+            
+            console.log('Alert elements found:', {
+                title: alertTitle,
+                message: alertMessage,
+                icon: alertIcon,
+                container: alertContainer
+            });
             
             // Check if all required elements exist
             if (!alertTitle || !alertMessage || !alertIcon || !alertContainer) {

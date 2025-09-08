@@ -333,12 +333,13 @@
     
     function createAssessmentElement(assessment) {
         const div = document.createElement('div');
-        div.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-xl';
+        div.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors';
+        div.onclick = () => window.location.href = `/assessment/${assessment.id}`;
         
         // Get icon and color based on assessment type or status
-        const iconClass = getAssessmentIcon(assessment.name);
-        const statusColor = getStatusColor(assessment.status);
-        const statusText = getStatusText(assessment.status, assessment.completed_at);
+        const iconClass = getAssessmentIcon(assessment.title);
+        const statusColor = getStatusColor('available'); // These are available assessments
+        const statusText = getStatusText('available', assessment.created_at);
         
         div.innerHTML = `
             <div class="flex items-center">
@@ -346,11 +347,14 @@
                     <i class="${iconClass.icon} ${iconClass.text}"></i>
                 </div>
                 <div>
-                    <p class="font-medium text-gray-900">${assessment.name}</p>
-                    <p class="text-sm text-gray-500">${statusText}</p>
+                    <p class="font-medium text-gray-900">${assessment.title}</p>
+                    <p class="text-sm text-gray-500">${assessment.subject ? assessment.subject.name : 'Assessment'}</p>
                 </div>
             </div>
-            <span class="${statusColor.bg} ${statusColor.text} px-3 py-1 rounded-full text-sm font-semibold">${assessment.score}%</span>
+            <div class="text-right">
+                <span class="${statusColor.bg} ${statusColor.text} px-3 py-1 rounded-full text-sm font-semibold">Available</span>
+                <p class="text-xs text-gray-500 mt-1">${assessment.duration_minutes} min</p>
+            </div>
         `;
         
         return div;
@@ -361,14 +365,18 @@
             return { icon: 'fas fa-clipboard-list', bg: 'bg-gray-100', text: 'text-gray-600' };
         }
         const name = assessmentName.toLowerCase();
-        if (name.includes('javascript') || name.includes('js')) {
-            return { icon: 'fas fa-code', bg: 'bg-blue-100', text: 'text-blue-600' };
-        } else if (name.includes('python')) {
-            return { icon: 'fab fa-python', bg: 'bg-green-100', text: 'text-green-600' };
-        } else if (name.includes('design') || name.includes('ui') || name.includes('ux')) {
-            return { icon: 'fas fa-palette', bg: 'bg-purple-100', text: 'text-purple-600' };
-        } else if (name.includes('data') || name.includes('analysis')) {
-            return { icon: 'fas fa-chart-bar', bg: 'bg-orange-100', text: 'text-orange-600' };
+        if (name.includes('science') || name.includes('integrated')) {
+            return { icon: 'fas fa-flask', bg: 'bg-green-100', text: 'text-green-600' };
+        } else if (name.includes('math') || name.includes('mathematics')) {
+            return { icon: 'fas fa-calculator', bg: 'bg-blue-100', text: 'text-blue-600' };
+        } else if (name.includes('english') || name.includes('language')) {
+            return { icon: 'fas fa-book', bg: 'bg-purple-100', text: 'text-purple-600' };
+        } else if (name.includes('social') || name.includes('history') || name.includes('geography')) {
+            return { icon: 'fas fa-globe', bg: 'bg-orange-100', text: 'text-orange-600' };
+        } else if (name.includes('computer') || name.includes('ict') || name.includes('technology')) {
+            return { icon: 'fas fa-laptop', bg: 'bg-indigo-100', text: 'text-indigo-600' };
+        } else if (name.includes('art') || name.includes('creative')) {
+            return { icon: 'fas fa-palette', bg: 'bg-pink-100', text: 'text-pink-600' };
         } else {
             return { icon: 'fas fa-clipboard-list', bg: 'bg-gray-100', text: 'text-gray-600' };
         }
@@ -382,14 +390,16 @@
                 return { bg: 'bg-blue-100', text: 'text-blue-800' };
             case 'pending':
                 return { bg: 'bg-yellow-100', text: 'text-yellow-800' };
+            case 'available':
+                return { bg: 'bg-blue-100', text: 'text-blue-800' };
             default:
                 return { bg: 'bg-gray-100', text: 'text-gray-800' };
         }
     }
     
-    function getStatusText(status, completedAt) {
-        if (status === 'completed' && completedAt) {
-            const date = new Date(completedAt);
+    function getStatusText(status, dateString) {
+        if (status === 'completed' && dateString) {
+            const date = new Date(dateString);
             const now = new Date();
             const diffTime = Math.abs(now - date);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -408,6 +418,8 @@
             return 'In progress';
         } else if (status === 'pending') {
             return 'Not started';
+        } else if (status === 'available') {
+            return 'Available to take';
         } else {
             return 'Status unknown';
         }

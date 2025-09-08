@@ -37,7 +37,7 @@
             }
         }
     </script>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
     @yield('additional_head')
 </head>
 <body class="bg-gray-50">

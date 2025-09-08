@@ -1,0 +1,1148 @@
+@extends('layouts.app')
+
+@section('title', 'Assessment - SkillsZone')
+
+@section('content')
+    <!-- Assessment Start Page -->
+    <div id="assessmentStartPage" class="min-h-screen">
+        <!-- Header -->
+        <div class="gradient-bg text-white py-8">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold mb-2" id="assessmentTitle">Assessment</h1>
+                        <p class="text-gray-200" id="assessmentSubject">Loading...</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm text-gray-200">Duration</div>
+                        <div class="text-xl font-bold" id="assessmentDuration">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assessment Details -->
+        <div class="bg-gray-50">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="bg-white rounded-3xl shadow-lg p-6">
+                <!-- Assessment Info -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-blue-50 rounded-2xl p-4 text-center">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-clock text-blue-600 text-xl"></i>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-900" id="durationDisplay">0 min</div>
+                        <div class="text-sm text-gray-600">Duration</div>
+                    </div>
+                    <div class="bg-purple-50 rounded-2xl p-4 text-center">
+                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-question-circle text-purple-600 text-xl"></i>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-900" id="questionsCount">0</div>
+                        <div class="text-sm text-gray-600">Questions</div>
+                    </div>
+                    <div class="bg-green-50 rounded-2xl p-4 text-center">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-coins text-green-600 text-xl"></i>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-900" id="tokenCost">0</div>
+                        <div class="text-sm text-gray-600">Tokens</div>
+                    </div>
+                </div>
+
+                <!-- Instructions -->
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-3">Instructions</h2>
+                    <div class="bg-gray-50 rounded-2xl p-4">
+                        <div id="assessmentInstructions">
+                            <p class="text-gray-700 mb-4">Please read the following instructions carefully before starting the assessment:</p>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>You have a limited time to complete this assessment</li>
+                                <li>Answer all questions to the best of your ability</li>
+                                <li>You can navigate between questions using the Next/Previous buttons</li>
+                                <li>Your answers are automatically saved as you progress</li>
+                                <li>Once you submit or time runs out, you cannot change your answers</li>
+                                <li>Make sure you have a stable internet connection</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Start Button -->
+                <div class="text-center">
+                    <button id="startAssessmentBtn" class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-12 py-4 rounded-2xl text-lg font-semibold hover:from-green-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                        <i class="fas fa-play mr-3"></i>Start Assessment
+                    </button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Assessment Questions Page -->
+    <div id="assessmentQuestionsPage" class="min-h-screen bg-gray-50 hidden">
+        <!-- Header with Timer -->
+        <div class="bg-white shadow-lg py-4 sticky top-0 z-40">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <button id="backToStartBtn" class="text-gray-600 hover:text-gray-800 transition-colors">
+                            <i class="fas fa-arrow-left text-xl"></i>
+                        </button>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-900" id="questionAssessmentTitle">Assessment</h1>
+                            <p class="text-sm text-gray-600">Question <span id="currentQuestionNumber">1</span> of <span id="totalQuestions">0</span></p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right">
+                            <div class="text-sm text-gray-600">Time Remaining</div>
+                            <div class="text-xl font-bold" id="timerDisplay">00:00</div>
+                        </div>
+                        <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-clock text-red-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question Content -->
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="bg-white rounded-3xl shadow-lg p-6">
+                <!-- Question -->
+                <div class="mb-6">
+                    <!-- Section Info -->
+                    <div id="sectionInfo">
+                        <!-- Section information will be displayed here -->
+                    </div>
+                    
+                    <!-- Question Text -->
+                    <div class="text-sm text-gray-900 mb-4 leading-relaxed">
+                        <span id="questionText">Loading question...</span>
+                    </div>
+                    
+                    <!-- Question Options -->
+                    <div id="questionOptions" class="space-y-3">
+                        <!-- Options will be dynamically generated -->
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex items-center justify-between pt-4">
+                    <button id="prevQuestionBtn" class="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        <i class="fas fa-arrow-left mr-2"></i>Previous
+                    </button>
+                    
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm text-gray-600">Progress:</span>
+                        <div class="w-32 bg-gray-200 rounded-full h-2">
+                            <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <span id="progressText" class="text-sm text-gray-600">0%</span>
+                    </div>
+                    
+                    <button id="nextQuestionBtn" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all">
+                        Next<i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <!-- Submit Button (shown on last question) -->
+                <div id="submitSection" class="mt-6 text-center hidden">
+                    <button id="submitAssessmentBtn" class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-12 py-4 rounded-2xl text-lg font-semibold hover:from-green-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                        <i class="fas fa-check mr-3"></i>Submit Assessment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assessment Results Page -->
+    <div id="assessmentResultsPage" class="min-h-screen bg-gray-50 hidden">
+        <!-- Header -->
+        <div class="gradient-bg text-white py-8">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-3xl font-bold mb-2">Assessment Complete!</h1>
+                <p class="text-gray-200">Here are your results</p>
+            </div>
+        </div>
+
+        <!-- Results Content -->
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Score Summary -->
+            <div class="bg-white rounded-3xl shadow-lg p-8 mb-8">
+                <div class="text-center mb-8">
+                    <div class="w-24 h-24 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-trophy text-white text-3xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Your Score</h2>
+                    <div class="text-6xl font-bold text-transparent bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text mb-2" id="finalScore">0%</div>
+                    <p class="text-gray-600" id="scoreDescription">Great job!</p>
+                </div>
+
+                <!-- Score Breakdown -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-green-50 rounded-2xl p-6 text-center">
+                        <div class="text-3xl font-bold text-green-600" id="correctAnswers">0</div>
+                        <div class="text-sm text-gray-600">Correct</div>
+                    </div>
+                    <div class="bg-red-50 rounded-2xl p-6 text-center">
+                        <div class="text-3xl font-bold text-red-600" id="incorrectAnswers">0</div>
+                        <div class="text-sm text-gray-600">Incorrect</div>
+                    </div>
+                    <div class="bg-blue-50 rounded-2xl p-6 text-center">
+                        <div class="text-3xl font-bold text-blue-600" id="totalTime">0</div>
+                        <div class="text-sm text-gray-600">Time Taken</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Review -->
+            <div class="bg-white rounded-3xl shadow-lg p-8">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">Question Review</h3>
+                <div id="questionReview" class="space-y-6">
+                    <!-- Question reviews will be dynamically generated -->
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="text-center mt-8">
+                <button onclick="window.location.href='/assessments'" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl hover:scale-105 mr-4">
+                    <i class="fas fa-list mr-2"></i>Back to Assessments
+                </button>
+                <button onclick="window.location.href='/dashboard'" class="bg-gray-100 text-gray-700 px-8 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all">
+                    <i class="fas fa-home mr-2"></i>Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assessment Alert Modal -->
+    <div id="assessmentAlertModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4" id="assessmentAlertIcon">
+                    <i class="fas fa-exclamation-triangle text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2" id="assessmentAlertTitle">Alert</h3>
+                <p class="text-gray-600 mb-6" id="assessmentAlertMessage">This is an alert message.</p>
+                <button onclick="closeAssessmentAlert()" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('scripts')
+<script>
+    let currentAssessment = null;
+    let currentQuestionIndex = 0;
+    let answers = {};
+    let startTime = null;
+    let timerInterval = null;
+    let timeRemaining = 0;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Debug localStorage data
+        console.log('Available localStorage keys:', Object.keys(localStorage));
+        console.log('user in localStorage:', localStorage.getItem('user'));
+        console.log('token in localStorage:', localStorage.getItem('token'));
+        
+        // Check if user is logged in
+        const user = localStorage.getItem('user');
+        const token = localStorage.getItem('token');
+        
+        if (!user || !token) {
+            showAssessmentAlert('Authentication Required', 'Please log in to access assessments', 'warning');
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 2000);
+            return;
+        }
+        
+        loadAssessmentData();
+    });
+
+    async function loadAssessmentData() {
+        // Get assessment ID from URL
+        const pathParts = window.location.pathname.split('/');
+        const assessmentId = pathParts[pathParts.length - 1];
+        
+        if (!assessmentId || isNaN(assessmentId)) {
+            showAssessmentAlert('Error', 'Invalid assessment ID. Please try again.', 'error');
+            window.location.href = '/assessments';
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                showAssessmentAlert('Authentication Required', 'Please log in to access assessments', 'warning');
+                window.location.href = '/login';
+                return;
+            }
+
+            // Fetch fresh assessment data from API
+            const response = await fetch(`${API_BASE_URL}/api/assessments/${assessmentId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                }
+            });
+
+            const data = await response.json();
+            
+            if (data.success && data.data) {
+                currentAssessment = data.data;
+                
+                // Preserve token_cost from localStorage if it exists
+                const storedAssessment = localStorage.getItem('currentAssessment');
+                if (storedAssessment) {
+                    try {
+                        const stored = JSON.parse(storedAssessment);
+                        if (stored.token_cost) {
+                            currentAssessment.token_cost = stored.token_cost;
+                            console.log('Preserved token_cost:', stored.token_cost);
+                        }
+                    } catch (e) {
+                        console.error('Error parsing stored assessment:', e);
+                    }
+                }
+                
+                // Update localStorage with fresh data (including preserved token_cost)
+                localStorage.setItem('currentAssessment', JSON.stringify(currentAssessment));
+                
+                displayAssessmentStart();
+            } else {
+                showAssessmentAlert('Error', data.message || 'Failed to load assessment details', 'error');
+                window.location.href = '/assessments';
+            }
+        } catch (error) {
+            console.error('Error loading assessment data:', error);
+            showAssessmentAlert('Error', 'Failed to load assessment. Please try again.', 'error');
+            window.location.href = '/assessments';
+        }
+    }
+
+    function displayAssessmentStart() {
+        if (!currentAssessment) return;
+
+        // Calculate total questions from sections
+        let totalQuestions = 0;
+        if (currentAssessment.sections) {
+            currentAssessment.sections.forEach(section => {
+                if (section.questions && section.questions.length > 0) {
+                    totalQuestions += section.questions.length;
+                }
+            });
+        }
+
+        // Update assessment details
+        document.getElementById('assessmentTitle').textContent = currentAssessment.title || 'Assessment';
+        document.getElementById('assessmentSubject').textContent = currentAssessment.subject ? currentAssessment.subject.name : 'General';
+        document.getElementById('assessmentDuration').textContent = `${currentAssessment.duration_minutes || 0} minutes`;
+        document.getElementById('durationDisplay').textContent = `${currentAssessment.duration_minutes || 0} min`;
+        document.getElementById('questionsCount').textContent = totalQuestions;
+        const tokenCost = currentAssessment.token_cost || 1;
+        console.log('Displaying token cost:', tokenCost, 'from currentAssessment:', currentAssessment.token_cost);
+        document.getElementById('tokenCost').textContent = tokenCost;
+
+        // Update instructions if available
+        if (currentAssessment.instructions) {
+            document.getElementById('assessmentInstructions').innerHTML = currentAssessment.instructions;
+        }
+    }
+
+    async function startAssessment() {
+        if (!currentAssessment) return;
+
+        try {
+            // Show loading state on start button
+            const startBtn = document.getElementById('startAssessmentBtn');
+            const originalText = startBtn.innerHTML;
+            startBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i>Starting Assessment...';
+            startBtn.disabled = true;
+
+            const token = localStorage.getItem('token');
+            if (!token) {
+                showAssessmentAlert('Authentication Required', 'Please log in to start assessments', 'warning');
+                window.location.href = '/login';
+                return;
+            }
+
+            // Call the start assessment API endpoint
+            const response = await fetch(`${API_BASE_URL}/api/assessments/${currentAssessment.id}/start`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Check if assessment is already completed
+                if (data.data.status === 'completed') {
+                    // Reset button state before showing alert
+                    const startBtn = document.getElementById('startAssessmentBtn');
+                    startBtn.innerHTML = '<i class="fas fa-play mr-3"></i>Start Assessment';
+                    startBtn.disabled = false;
+                    
+                    showAssessmentAlert('Assessment Already Completed', `You have already completed this assessment with a score of ${data.data.score}%. You cannot retake it.`, 'info');
+                    return;
+                }
+
+                // Update token balance in localStorage (only if tokens were deducted)
+                if (data.data.tokens_deducted > 0) {
+                    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+                    if (currentUser.wallet) {
+                        currentUser.wallet.balance = data.data.remaining_balance;
+                        localStorage.setItem('user', JSON.stringify(currentUser));
+                    }
+                }
+
+                // Store attempt data for later use
+                localStorage.setItem('currentAttemptId', data.data.attempt_id);
+                localStorage.setItem('assessmentStartTime', data.data.started_at);
+
+                // Initialize assessment
+                startTime = new Date(data.data.started_at);
+                const currentTime = new Date();
+                const elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
+                const totalDurationSeconds = (currentAssessment.duration_minutes || 60) * 60;
+                timeRemaining = Math.max(0, totalDurationSeconds - elapsedSeconds);
+                currentQuestionIndex = 0;
+                
+                // Load saved answers if any
+                const savedAnswers = localStorage.getItem('assessmentAnswers');
+                answers = savedAnswers ? JSON.parse(savedAnswers) : {};
+
+                // Hide start page and show questions page
+                document.getElementById('assessmentStartPage').classList.add('hidden');
+                document.getElementById('assessmentQuestionsPage').classList.remove('hidden');
+
+                // Check if time has already expired
+                if (timeRemaining <= 0) {
+                    showAssessmentAlert('Time Expired', 'The assessment time has already expired. Submitting automatically.', 'warning');
+                    setTimeout(() => {
+                        autoSubmitAssessment();
+                    }, 2000);
+                    return;
+                }
+
+                // Start timer
+                startTimer();
+
+                // Load first question
+                loadQuestion();
+
+                // Show appropriate message based on status
+                if (data.data.status === 'in_progress' && data.data.tokens_deducted === 0) {
+                    showAssessmentAlert('Resuming Assessment', 'Continuing your previous assessment session.', 'info');
+                } else {
+                    showAssessmentAlert('Assessment Started', `Assessment started successfully! ${data.data.tokens_deducted} token(s) deducted.`, 'success');
+                }
+            } else {
+                // Handle insufficient tokens or other errors
+                if (data.message && data.message.includes('Insufficient tokens')) {
+                    showAssessmentAlert('Insufficient Tokens', data.message, 'error');
+                } else if (data.message && data.message.includes('already completed')) {
+                    // Reset button state before showing alert
+                    const startBtn = document.getElementById('startAssessmentBtn');
+                    startBtn.innerHTML = '<i class="fas fa-play mr-3"></i>Start Assessment';
+                    startBtn.disabled = false;
+                    
+                    showAssessmentAlert('Assessment Already Completed', data.message, 'info');
+                } else {
+                    showAssessmentAlert('Error', data.message || 'Failed to start assessment', 'error');
+                }
+            }
+        } catch (error) {
+            console.error('Error starting assessment:', error);
+            showAssessmentAlert('Network Error', 'Failed to start assessment. Please check your connection and try again.', 'error');
+        } finally {
+            // Restore start button state
+            const startBtn = document.getElementById('startAssessmentBtn');
+            startBtn.innerHTML = originalText;
+            startBtn.disabled = false;
+        }
+    }
+
+    function startTimer() {
+        updateTimerDisplay();
+        timerInterval = setInterval(() => {
+            timeRemaining--;
+            updateTimerDisplay();
+
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                autoSubmitAssessment();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const minutes = Math.floor(timeRemaining / 60);
+        const seconds = timeRemaining % 60;
+        document.getElementById('timerDisplay').textContent = 
+            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function loadQuestion() {
+        const allQuestions = getAllQuestions();
+        if (!currentAssessment || !allQuestions || currentQuestionIndex >= allQuestions.length) {
+            return;
+        }
+
+        const question = allQuestions[currentQuestionIndex];
+        const section = getQuestionSection(question.section_id);
+        
+        // Update question info
+        document.getElementById('questionAssessmentTitle').textContent = currentAssessment.title || 'Assessment';
+        document.getElementById('currentQuestionNumber').textContent = currentQuestionIndex + 1;
+        document.getElementById('totalQuestions').textContent = allQuestions.length;
+        const questionText = question.question_text || 'Question text not available';
+        
+        // Create a temporary div to parse the HTML content
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = questionText;
+        
+        // Find the first text node or element and prepend the question number
+        const firstChild = tempDiv.firstChild;
+        if (firstChild && firstChild.nodeType === Node.TEXT_NODE) {
+            // If first child is text, prepend number to it
+            firstChild.textContent = `${currentQuestionIndex + 1}. ${firstChild.textContent}`;
+        } else if (firstChild && firstChild.nodeType === Node.ELEMENT_NODE) {
+            // If first child is an element (like <p>), prepend number to its content
+            if (firstChild.tagName === 'P') {
+                firstChild.innerHTML = `<span class="font-bold">${currentQuestionIndex + 1}.</span> ${firstChild.innerHTML}`;
+            } else {
+                firstChild.innerHTML = `<span class="font-bold">${currentQuestionIndex + 1}.</span> ${firstChild.innerHTML}`;
+            }
+        } else {
+            // Fallback: prepend to the entire content
+            tempDiv.innerHTML = `<span class="font-bold">${currentQuestionIndex + 1}.</span> ${questionText}`;
+        }
+        
+        document.getElementById('questionText').innerHTML = tempDiv.innerHTML;
+        
+        // Find the first HTML tag (excluding our question number span) and set its display to inline-block
+        const questionElement = document.getElementById('questionText');
+        const allChildren = questionElement.children;
+        
+        // Skip the first child (our question number span) and find the first actual content tag
+        for (let i = 1; i < allChildren.length; i++) {
+            const child = allChildren[i];
+            if (child.tagName && ['P', 'DIV', 'SPAN', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(child.tagName)) {
+                child.style.display = 'inline-block';
+                break;
+            }
+        }
+        
+        // If no tag found in children, try querySelector approach
+        if (allChildren.length <= 1) {
+            const firstTag = questionElement.querySelector('p, div, span, h1, h2, h3, h4, h5, h6');
+            if (firstTag && firstTag !== questionElement.querySelector('.font-bold')) {
+                firstTag.style.display = 'inline-block';
+            }
+        }
+        
+        // Additional fix: Ensure all paragraph tags in the question are inline-block
+        const allParagraphs = questionElement.querySelectorAll('p');
+        allParagraphs.forEach((p, index) => {
+            if (index === 0) {
+                p.style.display = 'inline-block';
+            }
+        });
+
+        // Update section info
+        const sectionInfo = document.getElementById('sectionInfo');
+        if (section) {
+            sectionInfo.innerHTML = `
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-layer-group text-blue-600 mr-2"></i>
+                        <span class="font-semibold text-blue-800">${section.title}</span>
+                        ${section.description ? `<span class="text-blue-600 ml-2">- ${section.description}</span>` : ''}
+                    </div>
+                </div>
+            `;
+        } else {
+            sectionInfo.innerHTML = '';
+        }
+
+        // Display media if available
+        displayQuestionMedia(question);
+
+        // Update progress based on answered questions
+        updateProgress();
+
+        // Generate options
+        generateQuestionOptions(question);
+
+        // Update navigation buttons
+        updateNavigationButtons();
+
+        // Load saved answer if exists
+        loadSavedAnswer(question.id);
+    }
+
+    function getAllQuestions() {
+        if (!currentAssessment) {
+            return [];
+        }
+        
+        // Questions are now only in sections (API updated)
+        if (currentAssessment.sections) {
+            let allQuestions = [];
+            
+            currentAssessment.sections.forEach(section => {
+                if (section.questions && section.questions.length > 0) {
+                    allQuestions = allQuestions.concat(section.questions);
+                }
+            });
+            
+            return allQuestions;
+        }
+        
+        return [];
+    }
+
+    function getQuestionSection(sectionId) {
+        if (!currentAssessment || !currentAssessment.sections) {
+            return null;
+        }
+        return currentAssessment.sections.find(section => section.id === sectionId);
+    }
+
+    function generateQuestionOptions(question) {
+        const optionsContainer = document.getElementById('questionOptions');
+        optionsContainer.innerHTML = '';
+
+        if (question.question_type === 'mcq' && question.answers && question.answers.length > 0) {
+            // Use real MCQ options from API
+            question.answers.forEach((answer, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'flex items-center p-2 border border-gray-200 rounded-xl hover:bg-blue-50 hover:border-blue-300 cursor-pointer transition-all';
+                optionElement.innerHTML = `
+                    <input type="radio" name="question_${question.id}" value="${answer.id}" id="option_${question.id}_${index}" class="mr-4 text-blue-600">
+                    <label for="option_${question.id}_${index}" class="flex-1 cursor-pointer text-sm text-gray-900 leading-relaxed">
+                        ${answer.answer_text}
+                    </label>
+                `;
+                optionElement.addEventListener('click', () => {
+                    const radio = optionElement.querySelector('input[type="radio"]');
+                    radio.checked = true;
+                    saveAnswer(question.id, radio.value);
+                });
+                optionsContainer.appendChild(optionElement);
+            });
+        } else if (question.question_type === 'mcq') {
+            // Fallback: Create standard A, B, C, D options as placeholders if no answers provided
+            const standardOptions = ['A', 'B', 'C', 'D'];
+            standardOptions.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'flex items-center p-2 border border-gray-200 rounded-xl hover:bg-gray-50 cursor-pointer transition-all';
+                optionElement.innerHTML = `
+                    <input type="radio" name="question_${question.id}" value="${option}" id="option_${question.id}_${index}" class="mr-4 text-blue-600">
+                    <label for="option_${question.id}_${index}" class="flex-1 cursor-pointer text-sm text-gray-900 leading-relaxed">
+                        <span class="font-medium mr-2">${option}.</span>
+                        <span class="text-gray-500">Option ${option} - (No options available)</span>
+                    </label>
+                `;
+                optionElement.addEventListener('click', () => {
+                    const radio = optionElement.querySelector('input[type="radio"]');
+                    radio.checked = true;
+                    saveAnswer(question.id, radio.value);
+                });
+                optionsContainer.appendChild(optionElement);
+            });
+        } else if (question.question_type === 'true_false') {
+            // True/False options
+            const trueFalseOptions = [
+                { value: 'true', label: 'True' },
+                { value: 'false', label: 'False' }
+            ];
+            trueFalseOptions.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'flex items-center p-2 border border-gray-200 rounded-xl hover:bg-blue-50 hover:border-blue-300 cursor-pointer transition-all';
+                optionElement.innerHTML = `
+                    <input type="radio" name="question_${question.id}" value="${option.value}" id="option_${question.id}_${index}" class="mr-4 text-blue-600">
+                    <label for="option_${question.id}_${index}" class="flex-1 cursor-pointer text-sm text-gray-900 leading-relaxed">
+                        ${option.label}
+                    </label>
+                `;
+                optionElement.addEventListener('click', () => {
+                    const radio = optionElement.querySelector('input[type="radio"]');
+                    radio.checked = true;
+                    saveAnswer(question.id, radio.value);
+                });
+                optionsContainer.appendChild(optionElement);
+            });
+        } else if (question.question_type === 'matching') {
+            // Matching questions - simplified interface for now
+            const textInput = document.createElement('div');
+            textInput.className = 'p-2 border border-gray-200 rounded-xl';
+            textInput.innerHTML = `
+                <label class="block text-sm text-gray-700 mb-2">Your Matching (JSON format):</label>
+                <textarea name="question_${question.id}" id="text_answer_${question.id}" 
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-gray-900 leading-relaxed" 
+                    rows="4" placeholder='[{"left_item": "Item 1", "right_item": "Match 1"}, {"left_item": "Item 2", "right_item": "Match 2"}]'></textarea>
+                <p class="text-xs text-gray-500 mt-1">Enter your matches in JSON format as shown in the placeholder</p>
+            `;
+            textInput.addEventListener('input', (e) => {
+                saveAnswer(question.id, e.target.value);
+            });
+            optionsContainer.appendChild(textInput);
+        } else if (question.question_type === 'fill_blank') {
+            // Fill in the blank questions - simplified interface for now
+            const textInput = document.createElement('div');
+            textInput.className = 'p-2 border border-gray-200 rounded-xl';
+            textInput.innerHTML = `
+                <label class="block text-sm text-gray-700 mb-2">Your Answers (JSON format):</label>
+                <textarea name="question_${question.id}" id="text_answer_${question.id}" 
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-gray-900 leading-relaxed" 
+                    rows="4" placeholder='[{"blank_id": 1, "text": "answer1"}, {"blank_id": 2, "text": "answer2"}]'></textarea>
+                <p class="text-xs text-gray-500 mt-1">Enter your answers in JSON format as shown in the placeholder</p>
+            `;
+            textInput.addEventListener('input', (e) => {
+                saveAnswer(question.id, e.target.value);
+            });
+            optionsContainer.appendChild(textInput);
+        } else {
+            // For short_answer and essay question types, show a text input
+            const textInput = document.createElement('div');
+            textInput.className = 'p-2 border border-gray-200 rounded-xl';
+            const rows = question.question_type === 'essay' ? '6' : '4';
+            const placeholder = question.question_type === 'essay' ? 
+                'Write your detailed essay answer here...' : 
+                'Enter your answer here...';
+            textInput.innerHTML = `
+                <label class="block text-sm text-gray-700 mb-2">Your Answer:</label>
+                <textarea name="question_${question.id}" id="text_answer_${question.id}" 
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-gray-900 leading-relaxed" 
+                    rows="${rows}" placeholder="${placeholder}"></textarea>
+            `;
+            textInput.addEventListener('input', (e) => {
+                saveAnswer(question.id, e.target.value);
+            });
+            optionsContainer.appendChild(textInput);
+        }
+    }
+
+    function displayQuestionMedia(question) {
+        let mediaContainer = document.getElementById('questionMedia');
+        if (!mediaContainer) {
+            // Create media container if it doesn't exist
+            const questionTextElement = document.getElementById('questionText');
+            const mediaDiv = document.createElement('div');
+            mediaDiv.id = 'questionMedia';
+            mediaDiv.className = 'mt-3 mb-4';
+            questionTextElement.parentNode.insertBefore(mediaDiv, questionTextElement.nextSibling);
+            mediaContainer = document.getElementById('questionMedia');
+        } else {
+            // Update existing container with proper spacing
+            mediaContainer.className = 'mt-3 mb-4';
+        }
+        
+        if (question.media && question.media.length > 0) {
+            let mediaHTML = '';
+            question.media.forEach(media => {
+                if (media.media_type === 'image') {
+                    mediaHTML += `
+                        <div class="mb-4">
+                            <img src="https://admin.skillszone.africa/storage/${media.file_path}" 
+                                 alt="Question media" 
+                                 class="max-w-full h-auto rounded-lg shadow-md border border-gray-200">
+                            ${media.caption ? `<p class="text-sm text-gray-600 mt-2 italic">${media.caption}</p>` : ''}
+                        </div>
+                    `;
+                } else if (media.media_type === 'video') {
+                    mediaHTML += `
+                        <div class="mb-4">
+                            <video controls class="max-w-full h-auto rounded-lg shadow-md border border-gray-200">
+                                <source src="https://admin.skillszone.africa/storage/${media.file_path}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            ${media.caption ? `<p class="text-sm text-gray-600 mt-2 italic">${media.caption}</p>` : ''}
+                        </div>
+                    `;
+                } else if (media.media_type === 'audio') {
+                    mediaHTML += `
+                        <div class="mb-4">
+                            <audio controls class="w-full">
+                                <source src="https://admin.skillszone.africa/storage/${media.file_path}" type="audio/mpeg">
+                                Your browser does not support the audio tag.
+                            </audio>
+                            ${media.caption ? `<p class="text-sm text-gray-600 mt-2 italic">${media.caption}</p>` : ''}
+                        </div>
+                    `;
+                }
+            });
+            mediaContainer.innerHTML = mediaHTML;
+        } else {
+            mediaContainer.innerHTML = '';
+        }
+    }
+
+    function loadSavedAnswer(questionId) {
+        if (answers[questionId]) {
+            // Try to find radio button first (for MCQ and True/False)
+            const radio = document.querySelector(`input[name="question_${questionId}"][value="${answers[questionId]}"]`);
+            if (radio) {
+                radio.checked = true;
+            } else {
+                // Try to find text input (for text-based questions)
+                const textInput = document.querySelector(`textarea[name="question_${questionId}"]`);
+                if (textInput) {
+                    textInput.value = answers[questionId];
+                }
+            }
+        }
+    }
+
+    function saveAnswer(questionId, answer) {
+        answers[questionId] = answer;
+        // Auto-save to localStorage
+        localStorage.setItem('assessmentAnswers', JSON.stringify(answers));
+        // Update progress after saving answer
+        updateProgress();
+    }
+
+    function updateProgress() {
+        const allQuestions = getAllQuestions();
+        const answeredCount = Object.keys(answers).length;
+        const progress = allQuestions.length > 0 ? (answeredCount / allQuestions.length) * 100 : 0;
+        
+        document.getElementById('progressBar').style.width = `${progress}%`;
+        document.getElementById('progressText').textContent = `${Math.round(progress)}%`;
+    }
+
+    function updateNavigationButtons() {
+        const prevBtn = document.getElementById('prevQuestionBtn');
+        const nextBtn = document.getElementById('nextQuestionBtn');
+        const submitSection = document.getElementById('submitSection');
+        const allQuestions = getAllQuestions();
+
+        // Previous button
+        prevBtn.disabled = currentQuestionIndex === 0;
+
+        // Next/Submit button
+        if (currentQuestionIndex === allQuestions.length - 1) {
+            nextBtn.classList.add('hidden');
+            submitSection.classList.remove('hidden');
+        } else {
+            nextBtn.classList.remove('hidden');
+            submitSection.classList.add('hidden');
+        }
+    }
+
+    function nextQuestion() {
+        const allQuestions = getAllQuestions();
+        if (currentQuestionIndex < allQuestions.length - 1) {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+    }
+
+    function previousQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            loadQuestion();
+        }
+    }
+
+    function autoSubmitAssessment() {
+        showAssessmentAlert('Time Up!', 'Your time has expired. The assessment will be submitted automatically.', 'warning');
+        submitAssessment();
+    }
+
+    async function submitAssessment() {
+        try {
+            clearInterval(timerInterval);
+
+            const token = localStorage.getItem('token');
+            if (!token) {
+                showAssessmentAlert('Error', 'Authentication required', 'error');
+                return;
+            }
+
+            // Get current user data (stored as 'user' in localStorage)
+            const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+            console.log('Current user data:', currentUser);
+            
+            // Check for user ID in different possible fields
+            const userId = currentUser.id || currentUser.user_id || currentUser.userId;
+            if (!userId) {
+                console.error('User ID not found in localStorage. Available keys:', Object.keys(currentUser));
+                showAssessmentAlert('Error', 'User information not found. Please log in again.', 'error');
+                return;
+            }
+
+            // Calculate time taken and prepare submission data
+            const endTime = new Date();
+            const timeTaken = Math.floor((endTime - startTime) / 1000);
+            const allQuestions = getAllQuestions();
+            const answeredQuestions = Object.keys(answers).length;
+
+            // Prepare answers in the required format
+            const formattedAnswers = [];
+            allQuestions.forEach(question => {
+                if (answers[question.id]) {
+                    let answerData = {
+                        question_id: question.id,
+                        question_type: question.question_type,
+                        answer: {}
+                    };
+
+                    if (question.question_type === 'mcq') {
+                        // For MCQ, find the selected answer
+                        const selectedAnswerId = answers[question.id];
+                        const selectedAnswer = question.answers ? question.answers.find(a => a.id == selectedAnswerId) : null;
+                        
+                        answerData.answer = {
+                            selected_answer_id: parseInt(selectedAnswerId),
+                            answer_text: selectedAnswer ? selectedAnswer.answer_text : `Option ${selectedAnswerId}`
+                        };
+                    } else if (question.question_type === 'true_false') {
+                        answerData.answer = {
+                            selected_option: answers[question.id],
+                            answer_text: answers[question.id]
+                        };
+                    } else if (['short_answer', 'essay'].includes(question.question_type)) {
+                        answerData.answer = {
+                            text_response: answers[question.id]
+                        };
+                    } else if (question.question_type === 'matching') {
+                        // For matching questions, parse the JSON string
+                        try {
+                            const matches = JSON.parse(answers[question.id]);
+                            answerData.answer = { matches: matches };
+                        } catch (e) {
+                            answerData.answer = { matches: [] };
+                        }
+                    } else if (question.question_type === 'fill_blank') {
+                        // For fill in the blank questions, parse the JSON string
+                        try {
+                            const blanks = JSON.parse(answers[question.id]);
+                            answerData.answer = { blanks: blanks };
+                        } catch (e) {
+                            answerData.answer = { blanks: [] };
+                        }
+                    }
+
+                    formattedAnswers.push(answerData);
+                }
+            });
+
+            // Get attempt ID from localStorage (stored when assessment was started)
+            const attemptId = localStorage.getItem('currentAttemptId');
+            if (!attemptId) {
+                showAssessmentAlert('Error', 'Assessment session not found. Please start the assessment again.', 'error');
+                return;
+            }
+
+            // Prepare the complete payload
+            const payload = {
+                attempt_id: parseInt(attemptId),
+                assessment_id: currentAssessment.id,
+                user_id: userId,
+                submission_data: {
+                    start_time: startTime.toISOString(),
+                    end_time: endTime.toISOString(),
+                    time_taken_seconds: timeTaken,
+                    total_questions: allQuestions.length,
+                    questions_answered: answeredQuestions,
+                    answers: formattedAnswers
+                },
+                metadata: {
+                    browser_info: navigator.userAgent,
+                    submission_method: 'manual',
+                    ip_address: '127.0.0.1', // This would be set by the server
+                    user_agent: 'SkillsZone Assessment Platform'
+                }
+            };
+
+            console.log('Submitting assessment with payload:', payload);
+
+            // Submit to the correct endpoint
+            const response = await fetch(`${API_BASE_URL}/api/assessments/submit`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Clean up attempt data
+                localStorage.removeItem('currentAttemptId');
+                localStorage.removeItem('assessmentStartTime');
+                localStorage.removeItem('assessmentAnswers');
+                
+                // Store results and redirect to summary page
+                localStorage.setItem('assessmentResults', JSON.stringify(data.data));
+                window.location.href = `/assessment-summary/${currentAssessment.id}`;
+            } else {
+                showAssessmentAlert('Error', data.message || 'Failed to submit assessment', 'error');
+            }
+        } catch (error) {
+            console.error('Error submitting assessment:', error);
+            showAssessmentAlert('Error', 'Failed to submit assessment. Please try again.', 'error');
+        }
+    }
+
+    function displayResults(results) {
+        // Hide questions page and show results page
+        document.getElementById('assessmentQuestionsPage').classList.add('hidden');
+        document.getElementById('assessmentResultsPage').classList.remove('hidden');
+
+        // Update score
+        const score = results.score || 0;
+        document.getElementById('finalScore').textContent = `${score}%`;
+        document.getElementById('scoreDescription').textContent = getScoreDescription(score);
+
+        // Update breakdown
+        document.getElementById('correctAnswers').textContent = results.correct_count || 0;
+        document.getElementById('incorrectAnswers').textContent = results.incorrect_count || 0;
+        document.getElementById('totalTime').textContent = formatTime(results.time_taken || 0);
+
+        // Generate question review
+        generateQuestionReview(results.question_reviews || []);
+    }
+
+    function getScoreDescription(score) {
+        if (score >= 90) return 'Excellent work!';
+        if (score >= 80) return 'Great job!';
+        if (score >= 70) return 'Good effort!';
+        if (score >= 60) return 'Not bad!';
+        return 'Keep practicing!';
+    }
+
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+
+    function generateQuestionReview(reviews) {
+        const reviewContainer = document.getElementById('questionReview');
+        reviewContainer.innerHTML = '';
+
+        reviews.forEach((review, index) => {
+            const reviewElement = document.createElement('div');
+            reviewElement.className = `p-6 rounded-2xl border-2 ${review.is_correct ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`;
+            reviewElement.innerHTML = `
+                <div class="flex items-start justify-between mb-4">
+                    <h4 class="text-lg font-semibold text-gray-900">Question ${index + 1}</h4>
+                    <div class="flex items-center">
+                        <i class="fas ${review.is_correct ? 'fa-check-circle text-green-600' : 'fa-times-circle text-red-600'} text-xl mr-2"></i>
+                        <span class="font-semibold ${review.is_correct ? 'text-green-600' : 'text-red-600'}">
+                            ${review.is_correct ? 'Correct' : 'Incorrect'}
+                        </span>
+                    </div>
+                </div>
+                <p class="text-gray-700 mb-4">${review.question}</p>
+                <div class="space-y-2">
+                    <div class="flex items-center">
+                        <span class="font-semibold text-gray-600 w-24">Your Answer:</span>
+                        <span class="${review.is_correct ? 'text-green-600' : 'text-red-600'}">${review.user_answer}</span>
+                    </div>
+                    ${!review.is_correct ? `
+                        <div class="flex items-center">
+                            <span class="font-semibold text-gray-600 w-24">Correct Answer:</span>
+                            <span class="text-green-600">${review.correct_answer}</span>
+                        </div>
+                    ` : ''}
+                    ${review.explanation ? `
+                        <div class="mt-3 p-3 bg-blue-50 rounded-lg">
+                            <span class="font-semibold text-blue-800">Explanation:</span>
+                            <p class="text-blue-700 mt-1">${review.explanation}</p>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            reviewContainer.appendChild(reviewElement);
+        });
+    }
+
+    // Event listeners
+    document.getElementById('startAssessmentBtn').addEventListener('click', startAssessment);
+    document.getElementById('nextQuestionBtn').addEventListener('click', nextQuestion);
+    document.getElementById('prevQuestionBtn').addEventListener('click', previousQuestion);
+    document.getElementById('submitAssessmentBtn').addEventListener('click', submitAssessment);
+    document.getElementById('backToStartBtn').addEventListener('click', () => {
+        if (confirm('Are you sure you want to go back? Your progress will be lost.')) {
+            // Clean up attempt data and answers
+            localStorage.removeItem('currentAttemptId');
+            localStorage.removeItem('assessmentStartTime');
+            localStorage.removeItem('assessmentAnswers');
+            
+            document.getElementById('assessmentQuestionsPage').classList.add('hidden');
+            document.getElementById('assessmentStartPage').classList.remove('hidden');
+            clearInterval(timerInterval);
+        }
+    });
+
+    // Custom alert function for assessment page
+    function showAssessmentAlert(title, message, type = 'warning') {
+        const modal = document.getElementById('assessmentAlertModal');
+        const titleElement = document.getElementById('assessmentAlertTitle');
+        const messageElement = document.getElementById('assessmentAlertMessage');
+        const iconElement = document.getElementById('assessmentAlertIcon');
+        
+        if (modal && titleElement && messageElement && iconElement) {
+            // Update content
+            titleElement.textContent = title;
+            messageElement.textContent = message;
+            
+            // Update icon and colors based on type
+            let iconClass = 'fas fa-exclamation-triangle';
+            let bgClass = 'bg-gradient-to-r from-yellow-500 to-orange-500';
+            
+            switch (type) {
+                case 'success':
+                    iconClass = 'fas fa-check-circle';
+                    bgClass = 'bg-gradient-to-r from-green-500 to-green-600';
+                    break;
+                case 'error':
+                    iconClass = 'fas fa-times-circle';
+                    bgClass = 'bg-gradient-to-r from-red-500 to-red-600';
+                    break;
+                case 'info':
+                    iconClass = 'fas fa-info-circle';
+                    bgClass = 'bg-gradient-to-r from-blue-500 to-blue-600';
+                    break;
+                default: // warning
+                    iconClass = 'fas fa-exclamation-triangle';
+                    bgClass = 'bg-gradient-to-r from-yellow-500 to-orange-500';
+            }
+            
+            iconElement.className = `w-16 h-16 ${bgClass} rounded-full flex items-center justify-center mx-auto mb-4`;
+            iconElement.innerHTML = `<i class="${iconClass} text-white text-2xl"></i>`;
+            
+            // Show modal
+            modal.classList.remove('hidden');
+        } else {
+            // Fallback to browser alert
+            alert(`${title}: ${message}`);
+        }
+    }
+
+    function closeAssessmentAlert() {
+        const modal = document.getElementById('assessmentAlertModal');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    }
+</script>
+@endsection

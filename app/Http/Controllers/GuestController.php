@@ -128,4 +128,22 @@ class GuestController extends Controller
         // For now, return the view - in a real app, you'd add auth middleware
         return view('institution-dashboard');
     }
+
+    /**
+     * Display the assessment page (requires authentication)
+     */
+    public function assessment($id)
+    {
+        // For now, return the view - in a real app, you'd add auth middleware
+        return view('assessment');
+    }
+
+    /**
+     * Display the assessment summary page (requires authentication)
+     */
+    public function assessmentSummary($id)
+    {
+        // For now, return the view - in a real app, you'd add auth middleware
+        return view('assessment-summary');
+    }
 } 

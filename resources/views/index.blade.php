@@ -38,7 +38,7 @@
                                 <i class="fas fa-user-plus mr-2 group-hover:rotate-12 transition-transform"></i>
                                 Join Free
                             </button>
-                            <button class="group border-2 border-green-400 text-green-400 hover:bg-green-400 hover:text-white px-8 py-4 rounded-full text-lg font-semibold transition-all hover:scale-105 hover:-translate-y-1 shadow-lg" onclick="showModal('buyTokensModal')">
+                            <button id="buyTokensBtn" class="group border-2 border-green-400 text-green-400 hover:bg-green-400 hover:text-white px-8 py-4 rounded-full text-lg font-semibold transition-all hover:scale-105 hover:-translate-y-1 shadow-lg hidden" onclick="showModal('buyTokensModal')">
                                 <i class="fas fa-coins mr-2 group-hover:animate-pulse"></i>
                                 Buy Tokens
                             </button>
@@ -208,4 +208,20 @@
             </div>
         </div>
     </section>
+@endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is logged in
+        const user = localStorage.getItem('user');
+        const token = localStorage.getItem('token');
+        const buyTokensBtn = document.getElementById('buyTokensBtn');
+        
+        if (user && token && buyTokensBtn) {
+            // User is logged in, show the Buy Tokens button
+            buyTokensBtn.classList.remove('hidden');
+        }
+    });
+</script>
 @endsection

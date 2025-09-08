@@ -96,10 +96,97 @@
             </div>
         </div>
     </div>
+
+    <!-- Assessments Alert Modal -->
+    <div id="assessmentsAlertModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative transform scale-95 opacity-0 transition-all duration-300" id="assessmentsAlertModalContent">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4" id="assessmentsAlertContainer">
+                        <i class="fas fa-exclamation-triangle text-white text-2xl" id="assessmentsAlertIcon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2" id="assessmentsAlertTitle">Alert</h3>
+                    <p class="text-gray-600 mb-6" id="assessmentsAlertMessage">This is an alert message.</p>
+                    <button onclick="closeAssessmentsAlert()" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                        <i class="fas fa-check mr-2"></i>OK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
 <script>
+    // Custom alert function for assessments page
+    function showAlert(title, message, type = 'warning') {
+        // Check if assessments alert modal exists
+        const alertModal = document.getElementById('assessmentsAlertModal');
+        
+        if (!alertModal) {
+            console.error('Assessments alert modal not found. Falling back to default alert.');
+            alert(`${title}: ${message}`);
+            return;
+        }
+        
+        const alertTitle = document.getElementById('assessmentsAlertTitle');
+        const alertMessage = document.getElementById('assessmentsAlertMessage');
+        const alertIcon = document.getElementById('assessmentsAlertIcon');
+        const alertContainer = document.getElementById('assessmentsAlertContainer');
+        
+        // Check if all required elements exist
+        if (!alertTitle || !alertMessage || !alertIcon || !alertContainer) {
+            console.error('Assessments alert modal elements not found. Falling back to default alert.');
+            alert(`${title}: ${message}`);
+            return;
+        }
+        
+        // Set title and message
+        alertTitle.textContent = title;
+        alertMessage.textContent = message;
+        
+        // Set icon and colors based on type
+        if (type === 'error') {
+            alertIcon.className = 'fas fa-times-circle text-white text-2xl';
+            alertContainer.className = 'w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4';
+        } else if (type === 'success') {
+            alertIcon.className = 'fas fa-check-circle text-white text-2xl';
+            alertContainer.className = 'w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4';
+        } else if (type === 'info') {
+            alertIcon.className = 'fas fa-info-circle text-white text-2xl';
+            alertContainer.className = 'w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4';
+        } else {
+            // Default warning
+            alertIcon.className = 'fas fa-exclamation-triangle text-white text-2xl';
+            alertContainer.className = 'w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4';
+        }
+        
+        // Show the modal
+        alertModal.classList.remove('hidden');
+        const content = document.getElementById('assessmentsAlertModalContent');
+        if (content) {
+            setTimeout(() => {
+                content.style.transform = 'scale(1)';
+                content.style.opacity = '1';
+            }, 10);
+        }
+    }
+
+    // Close assessments alert function
+    function closeAssessmentsAlert() {
+        const alertModal = document.getElementById('assessmentsAlertModal');
+        const content = document.getElementById('assessmentsAlertModalContent');
+        if (content) {
+            content.style.transform = 'scale(0.95)';
+            content.style.opacity = '0';
+            setTimeout(() => {
+                alertModal.classList.add('hidden');
+            }, 300);
+        } else {
+            alertModal.classList.add('hidden');
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // Load token balance from localStorage
         updateTokenBalance();
@@ -215,8 +302,27 @@
         
         // Format duration and questions
         const duration = assessment.duration_minutes ? `${assessment.duration_minutes} min` : 'N/A';
-        const questions = 'Multiple Choice'; // Default since questions_count is not in API response
-        const tokens = 5; // Default token cost since token_cost is not in API response
+        const questions = assessment.questions_count ? `${assessment.questions_count} Questions` : 'Multiple Choice';
+        const tokens = assessment.token_cost || 5; // Use token_cost from API or default to 5
+        
+        // Check if user has enough tokens
+        const storedDashboard = localStorage.getItem('dashboard');
+        let userTokenBalance = 0;
+        if (storedDashboard) {
+            try {
+                const dashboard = JSON.parse(storedDashboard);
+                userTokenBalance = dashboard.token_balance || 0;
+            } catch (e) {
+                console.error('Error parsing dashboard data:', e);
+            }
+        }
+        
+        const hasEnoughTokens = userTokenBalance >= tokens;
+        const buttonText = hasEnoughTokens ? 'Start Assessment' : 'Purchase & Start';
+        const buttonIcon = hasEnoughTokens ? 'fas fa-play' : 'fas fa-shopping-cart';
+        const buttonClass = hasEnoughTokens ? 
+            'w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-green-700 hover:to-blue-700 transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse' :
+            'w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse';
         
         return `
             <div class="assessment-card rounded-3xl shadow-lg overflow-hidden card-hover group">
@@ -246,8 +352,16 @@
                             ${tokens} Tokens
                         </div>
                     </div>
-                    <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse" onclick="purchaseAssessment('${assessment.title || 'Assessment'}', ${assessment.id}, ${tokens})">
-                        <i class="fas fa-shopping-cart mr-2"></i>Purchase & Start
+                    ${hasEnoughTokens ? `
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                            <div class="flex items-center text-green-800 text-sm">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                <span>This assessment will use ${tokens} tokens from your balance</span>
+                            </div>
+                        </div>
+                    ` : ''}
+                    <button class="${buttonClass}" onclick="${hasEnoughTokens ? `startAssessment(${assessment.id}, ${tokens})` : `purchaseAssessment('${assessment.title || 'Assessment'}', ${assessment.id}, ${tokens})`}">
+                        <i class="${buttonIcon} mr-2"></i>${buttonText}
                     </button>
                 </div>
             </div>
@@ -284,6 +398,42 @@
         } catch (error) {
             console.error('Error purchasing assessment:', error);
             showAlert('Purchase Error', 'Error purchasing assessment. Please try again.', 'error');
+        }
+    }
+
+    async function startAssessment(assessmentId, tokenCost = 1) {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                showAlert('Authentication Required', 'Please log in to start assessments', 'warning');
+                return;
+            }
+
+            // Call the assessment endpoint to get assessment details
+            const response = await fetch(`${API_BASE_URL}/api/assessments/${assessmentId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                }
+            });
+
+            const data = await response.json();
+            
+            if (data.success && data.data) {
+                // Add token cost to assessment data
+                data.data.token_cost = tokenCost;
+                
+                // Store assessment data and redirect to assessment page
+                localStorage.setItem('currentAssessment', JSON.stringify(data.data));
+                window.location.href = `/assessment/${assessmentId}`;
+            } else {
+                showAlert('Error', data.message || 'Failed to load assessment details', 'error');
+            }
+        } catch (error) {
+            console.error('Error starting assessment:', error);
+            showAlert('Error', 'Failed to start assessment. Please try again.', 'error');
         }
     }
 </script>

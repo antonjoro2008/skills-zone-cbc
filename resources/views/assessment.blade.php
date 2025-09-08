@@ -341,7 +341,7 @@
             const token = localStorage.getItem('token');
             if (!token) {
                 showAssessmentAlert('Authentication Required', 'Please log in to access assessments', 'warning');
-                window.location.href = '/login';
+                window.location.href = '/';
                 return;
             }
 
@@ -475,7 +475,7 @@
             const token = localStorage.getItem('token');
             if (!token) {
                 showAssessmentAlert('Authentication Required', 'Please log in to start assessments', 'warning');
-                window.location.href = '/login';
+                window.location.href = '/';
                 return;
             }
 

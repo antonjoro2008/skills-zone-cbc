@@ -205,6 +205,16 @@
     let allQuestions = [];
 
     document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is logged in
+        const user = localStorage.getItem('user');
+        const token = localStorage.getItem('token');
+        
+        if (!user || !token) {
+            // Redirect to home page if not authenticated
+            window.location.href = '/';
+            return;
+        }
+        
         loadAssessmentResults();
     });
 

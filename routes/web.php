@@ -40,5 +40,7 @@ Route::prefix('api')->group(function () {
 Route::get('/dashboard', [GuestController::class, 'dashboard'])->name('dashboard');
 Route::get('/institution-dashboard', [GuestController::class, 'institutionDashboard'])->name('institution-dashboard');
 Route::get('/transactions', [GuestController::class, 'transactions'])->name('transactions');
+
+// Protected assessment routes - redirect to home if not authenticated
 Route::get('/assessment/{id}', [GuestController::class, 'assessment'])->name('assessment');
 Route::get('/assessment-summary/{id}', [GuestController::class, 'assessmentSummary'])->name('assessment-summary');

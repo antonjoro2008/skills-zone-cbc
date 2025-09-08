@@ -16,7 +16,7 @@
                 <div class="ml-10 flex items-baseline space-x-6">
                     <a href="{{ route('home') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('home') ? 'text-blue-600 font-semibold' : '' }}">Home</a>
                     <a href="{{ route('assessments') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('assessments') ? 'text-blue-600 font-semibold' : '' }}">Assessments</a>
-                    <a href="{{ route('pricing') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('pricing') ? 'text-blue-600 font-semibold' : '' }}">Tokens</a>
+                    {{-- <a href="{{ route('pricing') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('pricing') ? 'text-blue-600 font-semibold' : '' }}">Tokens</a> --}}
                     <a href="{{ route('blog') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('blog') ? 'text-blue-600 font-semibold' : '' }}">Blog</a>
                     <a href="{{ route('dashboard') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('dashboard') ? 'text-blue-600 font-semibold' : '' }}" id="dashboardLink" style="display:none;">Dashboard</a>
                     <a href="{{ route('institution-dashboard') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('institution-dashboard') ? 'text-blue-600 font-semibold' : '' }}" id="institutionDashboardLink" style="display:none;">Manage Learners</a>
@@ -50,7 +50,7 @@
         <div class="p-6 space-y-4">
             <a href="{{ route('home') }}" class="block text-lg font-medium text-gray-700 hover:text-blue-600 py-2 {{ request()->routeIs('home') ? 'text-blue-600 font-semibold' : '' }}">Home</a>
             <a href="{{ route('assessments') }}" class="block text-lg font-medium text-gray-700 hover:text-blue-600 py-2 {{ request()->routeIs('assessments') ? 'text-blue-600 font-semibold' : '' }}">Assessments</a>
-            <a href="{{ route('pricing') }}" class="block text-lg font-medium text-gray-700 hover:text-blue-600 py-2 {{ request()->routeIs('pricing') ? 'text-blue-600 font-semibold' : '' }}">Tokens</a>
+            {{-- <a href="{{ route('pricing') }}" class="block text-lg font-medium text-gray-700 hover:text-blue-600 py-2 {{ request()->routeIs('pricing') ? 'text-blue-600 font-semibold' : '' }}">Tokens</a> --}}
             <a href="{{ route('blog') }}" class="block text-lg font-medium text-gray-700 hover:text-blue-600 py-2 {{ request()->routeIs('blog') ? 'text-blue-600 font-semibold' : '' }}">Blog</a>
             <a href="{{ route('dashboard') }}" class="block text-lg font-medium text-gray-700 hover:text-blue-600 py-2 {{ request()->routeIs('dashboard') ? 'text-blue-600 font-semibold' : '' }}" id="dashboardLinkMobile" style="display:none;">Dashboard</a>
             <a href="{{ route('institution-dashboard') }}" class="block text-lg font-medium text-gray-700 hover:text-blue-600 py-2 {{ request()->routeIs('institution-dashboard') ? 'text-blue-600 font-semibold' : '' }}" id="institutionDashboardLinkMobile" style="display:none;">Manage Learners</a>

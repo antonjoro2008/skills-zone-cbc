@@ -134,7 +134,11 @@ class GuestController extends Controller
      */
     public function assessment($id)
     {
-        // For now, return the view - in a real app, you'd add auth middleware
+        // Check if user has a valid session token
+        if (!session()->has('user_token') && !request()->hasHeader('Authorization')) {
+            return redirect('/')->with('error', 'Please log in to access assessments');
+        }
+        
         return view('assessment');
     }
 
@@ -143,7 +147,11 @@ class GuestController extends Controller
      */
     public function assessmentSummary($id)
     {
-        // For now, return the view - in a real app, you'd add auth middleware
+        // Check if user has a valid session token
+        if (!session()->has('user_token') && !request()->hasHeader('Authorization')) {
+            return redirect('/')->with('error', 'Please log in to access assessment results');
+        }
+        
         return view('assessment-summary');
     }
 } 

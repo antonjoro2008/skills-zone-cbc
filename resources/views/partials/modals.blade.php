@@ -1,18 +1,24 @@
     <!-- Login Modal -->
     <div id="loginModal" class="fixed inset-0 modal-backdrop z-50 hidden">
         <div class="flex items-center justify-center min-h-screen p-4 modal-container">
-            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative transform scale-95 opacity-0 transition-all duration-300 modal-content" id="loginModalContent">
-                <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('loginModal')">
-                    <i class="fas fa-times text-lg"></i>
-                </button>
-                
-                <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-user text-white text-2xl"></i>
+            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full relative transform scale-95 opacity-0 transition-all duration-300 modal-content flex flex-col max-h-[90vh]" id="loginModalContent">
+                <!-- Sticky Header -->
+                <div class="sticky top-0 bg-white rounded-t-3xl p-6 pb-4 border-b border-gray-100 z-10">
+                    <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('loginModal')">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-user text-white text-2xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900">Welcome Back</h2>
+                        <p class="text-gray-600">Sign in to your account</p>
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-900">Welcome Back</h2>
-                    <p class="text-gray-600">Sign in to your account</p>
                 </div>
+                
+                <!-- Scrollable Content -->
+                <div class="flex-1 overflow-y-auto p-6 pt-4">
                 
                 <form class="space-y-6" onsubmit="login(event)">
                     <div>
@@ -35,10 +41,11 @@
                     </button>
                 </form>
                 
-                <p class="text-center text-gray-600 mt-6">
-                    Don't have an account? 
-                    <a href="#" class="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-all" onclick="showModal('registerModal')">Sign up</a>
-                </p>
+                    <p class="text-center text-gray-600 mt-6">
+                        Don't have an account? 
+                        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-all" onclick="showModal('registerModal')">Sign up</a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -46,18 +53,24 @@
     <!-- Register Modal -->
     <div id="registerModal" class="fixed inset-0 modal-backdrop z-50 hidden">
         <div class="flex items-center justify-center min-h-screen p-4 modal-container">
-            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative transform scale-95 opacity-0 transition-all duration-300 modal-content" id="registerModalContent">
-                <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('registerModal')">
-                    <i class="fas fa-times text-lg"></i>
-                </button>
-                
-                <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-user-plus text-white text-2xl"></i>
+            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full relative transform scale-95 opacity-0 transition-all duration-300 modal-content flex flex-col max-h-[90vh]" id="registerModalContent">
+                <!-- Sticky Header -->
+                <div class="sticky top-0 bg-white rounded-t-3xl p-6 pb-4 border-b border-gray-100 z-10">
+                    <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('registerModal')">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-user-plus text-white text-2xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900">Create Account</h2>
+                        <p class="text-gray-600">Join thousands of successful learners</p>
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-900">Create Account</h2>
-                    <p class="text-gray-600">Join thousands of successful learners</p>
                 </div>
+                
+                <!-- Scrollable Content -->
+                <div class="flex-1 overflow-y-auto p-6 pt-4">
 
                 <!-- Registration Type Toggle -->
                 <div class="mb-6">
@@ -111,8 +124,8 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">M-PESA Phone Number</label>
-                        <input type="tel" id="registerMpesaPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456 or 0726498974 or 726498974" required>
-                        <p class="text-xs text-gray-500 mt-1">Enter your M-PESA registered phone number (e.g., 254700123456, 0726498974, or 726498974)</p>
+                        <input type="tel" id="registerMpesaPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456 or 0700123456 or 700123456" required>
+                        <p class="text-xs text-gray-500 mt-1">Enter your M-PESA registered phone number (e.g., 254700123456, 0700123456, or 700123456)</p>
                     </div>
                     <div>
                         <label class="flex items-center group cursor-pointer">
@@ -171,10 +184,11 @@
                     </button>
                 </form>
                 
-                <p class="text-center text-gray-600 mt-6">
-                    Already have an account? 
-                    <a href="#" class="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-all" onclick="showModal('loginModal')">Sign in</a>
-                </p>
+                    <p class="text-center text-gray-600 mt-6">
+                        Already have an account? 
+                        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-all" onclick="showModal('loginModal')">Sign in</a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -414,18 +428,24 @@
     <!-- Bulk Upload Modal -->
     <div id="bulkUploadModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden">
         <div class="flex items-center justify-center min-h-screen p-4 modal-container">
-            <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-8 relative modal-content">
-                <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('bulkUploadModal')">
-                    <i class="fas fa-times text-lg"></i>
-                </button>
-                
-                <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-upload text-white text-2xl"></i>
+            <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full relative modal-content flex flex-col max-h-[90vh]">
+                <!-- Sticky Header -->
+                <div class="sticky top-0 bg-white rounded-t-3xl p-6 pb-4 border-b border-gray-100 z-10">
+                    <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('bulkUploadModal')">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-upload text-white text-2xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900">Bulk Upload Learners</h2>
+                        <p class="text-gray-600">Upload multiple learners at once</p>
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-900">Bulk Upload Learners</h2>
-                    <p class="text-gray-600">Upload multiple learners at once</p>
                 </div>
+                
+                <!-- Scrollable Content -->
+                <div class="flex-1 overflow-y-auto p-6 pt-4">
                 
                 <div class="space-y-6">
                     <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
@@ -461,6 +481,7 @@
                         <i class="fas fa-upload mr-2"></i>Upload Learners
                     </button>
                 </div>
+                </div>
             </div>
         </div>
     </div>
@@ -468,18 +489,24 @@
     <!-- Buy Tokens Modal -->
     <div id="buyTokensModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden">
         <div class="flex items-center justify-center min-h-screen p-4 modal-container">
-            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative modal-content">
-                <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('buyTokensModal')">
-                    <i class="fas fa-times text-lg"></i>
-                </button>
-                
-                <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-coins text-white text-2xl"></i>
+            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full relative modal-content flex flex-col max-h-[90vh]">
+                <!-- Sticky Header -->
+                <div class="sticky top-0 bg-white rounded-t-3xl p-6 pb-4 border-b border-gray-100 z-10">
+                    <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('buyTokensModal')">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-coins text-white text-2xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900">Buy Tokens</h2>
+                        <p class="text-gray-600">Purchase tokens using M-PESA</p>
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-900">Buy Tokens</h2>
-                    <p class="text-gray-600">Purchase tokens using M-PESA</p>
                 </div>
+                
+                <!-- Scrollable Content -->
+                <div class="flex-1 overflow-y-auto p-6 pt-4">
                 
                 <form class="space-y-6" onsubmit="buyTokens(event)">
                     <div>
@@ -524,6 +551,7 @@
                         <i class="fas fa-mobile-alt mr-2"></i>Buy Tokens with M-PESA
                     </button>
                 </form>
+                </div>
             </div>
         </div>
     </div>

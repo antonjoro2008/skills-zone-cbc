@@ -242,12 +242,74 @@
     let startTime = null;
     let timerInterval = null;
     let timeRemaining = 0;
+    let lastTimeUpdate = null;
+
+    // Time tracking functions
+    function saveTimeTracking() {
+        if (currentAssessment && timeRemaining > 0) {
+            const timeData = {
+                assessmentId: currentAssessment.id,
+                timeRemaining: timeRemaining,
+                lastUpdate: new Date().toISOString(),
+                startTime: startTime ? startTime.toISOString() : null
+            };
+            localStorage.setItem('assessmentTimeTracking', JSON.stringify(timeData));
+        }
+    }
+
+    function loadTimeTracking() {
+        try {
+            const timeData = localStorage.getItem('assessmentTimeTracking');
+            if (timeData) {
+                return JSON.parse(timeData);
+            }
+        } catch (e) {
+            console.error('Error loading time tracking data:', e);
+        }
+        return null;
+    }
+
+    function clearTimeTracking() {
+        localStorage.removeItem('assessmentTimeTracking');
+    }
+
+    function calculateRemainingTime(timeData) {
+        if (!timeData || !timeData.lastUpdate || !timeData.timeRemaining) {
+            return null;
+        }
+
+        const lastUpdate = new Date(timeData.lastUpdate);
+        const now = new Date();
+        const elapsedSeconds = Math.floor((now - lastUpdate) / 1000);
+        const newTimeRemaining = Math.max(0, timeData.timeRemaining - elapsedSeconds);
+        
+        return newTimeRemaining;
+    }
+
+    function isAssessmentInProgress() {
+        const timeData = loadTimeTracking();
+        if (!timeData || !currentAssessment) return false;
+        
+        // Check if this is the same assessment
+        if (timeData.assessmentId !== currentAssessment.id) return false;
+        
+        // Check if time hasn't expired
+        const remainingTime = calculateRemainingTime(timeData);
+        return remainingTime > 0;
+    }
 
     document.addEventListener('DOMContentLoaded', function() {
         // Debug localStorage data
         console.log('Available localStorage keys:', Object.keys(localStorage));
         console.log('user in localStorage:', localStorage.getItem('user'));
         console.log('token in localStorage:', localStorage.getItem('token'));
+        
+        // Save time tracking when user navigates away
+        window.addEventListener('beforeunload', function() {
+            if (timeRemaining > 0 && currentAssessment) {
+                saveTimeTracking();
+            }
+        });
         
         // Check if user is logged in
         const user = localStorage.getItem('user');
@@ -315,6 +377,22 @@
                 // Update localStorage with fresh data (including preserved token_cost)
                 localStorage.setItem('currentAssessment', JSON.stringify(currentAssessment));
                 
+                // Check if there's existing time tracking data for this assessment
+                const existingTimeData = loadTimeTracking();
+                if (existingTimeData && existingTimeData.assessmentId === currentAssessment.id) {
+                    const calculatedTime = calculateRemainingTime(existingTimeData);
+                    if (calculatedTime > 0) {
+                        // Restore time tracking data
+                        timeRemaining = calculatedTime;
+                        startTime = existingTimeData.startTime ? new Date(existingTimeData.startTime) : new Date();
+                        console.log('Restored time tracking data. Remaining time:', calculatedTime);
+                    } else {
+                        // Time has expired, clear the tracking data
+                        clearTimeTracking();
+                        console.log('Time tracking data expired, cleared');
+                    }
+                }
+                
                 displayAssessmentStart();
             } else {
                 showAssessmentAlert('Error', data.message || 'Failed to load assessment details', 'error');
@@ -340,15 +418,43 @@
             });
         }
 
+        // Check if assessment is in progress
+        const isInProgress = isAssessmentInProgress();
+        const timeData = loadTimeTracking();
+        let remainingTime = null;
+        
+        if (isInProgress && timeData) {
+            remainingTime = calculateRemainingTime(timeData);
+        }
+
         // Update assessment details
         document.getElementById('assessmentTitle').textContent = currentAssessment.title || 'Assessment';
         document.getElementById('assessmentSubject').textContent = currentAssessment.subject ? currentAssessment.subject.name : 'General';
-        document.getElementById('assessmentDuration').textContent = `${currentAssessment.duration_minutes || 0} minutes`;
-        document.getElementById('durationDisplay').textContent = `${currentAssessment.duration_minutes || 0} min`;
+        
+        // Show remaining time if in progress, otherwise show total duration
+        if (isInProgress && remainingTime > 0) {
+            const minutes = Math.floor(remainingTime / 60);
+            const seconds = remainingTime % 60;
+            const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('assessmentDuration').textContent = `${timeString} remaining`;
+            document.getElementById('durationDisplay').textContent = `${timeString} remaining`;
+        } else {
+            document.getElementById('assessmentDuration').textContent = `${currentAssessment.duration_minutes || 0} minutes`;
+            document.getElementById('durationDisplay').textContent = `${currentAssessment.duration_minutes || 0} min`;
+        }
+        
         document.getElementById('questionsCount').textContent = totalQuestions;
         const tokenCost = currentAssessment.token_cost || 1;
         console.log('Displaying token cost:', tokenCost, 'from currentAssessment:', currentAssessment.token_cost);
         document.getElementById('tokenCost').textContent = tokenCost;
+
+        // Update start button text and icon
+        const startBtn = document.getElementById('startAssessmentBtn');
+        if (isInProgress && remainingTime > 0) {
+            startBtn.innerHTML = '<i class="fas fa-play mr-3"></i>Resume Assessment';
+        } else {
+            startBtn.innerHTML = '<i class="fas fa-play mr-3"></i>Start Assessment';
+        }
 
         // Update instructions if available
         if (currentAssessment.instructions) {
@@ -397,6 +503,26 @@
                     return;
                 }
 
+                // Check if we're resuming an in-progress assessment
+                const isResuming = isAssessmentInProgress();
+                const timeData = loadTimeTracking();
+                let calculatedRemainingTime = null;
+                
+                if (isResuming && timeData) {
+                    calculatedRemainingTime = calculateRemainingTime(timeData);
+                    
+                    // Check if time has expired while away
+                    if (calculatedRemainingTime <= 0) {
+                        showAssessmentAlert('Time Expired', 'The assessment time has expired while you were away. The assessment will be submitted automatically.', 'warning');
+                        clearTimeTracking();
+                        // Auto-submit the assessment
+                        setTimeout(() => {
+                            autoSubmitAssessment();
+                        }, 2000);
+                        return;
+                    }
+                }
+
                 // Update token balance in localStorage (only if tokens were deducted)
                 if (data.data.tokens_deducted > 0) {
                     const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
@@ -412,10 +538,18 @@
 
                 // Initialize assessment
                 startTime = new Date(data.data.started_at);
-                const currentTime = new Date();
-                const elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
-                const totalDurationSeconds = (currentAssessment.duration_minutes || 60) * 60;
-                timeRemaining = Math.max(0, totalDurationSeconds - elapsedSeconds);
+                
+                if (isResuming && calculatedRemainingTime !== null) {
+                    // Use calculated remaining time for resumed assessment
+                    timeRemaining = calculatedRemainingTime;
+                } else {
+                    // Calculate time for new assessment
+                    const currentTime = new Date();
+                    const elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
+                    const totalDurationSeconds = (currentAssessment.duration_minutes || 60) * 60;
+                    timeRemaining = Math.max(0, totalDurationSeconds - elapsedSeconds);
+                }
+                
                 currentQuestionIndex = 0;
                 
                 // Load saved answers if any
@@ -478,9 +612,15 @@
         timerInterval = setInterval(() => {
             timeRemaining--;
             updateTimerDisplay();
+            
+            // Save time tracking data every 10 seconds
+            if (timeRemaining % 10 === 0) {
+                saveTimeTracking();
+            }
 
             if (timeRemaining <= 0) {
                 clearInterval(timerInterval);
+                clearTimeTracking(); // Clear tracking data when time expires
                 autoSubmitAssessment();
             }
         }, 1000);
@@ -865,6 +1005,7 @@
     async function submitAssessment() {
         try {
             clearInterval(timerInterval);
+            clearTimeTracking(); // Clear time tracking data on submission
 
             const token = localStorage.getItem('token');
             if (!token) {
@@ -1090,6 +1231,7 @@
             document.getElementById('assessmentQuestionsPage').classList.add('hidden');
             document.getElementById('assessmentStartPage').classList.remove('hidden');
             clearInterval(timerInterval);
+            clearTimeTracking(); // Clear time tracking when going back
         }
     });
 

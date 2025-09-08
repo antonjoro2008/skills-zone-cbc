@@ -118,6 +118,44 @@
 
 @section('scripts')
 <script>
+    // Time tracking functions (copied from assessment.blade.php)
+    function loadTimeTracking() {
+        try {
+            const timeData = localStorage.getItem('assessmentTimeTracking');
+            if (timeData) {
+                return JSON.parse(timeData);
+            }
+        } catch (e) {
+            console.error('Error loading time tracking data:', e);
+        }
+        return null;
+    }
+
+    function calculateRemainingTime(timeData) {
+        if (!timeData || !timeData.lastUpdate || !timeData.timeRemaining) {
+            return null;
+        }
+
+        const lastUpdate = new Date(timeData.lastUpdate);
+        const now = new Date();
+        const elapsedSeconds = Math.floor((now - lastUpdate) / 1000);
+        const newTimeRemaining = Math.max(0, timeData.timeRemaining - elapsedSeconds);
+        
+        return newTimeRemaining;
+    }
+
+    function isAssessmentInProgress(assessmentId) {
+        const timeData = loadTimeTracking();
+        if (!timeData) return false;
+        
+        // Check if this is the same assessment
+        if (timeData.assessmentId !== assessmentId) return false;
+        
+        // Check if time hasn't expired
+        const remainingTime = calculateRemainingTime(timeData);
+        return remainingTime > 0;
+    }
+
     // Custom alert function for assessments page
     function showAlert(title, message, type = 'warning') {
         // Check if assessments alert modal exists
@@ -317,12 +355,35 @@
             }
         }
         
+        // Check if assessment is in progress
+        const isInProgress = isAssessmentInProgress(assessment.id);
+        const timeData = loadTimeTracking();
+        let remainingTime = null;
+        
+        if (isInProgress && timeData) {
+            remainingTime = calculateRemainingTime(timeData);
+        }
+
         const hasEnoughTokens = userTokenBalance >= tokens;
-        const buttonText = hasEnoughTokens ? 'Start Assessment' : 'Purchase & Start';
-        const buttonIcon = hasEnoughTokens ? 'fas fa-play' : 'fas fa-shopping-cart';
-        const buttonClass = hasEnoughTokens ? 
-            'w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-green-700 hover:to-blue-700 transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse' :
-            'w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse';
+        let buttonText, buttonIcon, buttonClass;
+        
+        if (isInProgress && remainingTime > 0) {
+            // Show resume button for in-progress assessments
+            const minutes = Math.floor(remainingTime / 60);
+            const seconds = remainingTime % 60;
+            const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            buttonText = `Resume Assessment (${timeString})`;
+            buttonIcon = 'fas fa-play';
+            buttonClass = 'w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 rounded-xl font-semibold hover:from-orange-700 hover:to-red-700 transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse';
+        } else if (hasEnoughTokens) {
+            buttonText = 'Start Assessment';
+            buttonIcon = 'fas fa-play';
+            buttonClass = 'w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-green-700 hover:to-blue-700 transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse';
+        } else {
+            buttonText = 'Purchase & Start';
+            buttonIcon = 'fas fa-shopping-cart';
+            buttonClass = 'w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse';
+        }
         
         return `
             <div class="assessment-card rounded-3xl shadow-lg overflow-hidden card-hover group">
@@ -333,7 +394,7 @@
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">${assessment.title || 'Assessment'}</h3>
-                        <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                        <div class="w-3 h-3 ${isInProgress && remainingTime > 0 ? 'bg-orange-400' : 'bg-green-400'} rounded-full animate-pulse"></div>
                     </div>
                     <div class="mb-2">
                         <span class="text-sm text-blue-600 font-semibold">${assessment.subject ? assessment.subject.name : 'General'}</span>
@@ -352,7 +413,14 @@
                             ${tokens} Tokens
                         </div>
                     </div>
-                    ${hasEnoughTokens ? `
+                    ${isInProgress && remainingTime > 0 ? `
+                        <div class="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4">
+                            <div class="flex items-center text-orange-800 text-sm">
+                                <i class="fas fa-clock mr-2"></i>
+                                <span>Assessment in progress - ${Math.floor(remainingTime / 60)}:${(remainingTime % 60).toString().padStart(2, '0')} remaining</span>
+                            </div>
+                        </div>
+                    ` : hasEnoughTokens ? `
                         <div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
                             <div class="flex items-center text-green-800 text-sm">
                                 <i class="fas fa-info-circle mr-2"></i>
@@ -360,7 +428,7 @@
                             </div>
                         </div>
                     ` : ''}
-                    <button class="${buttonClass}" onclick="${hasEnoughTokens ? `startAssessment(${assessment.id}, ${tokens})` : `purchaseAssessment('${assessment.title || 'Assessment'}', ${assessment.id}, ${tokens})`}">
+                    <button class="${buttonClass}" onclick="${isInProgress && remainingTime > 0 ? `startAssessment(${assessment.id}, ${tokens})` : hasEnoughTokens ? `startAssessment(${assessment.id}, ${tokens})` : `purchaseAssessment('${assessment.title || 'Assessment'}', ${assessment.id}, ${tokens})`}">
                         <i class="${buttonIcon} mr-2"></i>${buttonText}
                     </button>
                 </div>

@@ -111,8 +111,8 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">M-PESA Phone Number</label>
-                        <input type="tel" id="registerMpesaPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456" required>
-                        <p class="text-xs text-gray-500 mt-1">Enter your M-PESA registered phone number (e.g., 254700123456)</p>
+                        <input type="tel" id="registerMpesaPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456 or 0726498974 or 726498974" required>
+                        <p class="text-xs text-gray-500 mt-1">Enter your M-PESA registered phone number (e.g., 254700123456, 0726498974, or 726498974)</p>
                     </div>
                     <div>
                         <label class="flex items-center group cursor-pointer">
@@ -157,8 +157,8 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">M-PESA Phone Number</label>
-                        <input type="tel" id="institutionMpesaPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456" required>
-                        <p class="text-xs text-gray-500 mt-1">Enter your M-PESA registered phone number (e.g., 254700123456)</p>
+                        <input type="tel" id="institutionMpesaPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456 or 0726498974 or 726498974" required>
+                        <p class="text-xs text-gray-500 mt-1">Enter your M-PESA registered phone number (e.g., 254700123456, 0726498974, or 726498974)</p>
                     </div>
                     <div>
                         <label class="flex items-center group cursor-pointer">

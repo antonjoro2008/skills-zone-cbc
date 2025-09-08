@@ -5,6 +5,35 @@
         // API Configuration
         // Change this URL to match your API server
         const API_BASE_URL = 'https://admin.skillszone.africa';
+
+        // Phone number standardization function
+        function standardizePhoneNumber(phone) {
+            if (!phone) return phone;
+            
+            // Remove all non-digit characters
+            let cleanPhone = phone.replace(/\D/g, '');
+            
+            // Handle different formats
+            if (cleanPhone.startsWith('254')) {
+                // Already in 254 format
+                return cleanPhone;
+            } else if (cleanPhone.startsWith('07') && cleanPhone.length === 10) {
+                // 07... format (10 digits)
+                return '254' + cleanPhone.substring(1);
+            } else if (cleanPhone.startsWith('7') && cleanPhone.length === 9) {
+                // 7... format (9 digits)
+                return '254' + cleanPhone;
+            } else if (cleanPhone.length === 9 && !cleanPhone.startsWith('0')) {
+                // 9 digits starting with 7
+                return '254' + cleanPhone;
+            } else if (cleanPhone.length === 10 && cleanPhone.startsWith('0')) {
+                // 10 digits starting with 0
+                return '254' + cleanPhone.substring(1);
+            }
+            
+            // Return as is if no pattern matches
+            return cleanPhone;
+        }
         
         // Mobile menu toggle
         function toggleMobileMenu() {
@@ -215,6 +244,9 @@
             const passwordConfirmation = document.getElementById('registerPasswordConfirmation').value;
             const mpesaPhone = document.getElementById('registerMpesaPhone').value;
             
+            // Standardize phone number
+            const standardizedPhone = standardizePhoneNumber(mpesaPhone);
+            
             // Validate password confirmation
             if (password !== passwordConfirmation) {
                 showErrorModal('Passwords do not match. Please try again.');
@@ -240,7 +272,7 @@
                         password: password,
                         password_confirmation: passwordConfirmation,
                         grade_level: gradeLevel,
-                        mpesa_phone: mpesaPhone
+                        mpesa_phone: standardizedPhone
                     })
                 });
                 
@@ -286,6 +318,9 @@
             const password = document.getElementById('institutionPassword').value;
             const mpesaPhone = document.getElementById('institutionMpesaPhone').value;
             
+            // Standardize phone number
+            const standardizedPhone = standardizePhoneNumber(mpesaPhone);
+            
             // Show loading state
             const submitBtn = event.target.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
@@ -308,7 +343,7 @@
                         theme_color: themeColor,
                         password: password,
                         password_confirmation: password,
-                        mpesa_phone: mpesaPhone
+                        mpesa_phone: standardizedPhone
                     })
                 });
                 

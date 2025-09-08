@@ -11,10 +11,46 @@ use App\Models\Institution;
 class AuthController extends Controller
 {
     /**
+     * Standardize phone number to 2547... format
+     */
+    private function standardizePhoneNumber($phone)
+    {
+        if (!$phone) return $phone;
+        
+        // Remove all non-digit characters
+        $cleanPhone = preg_replace('/\D/', '', $phone);
+        
+        // Handle different formats
+        if (str_starts_with($cleanPhone, '254')) {
+            // Already in 254 format
+            return $cleanPhone;
+        } elseif (str_starts_with($cleanPhone, '07') && strlen($cleanPhone) === 10) {
+            // 07... format (10 digits)
+            return '254' . substr($cleanPhone, 1);
+        } elseif (str_starts_with($cleanPhone, '7') && strlen($cleanPhone) === 9) {
+            // 7... format (9 digits)
+            return '254' . $cleanPhone;
+        } elseif (strlen($cleanPhone) === 9 && !str_starts_with($cleanPhone, '0')) {
+            // 9 digits starting with 7
+            return '254' . $cleanPhone;
+        } elseif (strlen($cleanPhone) === 10 && str_starts_with($cleanPhone, '0')) {
+            // 10 digits starting with 0
+            return '254' . substr($cleanPhone, 1);
+        }
+        
+        // Return as is if no pattern matches
+        return $cleanPhone;
+    }
+
+    /**
      * Register a new individual user
      */
     public function register(Request $request): JsonResponse
     {
+        // Standardize phone number before validation
+        $standardizedPhone = $this->standardizePhoneNumber($request->mpesa_phone);
+        $request->merge(['mpesa_phone' => $standardizedPhone]);
+
         // Validate the request
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -22,7 +58,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required|string|min:8',
             'grade_level' => 'required|string|max:255',
-            'mpesa_phone' => 'required|string|max:255',
+            'mpesa_phone' => 'required|string|regex:/^254[0-9]{9}$/',
         ]);
 
         if ($validator->fails()) {
@@ -197,6 +233,10 @@ class AuthController extends Controller
      */
     public function registerInstitution(Request $request): JsonResponse
     {
+        // Standardize phone number before validation
+        $standardizedPhone = $this->standardizePhoneNumber($request->mpesa_phone);
+        $request->merge(['mpesa_phone' => $standardizedPhone]);
+
         // Validate the request
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -207,7 +247,7 @@ class AuthController extends Controller
             'theme_color' => 'nullable|string|max:7',
             'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required|string|min:8',
-            'mpesa_phone' => 'required|string|max:255',
+            'mpesa_phone' => 'required|string|regex:/^254[0-9]{9}$/',
         ]);
 
         if ($validator->fails()) {

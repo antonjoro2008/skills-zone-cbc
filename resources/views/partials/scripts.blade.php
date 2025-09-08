@@ -212,6 +212,11 @@
                     localStorage.setItem('token', data.data.access_token);
                     localStorage.setItem('dashboard', JSON.stringify(data.data.dashboard));
                     
+                    // Also store in sessionStorage as backup for mobile devices
+                    sessionStorage.setItem('user', JSON.stringify(data.data.user));
+                    sessionStorage.setItem('token', data.data.access_token);
+                    sessionStorage.setItem('dashboard', JSON.stringify(data.data.dashboard));
+                    
                     // Update current user
                     currentUser = data.data.user;
                     updateAuthState();
@@ -284,6 +289,11 @@
                     localStorage.setItem('token', data.data.access_token);
                     localStorage.setItem('dashboard', JSON.stringify(data.data.dashboard));
                     
+                    // Also store in sessionStorage as backup for mobile devices
+                    sessionStorage.setItem('user', JSON.stringify(data.data.user));
+                    sessionStorage.setItem('token', data.data.access_token);
+                    sessionStorage.setItem('dashboard', JSON.stringify(data.data.dashboard));
+                    
                     // Update current user
                     currentUser = data.data.user;
                     updateAuthState();
@@ -355,6 +365,11 @@
                     localStorage.setItem('token', data.data.access_token);
                     localStorage.setItem('dashboard', JSON.stringify(data.data.dashboard));
                     
+                    // Also store in sessionStorage as backup for mobile devices
+                    sessionStorage.setItem('user', JSON.stringify(data.data.user));
+                    sessionStorage.setItem('token', data.data.access_token);
+                    sessionStorage.setItem('dashboard', JSON.stringify(data.data.dashboard));
+                    
                     // Update current user
                     currentUser = data.data.user;
                     updateAuthState();
@@ -417,6 +432,10 @@
             localStorage.removeItem('user');
             localStorage.removeItem('token');
             localStorage.removeItem('dashboard');
+            // Also clear sessionStorage
+            sessionStorage.removeItem('user');
+            sessionStorage.removeItem('token');
+            sessionStorage.removeItem('dashboard');
             console.log('User data cleared, updating auth state...');
             updateAuthState();
             showModal('logoutSuccessModal');

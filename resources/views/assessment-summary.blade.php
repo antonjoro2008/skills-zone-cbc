@@ -206,10 +206,32 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         // Check if user is logged in
-        const user = localStorage.getItem('user');
-        const token = localStorage.getItem('token');
+        let user = localStorage.getItem('user');
+        let token = localStorage.getItem('token');
         
-        if (!user || !token) {
+        // Fallback to sessionStorage for mobile devices
+        if (!user || user === 'null' || user === 'undefined') {
+            user = sessionStorage.getItem('user');
+            if (user && user !== 'null' && user !== 'undefined') {
+                localStorage.setItem('user', user);
+                console.log('Restored user from sessionStorage');
+            }
+        }
+        
+        if (!token || token === 'null' || token === 'undefined' || token.length === 0) {
+            token = sessionStorage.getItem('token');
+            if (token && token !== 'null' && token !== 'undefined' && token.length > 0) {
+                localStorage.setItem('token', token);
+                console.log('Restored token from sessionStorage');
+            }
+        }
+        
+        // More robust authentication check
+        const hasValidUser = user && user !== 'null' && user !== 'undefined';
+        const hasValidToken = token && token !== 'null' && token !== 'undefined' && token.length > 0;
+        
+        if (!hasValidUser || !hasValidToken) {
+            console.error('Authentication failed - missing valid user or token');
             // Redirect to home page if not authenticated
             window.location.href = '/';
             return;

@@ -428,7 +428,10 @@
                             </div>
                         </div>
                     ` : ''}
-                    <button class="${buttonClass}" onclick="${isInProgress && remainingTime > 0 ? `startAssessment(${assessment.id}, ${tokens})` : hasEnoughTokens ? `startAssessment(${assessment.id}, ${tokens})` : `purchaseAssessment('${assessment.title || 'Assessment'}', ${assessment.id}, ${tokens})`}">
+                    <button class="${buttonClass}" 
+                            onclick="${isInProgress && remainingTime > 0 ? `startAssessment(${assessment.id}, ${tokens})` : hasEnoughTokens ? `startAssessment(${assessment.id}, ${tokens})` : `purchaseAssessment('${assessment.title || 'Assessment'}', ${assessment.id}, ${tokens})`}"
+                            ontouchstart=""
+                            style="min-height: 48px; touch-action: manipulation;">
                         <i class="${buttonIcon} mr-2"></i>${buttonText}
                     </button>
                 </div>
@@ -471,10 +474,25 @@
 
     async function startAssessment(assessmentId, tokenCost = 1) {
         try {
+            // Debug mobile localStorage access
+            console.log('Starting assessment for ID:', assessmentId);
+            console.log('Available localStorage keys:', Object.keys(localStorage));
+            console.log('Token from localStorage:', localStorage.getItem('token'));
+            console.log('User from localStorage:', localStorage.getItem('user'));
+            
             const token = localStorage.getItem('token');
-            if (!token) {
-                showAlert('Authentication Required', 'Please log in to start assessments', 'warning');
-                return;
+            if (!token || token === 'null' || token === 'undefined' || token.length === 0) {
+                console.error('No valid token found in localStorage');
+                // Try to get token from sessionStorage as fallback
+                const sessionToken = sessionStorage.getItem('token');
+                if (sessionToken && sessionToken !== 'null' && sessionToken !== 'undefined' && sessionToken.length > 0) {
+                    console.log('Found valid token in sessionStorage, using as fallback');
+                    localStorage.setItem('token', sessionToken);
+                } else {
+                    console.error('No valid token found in sessionStorage either');
+                    showAlert('Authentication Required', 'Please log in to start assessments', 'warning');
+                    return;
+                }
             }
 
             // Call the assessment endpoint to get assessment details

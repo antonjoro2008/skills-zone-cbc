@@ -299,10 +299,14 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Debug localStorage data
+        // Debug localStorage data - enhanced for mobile debugging
+        console.log('=== ASSESSMENT PAGE LOAD DEBUG ===');
+        console.log('User Agent:', navigator.userAgent);
         console.log('Available localStorage keys:', Object.keys(localStorage));
         console.log('user in localStorage:', localStorage.getItem('user'));
         console.log('token in localStorage:', localStorage.getItem('token'));
+        console.log('currentAssessment in localStorage:', localStorage.getItem('currentAssessment'));
+        console.log('=== END DEBUG ===');
         
         // Save time tracking when user navigates away
         window.addEventListener('beforeunload', function() {
@@ -312,10 +316,38 @@
         });
         
         // Check if user is logged in
-        const user = localStorage.getItem('user');
-        const token = localStorage.getItem('token');
+        let user = localStorage.getItem('user');
+        let token = localStorage.getItem('token');
         
-        if (!user || !token) {
+        // Fallback to sessionStorage for mobile devices
+        if (!user) {
+            user = sessionStorage.getItem('user');
+            if (user) {
+                localStorage.setItem('user', user);
+                console.log('Restored user from sessionStorage');
+            }
+        }
+        
+        if (!token) {
+            token = sessionStorage.getItem('token');
+            if (token) {
+                localStorage.setItem('token', token);
+                console.log('Restored token from sessionStorage');
+            }
+        }
+        
+        // More robust authentication check
+        const hasValidUser = user && user !== 'null' && user !== 'undefined';
+        const hasValidToken = token && token !== 'null' && token !== 'undefined' && token.length > 0;
+        
+        console.log('Authentication check:');
+        console.log('- User exists:', hasValidUser, user);
+        console.log('- Token exists:', hasValidToken, token ? `${token.substring(0, 20)}...` : 'null');
+        
+        if (!hasValidUser || !hasValidToken) {
+            console.error('Authentication failed - missing valid user or token');
+            console.error('User valid:', hasValidUser);
+            console.error('Token valid:', hasValidToken);
             showAssessmentAlert('Authentication Required', 'Please log in to access assessments', 'warning');
             setTimeout(() => {
                 window.location.href = '/';
@@ -474,6 +506,9 @@
 
             const token = localStorage.getItem('token');
             if (!token) {
+                // Reset button state before redirect
+                startBtn.innerHTML = originalText;
+                startBtn.disabled = false;
                 showAssessmentAlert('Authentication Required', 'Please log in to start assessments', 'warning');
                 window.location.href = '/';
                 return;
@@ -582,28 +617,28 @@
                     showAssessmentAlert('Assessment Started', `Assessment started successfully! ${data.data.tokens_deducted} token(s) deducted.`, 'success');
                 }
             } else {
+                // Reset button state for all error cases
+                startBtn.innerHTML = originalText;
+                startBtn.disabled = false;
+                
                 // Handle insufficient tokens or other errors
                 if (data.message && data.message.includes('Insufficient tokens')) {
                     showAssessmentAlert('Insufficient Tokens', data.message, 'error');
                 } else if (data.message && data.message.includes('already completed')) {
-                    // Reset button state before showing alert
-                    const startBtn = document.getElementById('startAssessmentBtn');
-                    startBtn.innerHTML = '<i class="fas fa-play mr-3"></i>Start Assessment';
-                    startBtn.disabled = false;
-                    
                     showAssessmentAlert('Assessment Already Completed', data.message, 'info');
+                } else if (data.message && data.message.includes('maximum attempts')) {
+                    showAssessmentAlert('Maximum Attempts Reached', data.message, 'error');
                 } else {
                     showAssessmentAlert('Error', data.message || 'Failed to start assessment', 'error');
                 }
             }
         } catch (error) {
             console.error('Error starting assessment:', error);
-            showAssessmentAlert('Network Error', 'Failed to start assessment. Please check your connection and try again.', 'error');
-        } finally {
-            // Restore start button state
+            // Reset button state in catch block
             const startBtn = document.getElementById('startAssessmentBtn');
             startBtn.innerHTML = originalText;
             startBtn.disabled = false;
+            showAssessmentAlert('Network Error', 'Failed to start assessment. Please check your connection and try again.', 'error');
         }
     }
 

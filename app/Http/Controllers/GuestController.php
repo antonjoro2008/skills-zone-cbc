@@ -134,11 +134,8 @@ class GuestController extends Controller
      */
     public function assessment($id)
     {
-        // Check if user has a valid session token
-        if (!session()->has('user_token') && !request()->hasHeader('Authorization')) {
-            return redirect('/')->with('error', 'Please log in to access assessments');
-        }
-        
+        // Authentication is handled client-side via localStorage
+        // Server-side check removed to prevent false redirects
         return view('assessment');
     }
 
@@ -147,11 +144,8 @@ class GuestController extends Controller
      */
     public function assessmentSummary($id)
     {
-        // Check if user has a valid session token
-        if (!session()->has('user_token') && !request()->hasHeader('Authorization')) {
-            return redirect('/')->with('error', 'Please log in to access assessment results');
-        }
-        
+        // Authentication is handled client-side via localStorage
+        // Server-side check removed to prevent false redirects
         return view('assessment-summary');
     }
 } 

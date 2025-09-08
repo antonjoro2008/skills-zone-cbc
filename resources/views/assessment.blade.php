@@ -129,7 +129,8 @@
                 </div>
 
                 <!-- Navigation -->
-                <div class="flex items-center justify-between pt-4">
+                <!-- Desktop Layout -->
+                <div class="hidden sm:flex items-center justify-between pt-4">
                     <button id="prevQuestionBtn" class="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                         <i class="fas fa-arrow-left mr-2"></i>Previous
                     </button>
@@ -145,6 +146,29 @@
                     <button id="nextQuestionBtn" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all">
                         Next<i class="fas fa-arrow-right ml-2"></i>
                     </button>
+                </div>
+
+                <!-- Mobile Layout -->
+                <div class="sm:hidden pt-4 space-y-4">
+                    <!-- Progress Bar Row -->
+                    <div class="flex items-center justify-center space-x-2">
+                        <span class="text-sm text-gray-600">Progress:</span>
+                        <div class="w-40 bg-gray-200 rounded-full h-2">
+                            <div id="progressBarMobile" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <span id="progressTextMobile" class="text-sm text-gray-600">0%</span>
+                    </div>
+                    
+                    <!-- Navigation Buttons Row -->
+                    <div class="flex items-center justify-between">
+                        <button id="prevQuestionBtnMobile" class="bg-gray-100 text-gray-700 px-4 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex-1 mr-2" disabled>
+                            <i class="fas fa-arrow-left mr-2"></i>Previous
+                        </button>
+                        
+                        <button id="nextQuestionBtnMobile" class="bg-blue-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all flex-1 ml-2">
+                            Next<i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Submit Button (shown on last question) -->
@@ -249,11 +273,13 @@
         if (currentAssessment && timeRemaining > 0) {
             const timeData = {
                 assessmentId: currentAssessment.id,
+                attemptId: localStorage.getItem('currentAttemptId'), // Include attempt ID for better isolation
                 timeRemaining: timeRemaining,
                 lastUpdate: new Date().toISOString(),
                 startTime: startTime ? startTime.toISOString() : null
             };
             localStorage.setItem('assessmentTimeTracking', JSON.stringify(timeData));
+            console.log('Time tracking saved for assessment:', currentAssessment.id, 'attempt:', timeData.attemptId);
         }
     }
 
@@ -271,6 +297,16 @@
 
     function clearTimeTracking() {
         localStorage.removeItem('assessmentTimeTracking');
+        console.log('Time tracking data cleared');
+    }
+
+    function clearAllAssessmentData() {
+        // Clear all assessment-related data to prevent overlap between attempts
+        localStorage.removeItem('assessmentTimeTracking');
+        localStorage.removeItem('assessmentAnswers');
+        localStorage.removeItem('currentAttemptId');
+        localStorage.removeItem('assessmentStartTime');
+        console.log('All assessment data cleared for new attempt');
     }
 
     function calculateRemainingTime(timeData) {
@@ -292,6 +328,14 @@
         
         // Check if this is the same assessment
         if (timeData.assessmentId !== currentAssessment.id) return false;
+        
+        // Check if this is the same attempt (if attempt ID exists)
+        const currentAttemptId = localStorage.getItem('currentAttemptId');
+        if (timeData.attemptId && currentAttemptId && timeData.attemptId !== currentAttemptId) {
+            console.log('Different attempt detected, clearing old time tracking data');
+            clearTimeTracking();
+            return false;
+        }
         
         // Check if time hasn't expired
         const remainingTime = calculateRemainingTime(timeData);
@@ -543,6 +587,12 @@
                 const timeData = loadTimeTracking();
                 let calculatedRemainingTime = null;
                 
+                console.log('=== ASSESSMENT START CHECK ===');
+                console.log('isResuming:', isResuming);
+                console.log('timeData:', timeData);
+                console.log('currentAttemptId:', localStorage.getItem('currentAttemptId'));
+                console.log('=== END ASSESSMENT START CHECK ===');
+                
                 if (isResuming && timeData) {
                     calculatedRemainingTime = calculateRemainingTime(timeData);
                     
@@ -556,6 +606,9 @@
                         }, 2000);
                         return;
                     }
+                } else {
+                    // Starting a new assessment - clear all previous data to prevent overlap
+                    clearAllAssessmentData();
                 }
 
                 // Update token balance in localStorage (only if tokens were deducted)
@@ -577,12 +630,18 @@
                 if (isResuming && calculatedRemainingTime !== null) {
                     // Use calculated remaining time for resumed assessment
                     timeRemaining = calculatedRemainingTime;
+                    console.log('Resuming assessment with remaining time:', timeRemaining);
                 } else {
-                    // Calculate time for new assessment
-                    const currentTime = new Date();
-                    const elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
+                    // For new assessments, always use full duration
                     const totalDurationSeconds = (currentAssessment.duration_minutes || 60) * 60;
-                    timeRemaining = Math.max(0, totalDurationSeconds - elapsedSeconds);
+                    timeRemaining = totalDurationSeconds;
+                    
+                    // Debug logging for new assessment
+                    console.log('=== NEW ASSESSMENT TIME SETUP ===');
+                    console.log('Assessment duration (minutes):', currentAssessment.duration_minutes);
+                    console.log('Total duration (seconds):', totalDurationSeconds);
+                    console.log('Setting timeRemaining to:', timeRemaining);
+                    console.log('=== END TIME SETUP ===');
                 }
                 
                 currentQuestionIndex = 0;
@@ -596,7 +655,9 @@
                 document.getElementById('assessmentQuestionsPage').classList.remove('hidden');
 
                 // Check if time has already expired
+                console.log('Final timeRemaining check:', timeRemaining);
                 if (timeRemaining <= 0) {
+                    console.log('Time expired immediately after start - this should not happen for new assessments');
                     showAssessmentAlert('Time Expired', 'The assessment time has already expired. Submitting automatically.', 'warning');
                     setTimeout(() => {
                         autoSubmitAssessment();
@@ -994,26 +1055,49 @@
         const answeredCount = Object.keys(answers).length;
         const progress = allQuestions.length > 0 ? (answeredCount / allQuestions.length) * 100 : 0;
         
-        document.getElementById('progressBar').style.width = `${progress}%`;
-        document.getElementById('progressText').textContent = `${Math.round(progress)}%`;
+        // Update desktop progress bar
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        if (progressBar) progressBar.style.width = `${progress}%`;
+        if (progressText) progressText.textContent = `${Math.round(progress)}%`;
+        
+        // Update mobile progress bar
+        const progressBarMobile = document.getElementById('progressBarMobile');
+        const progressTextMobile = document.getElementById('progressTextMobile');
+        if (progressBarMobile) progressBarMobile.style.width = `${progress}%`;
+        if (progressTextMobile) progressTextMobile.textContent = `${Math.round(progress)}%`;
     }
 
     function updateNavigationButtons() {
         const prevBtn = document.getElementById('prevQuestionBtn');
         const nextBtn = document.getElementById('nextQuestionBtn');
+        const prevBtnMobile = document.getElementById('prevQuestionBtnMobile');
+        const nextBtnMobile = document.getElementById('nextQuestionBtnMobile');
         const submitSection = document.getElementById('submitSection');
         const allQuestions = getAllQuestions();
 
-        // Previous button
-        prevBtn.disabled = currentQuestionIndex === 0;
+        // Previous button (desktop)
+        if (prevBtn) prevBtn.disabled = currentQuestionIndex === 0;
+        
+        // Previous button (mobile)
+        if (prevBtnMobile) prevBtnMobile.disabled = currentQuestionIndex === 0;
 
-        // Next/Submit button
+        // Next/Submit button (desktop)
         if (currentQuestionIndex === allQuestions.length - 1) {
-            nextBtn.classList.add('hidden');
-            submitSection.classList.remove('hidden');
+            if (nextBtn) nextBtn.classList.add('hidden');
+            if (submitSection) submitSection.classList.remove('hidden');
         } else {
-            nextBtn.classList.remove('hidden');
-            submitSection.classList.add('hidden');
+            if (nextBtn) nextBtn.classList.remove('hidden');
+            if (submitSection) submitSection.classList.add('hidden');
+        }
+        
+        // Next/Submit button (mobile)
+        if (currentQuestionIndex === allQuestions.length - 1) {
+            if (nextBtnMobile) nextBtnMobile.classList.add('hidden');
+            if (submitSection) submitSection.classList.remove('hidden');
+        } else {
+            if (nextBtnMobile) nextBtnMobile.classList.remove('hidden');
+            if (submitSection) submitSection.classList.add('hidden');
         }
     }
 
@@ -1033,6 +1117,8 @@
     }
 
     function autoSubmitAssessment() {
+        clearInterval(timerInterval);
+        clearAllAssessmentData(); // Clear all assessment data when time expires
         showAssessmentAlert('Time Up!', 'Your time has expired. The assessment will be submitted automatically.', 'warning');
         submitAssessment();
     }
@@ -1040,7 +1126,7 @@
     async function submitAssessment() {
         try {
             clearInterval(timerInterval);
-            clearTimeTracking(); // Clear time tracking data on submission
+            clearAllAssessmentData(); // Clear all assessment data on submission
 
             const token = localStorage.getItem('token');
             if (!token) {
@@ -1256,17 +1342,18 @@
     document.getElementById('nextQuestionBtn').addEventListener('click', nextQuestion);
     document.getElementById('prevQuestionBtn').addEventListener('click', previousQuestion);
     document.getElementById('submitAssessmentBtn').addEventListener('click', submitAssessment);
+    
+    // Mobile button event listeners
+    document.getElementById('nextQuestionBtnMobile').addEventListener('click', nextQuestion);
+    document.getElementById('prevQuestionBtnMobile').addEventListener('click', previousQuestion);
     document.getElementById('backToStartBtn').addEventListener('click', () => {
         if (confirm('Are you sure you want to go back? Your progress will be lost.')) {
-            // Clean up attempt data and answers
-            localStorage.removeItem('currentAttemptId');
-            localStorage.removeItem('assessmentStartTime');
-            localStorage.removeItem('assessmentAnswers');
+            // Clean up all assessment data
+            clearAllAssessmentData();
             
             document.getElementById('assessmentQuestionsPage').classList.add('hidden');
             document.getElementById('assessmentStartPage').classList.remove('hidden');
             clearInterval(timerInterval);
-            clearTimeTracking(); // Clear time tracking when going back
         }
     });
 

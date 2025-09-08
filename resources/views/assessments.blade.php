@@ -151,6 +151,14 @@
         // Check if this is the same assessment
         if (timeData.assessmentId !== assessmentId) return false;
         
+        // Check if this is the same attempt (if attempt ID exists)
+        const currentAttemptId = localStorage.getItem('currentAttemptId');
+        if (timeData.attemptId && currentAttemptId && timeData.attemptId !== currentAttemptId) {
+            console.log('Different attempt detected, clearing old time tracking data');
+            localStorage.removeItem('assessmentTimeTracking');
+            return false;
+        }
+        
         // Check if time hasn't expired
         const remainingTime = calculateRemainingTime(timeData);
         return remainingTime > 0;

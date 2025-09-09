@@ -166,9 +166,12 @@
                 <button onclick="window.location.href='/dashboard'" class="bg-gray-100 text-gray-700 px-8 py-4 rounded-xl font-semibold hover:bg-gray-200 transition-all">
                     <i class="fas fa-home mr-2"></i>Dashboard
                 </button>
+                <!-- Download Results button - temporarily hidden -->
+                <!--
                 <button onclick="downloadResults()" class="bg-green-100 text-green-700 px-8 py-4 rounded-xl font-semibold hover:bg-green-200 transition-all">
                     <i class="fas fa-download mr-2"></i>Download Results
                 </button>
+                -->
             </div>
         </div>
     </div>
@@ -479,6 +482,8 @@
         });
     }
 
+    // Download Results function - temporarily hidden
+    /*
     function downloadResults() {
         if (!assessmentResults) return;
 
@@ -494,6 +499,7 @@
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
     }
+    */
 
     // Custom alert function for assessment summary page
     function showAlert(title, message, type = 'warning') {

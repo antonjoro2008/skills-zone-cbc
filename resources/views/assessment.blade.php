@@ -1118,7 +1118,7 @@
 
     function autoSubmitAssessment() {
         clearInterval(timerInterval);
-        clearAllAssessmentData(); // Clear all assessment data when time expires
+        // Don't clear assessment data yet - submitAssessment needs it
         showAssessmentAlert('Time Up!', 'Your time has expired. The assessment will be submitted automatically.', 'warning');
         submitAssessment();
     }
@@ -1126,7 +1126,7 @@
     async function submitAssessment() {
         try {
             clearInterval(timerInterval);
-            clearAllAssessmentData(); // Clear all assessment data on submission
+            // Don't clear assessment data yet - we need it for submission
 
             const token = localStorage.getItem('token');
             if (!token) {
@@ -1204,7 +1204,15 @@
 
             // Get attempt ID from localStorage (stored when assessment was started)
             const attemptId = localStorage.getItem('currentAttemptId');
+            console.log('=== SUBMISSION DEBUG ===');
+            console.log('attemptId from localStorage:', attemptId);
+            console.log('currentAssessment:', currentAssessment);
+            console.log('answers:', answers);
+            console.log('startTime:', startTime);
+            console.log('=== END SUBMISSION DEBUG ===');
+            
             if (!attemptId) {
+                console.error('No attempt ID found in localStorage');
                 showAssessmentAlert('Error', 'Assessment session not found. Please start the assessment again.', 'error');
                 return;
             }
@@ -1246,13 +1254,13 @@
             const data = await response.json();
 
             if (data.success) {
-                // Clean up attempt data
-                localStorage.removeItem('currentAttemptId');
-                localStorage.removeItem('assessmentStartTime');
-                localStorage.removeItem('assessmentAnswers');
-                
-                // Store results and redirect to summary page
+                // Store results first
                 localStorage.setItem('assessmentResults', JSON.stringify(data.data));
+                
+                // Clean up all assessment data after successful submission
+                clearAllAssessmentData();
+                
+                // Redirect to summary page
                 window.location.href = `/assessment-summary/${currentAssessment.id}`;
             } else {
                 showAssessmentAlert('Error', data.message || 'Failed to submit assessment', 'error');

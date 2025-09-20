@@ -9,7 +9,7 @@
                     </button>
                     
                     <div class="text-center">
-                        <div class="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <div class="w-16 h-16 bg-gradient-to-r from-[#8FC340] to-[#E368A7] rounded-full flex items-center justify-center mx-auto mb-4">
                             <i class="fas fa-user text-white text-2xl"></i>
                         </div>
                         <h2 class="text-2xl font-bold text-gray-900">Welcome Back</h2>
@@ -34,9 +34,9 @@
                             <input type="checkbox" class="rounded text-blue-600 group-hover:scale-110 transition-transform">
                             <span class="ml-2 text-sm text-gray-600 group-hover:text-blue-600 transition-colors">Remember me</span>
                         </label>
-                        <a href="#" class="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-all" onclick="showModal('forgotModal')">Forgot password?</a>
+                        <a href="#" class="text-sm text-[#8FC340] hover:text-[#7bb02d] hover:underline transition-all" onclick="showModal('forgotModal')">Forgot password?</a>
                     </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl hover:scale-105 relative overflow-hidden">
+                    <button type="submit" class="w-full bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all shadow-lg hover:shadow-xl hover:scale-105 relative overflow-hidden">
                         <i class="fas fa-sign-in-alt mr-2"></i>Sign In
                     </button>
                 </form>
@@ -61,7 +61,7 @@
                     </button>
                     
                     <div class="text-center">
-                        <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <div class="w-16 h-16 bg-gradient-to-r from-[#8FC340] to-[#EC2834] rounded-full flex items-center justify-center mx-auto mb-4">
                             <i class="fas fa-user-plus text-white text-2xl"></i>
                         </div>
                         <h2 class="text-2xl font-bold text-gray-900">Create Account</h2>
@@ -133,7 +133,7 @@
                             <span class="ml-2 text-sm text-gray-600 group-hover:text-blue-600 transition-colors">I agree to the <a href="{{ route('terms') }}" class="text-blue-600 hover:text-blue-800 underline">Terms & Conditions</a></span>
                         </label>
                     </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl hover:scale-105 relative overflow-hidden">
+                    <button type="submit" class="w-full bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all shadow-lg hover:shadow-xl hover:scale-105 relative overflow-hidden">
                         <i class="fas fa-rocket mr-2"></i>Create Account
                     </button>
                 </form>
@@ -179,7 +179,7 @@
                             <span class="ml-2 text-sm text-gray-600 group-hover:text-blue-600 transition-colors">I agree to the <a href="{{ route('terms') }}" class="text-blue-600 hover:text-blue-800 underline">Terms & Conditions</a></span>
                         </label>
                     </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl hover:scale-105 relative overflow-hidden">
+                    <button type="submit" class="w-full bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all shadow-lg hover:shadow-xl hover:scale-105 relative overflow-hidden">
                         <i class="fas fa-building mr-2"></i>Create Institution Account
                     </button>
                 </form>
@@ -211,7 +211,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
                         <input type="email" id="forgotEmail" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter your email" required>
                     </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg">
+                    <button type="submit" class="w-full bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all shadow-lg">
                         Send Reset Link
                     </button>
                 </form>
@@ -250,7 +250,7 @@
                 
                 <div class="space-y-6">
                     <div class="flex items-center justify-center mb-6">
-                        <div class="bg-green-500 text-white px-4 py-2 rounded-lg font-bold text-lg">
+                        <div class="bg-[#8FC340] text-white px-4 py-2 rounded-lg font-bold text-lg">
                             M-PESA
                         </div>
                     </div>
@@ -260,10 +260,10 @@
                         <input type="tel" id="mpesaPhone" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="254700123456" required>
                     </div>
                     
-                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                    <div class="bg-[#8FC340]/10 border border-[#8FC340]/20 rounded-xl p-4">
                         <div class="flex items-start">
-                            <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
-                            <div class="text-sm text-blue-800">
+                            <i class="fas fa-info-circle text-[#8FC340] mt-1 mr-3"></i>
+                            <div class="text-sm text-[#8FC340]">
                                 <p class="font-semibold mb-1">Payment Instructions:</p>
                                 <p>1. Enter your M-PESA registered phone number</p>
                                 <p>2. Click "Pay Now" to initiate payment</p>
@@ -273,7 +273,7 @@
                         </div>
                     </div>
                     
-                    <button type="button" class="w-full bg-green-500 text-white py-4 rounded-xl font-semibold hover:bg-green-600 transition-all shadow-lg text-lg" onclick="processMpesaPayment()">
+                    <button type="button" class="w-full bg-[#8FC340] text-white py-4 rounded-xl font-semibold hover:bg-[#7bb02d] transition-all shadow-lg text-lg" onclick="processMpesaPayment()">
                         <i class="fas fa-mobile-alt mr-2"></i>
                         Pay Now
                     </button>
@@ -291,7 +291,7 @@
                 </div>
                 <h2 class="text-2xl font-bold text-gray-900 mb-4">Payment Successful!</h2>
                 <p class="text-gray-600 mb-6">You can now access your assessment. Good luck!</p>
-                <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all" onclick="startAssessment()">
+                <button class="w-full bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all" onclick="startAssessment()">
                     Start Assessment
                 </button>
             </div>

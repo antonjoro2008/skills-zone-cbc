@@ -27,23 +27,23 @@
             <div class="bg-white rounded-3xl shadow-lg p-6">
                 <!-- Assessment Info -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div class="bg-blue-50 rounded-2xl p-4 text-center">
-                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-clock text-blue-600 text-xl"></i>
+                    <div class="bg-[#8FC340]/10 rounded-2xl p-4 text-center">
+                        <div class="w-12 h-12 bg-[#8FC340]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-clock text-[#8FC340] text-xl"></i>
                         </div>
                         <div class="text-2xl font-bold text-gray-900" id="durationDisplay">0 min</div>
                         <div class="text-sm text-gray-600">Duration</div>
                     </div>
-                    <div class="bg-purple-50 rounded-2xl p-4 text-center">
-                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-question-circle text-purple-600 text-xl"></i>
+                    <div class="bg-[#E368A7]/10 rounded-2xl p-4 text-center">
+                        <div class="w-12 h-12 bg-[#E368A7]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-question-circle text-[#E368A7] text-xl"></i>
                         </div>
                         <div class="text-2xl font-bold text-gray-900" id="questionsCount">0</div>
                         <div class="text-sm text-gray-600">Questions</div>
                     </div>
-                    <div class="bg-green-50 rounded-2xl p-4 text-center">
-                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-coins text-green-600 text-xl"></i>
+                    <div class="bg-[#8FC340]/10 rounded-2xl p-4 text-center">
+                        <div class="w-12 h-12 bg-[#8FC340]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-coins text-[#8FC340] text-xl"></i>
                         </div>
                         <div class="text-2xl font-bold text-gray-900" id="tokenCost">0</div>
                         <div class="text-sm text-gray-600">Tokens</div>
@@ -70,7 +70,7 @@
 
                 <!-- Start Button -->
                 <div class="text-center">
-                    <button id="startAssessmentBtn" class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-12 py-4 rounded-2xl text-lg font-semibold hover:from-green-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                    <button id="startAssessmentBtn" class="bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white px-12 py-4 rounded-2xl text-lg font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all shadow-lg hover:shadow-xl hover:scale-105">
                         <i class="fas fa-play mr-3"></i>Start Assessment
                     </button>
                 </div>
@@ -99,8 +99,8 @@
                             <div class="text-sm text-gray-600">Time Remaining</div>
                             <div class="text-xl font-bold" id="timerDisplay">00:00</div>
                         </div>
-                        <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                            <i class="fas fa-clock text-red-600 text-xl"></i>
+                        <div class="w-12 h-12 bg-[#8FC340]/20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-clock text-[#8FC340] text-xl"></i>
                         </div>
                     </div>
                 </div>
@@ -138,12 +138,12 @@
                     <div class="flex items-center space-x-2">
                         <span class="text-sm text-gray-600">Progress:</span>
                         <div class="w-32 bg-gray-200 rounded-full h-2">
-                            <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            <div id="progressBar" class="bg-[#8FC340] h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
                         </div>
                         <span id="progressText" class="text-sm text-gray-600">0%</span>
                     </div>
                     
-                    <button id="nextQuestionBtn" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all">
+                    <button id="nextQuestionBtn" class="bg-[#8FC340] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#7bb02d] transition-all">
                         Next<i class="fas fa-arrow-right ml-2"></i>
                     </button>
                 </div>
@@ -154,7 +154,7 @@
                     <div class="flex items-center justify-center space-x-2">
                         <span class="text-sm text-gray-600">Progress:</span>
                         <div class="w-40 bg-gray-200 rounded-full h-2">
-                            <div id="progressBarMobile" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            <div id="progressBarMobile" class="bg-[#8FC340] h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
                         </div>
                         <span id="progressTextMobile" class="text-sm text-gray-600">0%</span>
                     </div>
@@ -165,7 +165,7 @@
                             <i class="fas fa-arrow-left mr-2"></i>Previous
                         </button>
                         
-                        <button id="nextQuestionBtnMobile" class="bg-blue-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all flex-1 ml-2">
+                        <button id="nextQuestionBtnMobile" class="bg-[#8FC340] text-white px-4 py-3 rounded-xl font-semibold hover:bg-[#7bb02d] transition-all flex-1 ml-2">
                             Next<i class="fas fa-arrow-right ml-2"></i>
                         </button>
                     </div>
@@ -173,7 +173,7 @@
 
                 <!-- Submit Button (shown on last question) -->
                 <div id="submitSection" class="mt-6 text-center hidden">
-                    <button id="submitAssessmentBtn" class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-12 py-4 rounded-2xl text-lg font-semibold hover:from-green-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                    <button id="submitAssessmentBtn" class="bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white px-12 py-4 rounded-2xl text-lg font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all shadow-lg hover:shadow-xl hover:scale-105">
                         <i class="fas fa-check mr-3"></i>Submit Assessment
                     </button>
                 </div>
@@ -196,26 +196,26 @@
             <!-- Score Summary -->
             <div class="bg-white rounded-3xl shadow-lg p-8 mb-8">
                 <div class="text-center mb-8">
-                    <div class="w-24 h-24 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div class="w-24 h-24 bg-gradient-to-r from-[#8FC340] to-[#EC2834] rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-trophy text-white text-3xl"></i>
                     </div>
                     <h2 class="text-3xl font-bold text-gray-900 mb-2">Your Score</h2>
-                    <div class="text-6xl font-bold text-transparent bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text mb-2" id="finalScore">0%</div>
+                    <div class="text-6xl font-bold text-transparent bg-gradient-to-r from-[#8FC340] to-[#EC2834] bg-clip-text mb-2" id="finalScore">0%</div>
                     <p class="text-gray-600" id="scoreDescription">Great job!</p>
                 </div>
 
                 <!-- Score Breakdown -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-green-50 rounded-2xl p-6 text-center">
-                        <div class="text-3xl font-bold text-green-600" id="correctAnswers">0</div>
+                    <div class="bg-[#8FC340]/10 rounded-2xl p-6 text-center">
+                        <div class="text-3xl font-bold text-[#8FC340]" id="correctAnswers">0</div>
                         <div class="text-sm text-gray-600">Correct</div>
                     </div>
-                    <div class="bg-red-50 rounded-2xl p-6 text-center">
-                        <div class="text-3xl font-bold text-red-600" id="incorrectAnswers">0</div>
+                    <div class="bg-[#EC2834]/10 rounded-2xl p-6 text-center">
+                        <div class="text-3xl font-bold text-[#EC2834]" id="incorrectAnswers">0</div>
                         <div class="text-sm text-gray-600">Incorrect</div>
                     </div>
-                    <div class="bg-blue-50 rounded-2xl p-6 text-center">
-                        <div class="text-3xl font-bold text-blue-600" id="totalTime">0</div>
+                    <div class="bg-[#E368A7]/10 rounded-2xl p-6 text-center">
+                        <div class="text-3xl font-bold text-[#E368A7]" id="totalTime">0</div>
                         <div class="text-sm text-gray-600">Time Taken</div>
                     </div>
                 </div>
@@ -231,7 +231,7 @@
 
             <!-- Actions -->
             <div class="text-center mt-8">
-                <button onclick="window.location.href='/assessments'" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl hover:scale-105 mr-4">
+                <button onclick="window.location.href='/assessments'" class="bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white px-8 py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all shadow-lg hover:shadow-xl hover:scale-105 mr-4">
                     <i class="fas fa-list mr-2"></i>Back to Assessments
                 </button>
                 <button onclick="window.location.href='/dashboard'" class="bg-gray-100 text-gray-700 px-8 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all">
@@ -250,7 +250,7 @@
                 </div>
                 <h3 class="text-xl font-bold text-gray-900 mb-2" id="assessmentAlertTitle">Alert</h3>
                 <p class="text-gray-600 mb-6" id="assessmentAlertMessage">This is an alert message.</p>
-                <button onclick="closeAssessmentAlert()" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all">
+                <button onclick="closeAssessmentAlert()" class="bg-[#8FC340] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#7bb02d] transition-all">
                     OK
                 </button>
             </div>
@@ -800,11 +800,11 @@
         const sectionInfo = document.getElementById('sectionInfo');
         if (section) {
             sectionInfo.innerHTML = `
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                <div class="bg-[#8FC340]/10 border border-[#8FC340]/20 rounded-lg p-3 mb-4">
                     <div class="flex items-center">
-                        <i class="fas fa-layer-group text-blue-600 mr-2"></i>
-                        <span class="font-semibold text-blue-800">${section.title}</span>
-                        ${section.description ? `<span class="text-blue-600 ml-2">- ${section.description}</span>` : ''}
+                        <i class="fas fa-layer-group text-[#8FC340] mr-2"></i>
+                        <span class="font-semibold text-[#8FC340]">${section.title}</span>
+                        ${section.description ? `<span class="text-[#8FC340]/80 ml-2">- ${section.description}</span>` : ''}
                     </div>
                 </div>
             `;
@@ -864,7 +864,7 @@
             // Use real MCQ options from API
             question.answers.forEach((answer, index) => {
                 const optionElement = document.createElement('div');
-                optionElement.className = 'flex items-center p-2 border border-gray-200 rounded-xl hover:bg-blue-50 hover:border-blue-300 cursor-pointer transition-all';
+                optionElement.className = 'flex items-center p-2 border border-gray-200 rounded-xl hover:bg-[#8FC340]/10 hover:border-[#8FC340]/30 cursor-pointer transition-all';
                 optionElement.innerHTML = `
                     <input type="radio" name="question_${question.id}" value="${answer.id}" id="option_${question.id}_${index}" class="mr-4 text-blue-600">
                     <label for="option_${question.id}_${index}" class="flex-1 cursor-pointer text-sm text-gray-900 leading-relaxed">
@@ -906,7 +906,7 @@
             ];
             trueFalseOptions.forEach((option, index) => {
                 const optionElement = document.createElement('div');
-                optionElement.className = 'flex items-center p-2 border border-gray-200 rounded-xl hover:bg-blue-50 hover:border-blue-300 cursor-pointer transition-all';
+                optionElement.className = 'flex items-center p-2 border border-gray-200 rounded-xl hover:bg-[#8FC340]/10 hover:border-[#8FC340]/30 cursor-pointer transition-all';
                 optionElement.innerHTML = `
                     <input type="radio" name="question_${question.id}" value="${option.value}" id="option_${question.id}_${index}" class="mr-4 text-blue-600">
                     <label for="option_${question.id}_${index}" class="flex-1 cursor-pointer text-sm text-gray-900 leading-relaxed">
@@ -1310,13 +1310,13 @@
 
         reviews.forEach((review, index) => {
             const reviewElement = document.createElement('div');
-            reviewElement.className = `p-6 rounded-2xl border-2 ${review.is_correct ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`;
+            reviewElement.className = `p-6 rounded-2xl border-2 ${review.is_correct ? 'border-[#8FC340]/20 bg-[#8FC340]/10' : 'border-[#EC2834]/20 bg-[#EC2834]/10'}`;
             reviewElement.innerHTML = `
                 <div class="flex items-start justify-between mb-4">
                     <h4 class="text-lg font-semibold text-gray-900">Question ${index + 1}</h4>
                     <div class="flex items-center">
-                        <i class="fas ${review.is_correct ? 'fa-check-circle text-green-600' : 'fa-times-circle text-red-600'} text-xl mr-2"></i>
-                        <span class="font-semibold ${review.is_correct ? 'text-green-600' : 'text-red-600'}">
+                        <i class="fas ${review.is_correct ? 'fa-check-circle text-[#8FC340]' : 'fa-times-circle text-[#EC2834]'} text-xl mr-2"></i>
+                        <span class="font-semibold ${review.is_correct ? 'text-[#8FC340]' : 'text-[#EC2834]'}">
                             ${review.is_correct ? 'Correct' : 'Incorrect'}
                         </span>
                     </div>
@@ -1325,18 +1325,18 @@
                 <div class="space-y-2">
                     <div class="flex items-center">
                         <span class="font-semibold text-gray-600 w-24">Your Answer:</span>
-                        <span class="${review.is_correct ? 'text-green-600' : 'text-red-600'}">${review.user_answer}</span>
+                        <span class="${review.is_correct ? 'text-[#8FC340]' : 'text-[#EC2834]'}">${review.user_answer}</span>
                     </div>
                     ${!review.is_correct ? `
                         <div class="flex items-center">
                             <span class="font-semibold text-gray-600 w-24">Correct Answer:</span>
-                            <span class="text-green-600">${review.correct_answer}</span>
+                            <span class="text-[#8FC340]">${review.correct_answer}</span>
                         </div>
                     ` : ''}
                     ${review.explanation ? `
-                        <div class="mt-3 p-3 bg-blue-50 rounded-lg">
-                            <span class="font-semibold text-blue-800">Explanation:</span>
-                            <p class="text-blue-700 mt-1">${review.explanation}</p>
+                        <div class="mt-3 p-3 bg-[#E368A7]/10 rounded-lg">
+                            <span class="font-semibold text-[#E368A7]">Explanation:</span>
+                            <p class="text-[#E368A7]/80 mt-1">${review.explanation}</p>
                         </div>
                     ` : ''}
                 </div>
@@ -1384,15 +1384,15 @@
             switch (type) {
                 case 'success':
                     iconClass = 'fas fa-check-circle';
-                    bgClass = 'bg-gradient-to-r from-green-500 to-green-600';
+                    bgClass = 'bg-gradient-to-r from-[#8FC340] to-[#7bb02d]';
                     break;
                 case 'error':
                     iconClass = 'fas fa-times-circle';
-                    bgClass = 'bg-gradient-to-r from-red-500 to-red-600';
+                    bgClass = 'bg-gradient-to-r from-[#EC2834] to-[#d41e2a]';
                     break;
                 case 'info':
                     iconClass = 'fas fa-info-circle';
-                    bgClass = 'bg-gradient-to-r from-blue-500 to-blue-600';
+                    bgClass = 'bg-gradient-to-r from-[#E368A7] to-[#d15a8a]';
                     break;
                 default: // warning
                     iconClass = 'fas fa-exclamation-triangle';

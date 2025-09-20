@@ -81,7 +81,7 @@
                 <i class="fas fa-exclamation-triangle text-6xl text-red-500 mb-6"></i>
                 <h3 class="text-2xl font-bold text-gray-900 mb-4">Unable to Load Assessments</h3>
                 <p class="text-gray-600 mb-6">We're having trouble loading the assessments. Please check your connection and try again.</p>
-                <button onclick="loadAssessments()" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors">
+                <button onclick="loadAssessments()" class="bg-[#8FC340] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#7bb02d] transition-colors">
                     <i class="fas fa-refresh mr-2"></i>Try Again
                 </button>
             </div>
@@ -107,7 +107,7 @@
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-2" id="assessmentsAlertTitle">Alert</h3>
                     <p class="text-gray-600 mb-6" id="assessmentsAlertMessage">This is an alert message.</p>
-                    <button onclick="closeAssessmentsAlert()" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                    <button onclick="closeAssessmentsAlert()" class="bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white px-8 py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all shadow-lg hover:shadow-xl hover:scale-105">
                         <i class="fas fa-check mr-2"></i>OK
                     </button>
                 </div>
@@ -194,13 +194,13 @@
         // Set icon and colors based on type
         if (type === 'error') {
             alertIcon.className = 'fas fa-times-circle text-white text-2xl';
-            alertContainer.className = 'w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4';
+            alertContainer.className = 'w-16 h-16 bg-gradient-to-r from-[#EC2834] to-[#d41e2a] rounded-full flex items-center justify-center mx-auto mb-4';
         } else if (type === 'success') {
             alertIcon.className = 'fas fa-check-circle text-white text-2xl';
-            alertContainer.className = 'w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4';
+            alertContainer.className = 'w-16 h-16 bg-gradient-to-r from-[#8FC340] to-[#7bb02d] rounded-full flex items-center justify-center mx-auto mb-4';
         } else if (type === 'info') {
             alertIcon.className = 'fas fa-info-circle text-white text-2xl';
-            alertContainer.className = 'w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4';
+            alertContainer.className = 'w-16 h-16 bg-gradient-to-r from-[#E368A7] to-[#d15a8a] rounded-full flex items-center justify-center mx-auto mb-4';
         } else {
             // Default warning
             alertIcon.className = 'fas fa-exclamation-triangle text-white text-2xl';
@@ -318,14 +318,14 @@
     
     function createAssessmentCard(assessment) {
         const gradientColors = [
-            'from-blue-600 via-blue-700 to-purple-600',
-            'from-green-500 to-blue-500',
-            'from-purple-500 to-pink-500',
-            'from-red-500 to-orange-500',
-            'from-indigo-500 to-purple-500',
-            'from-teal-500 to-green-500',
-            'from-yellow-500 to-orange-500',
-            'from-pink-500 to-red-500'
+            'from-[#8FC340] via-[#7bb02d] to-[#E368A7]',
+            'from-[#E368A7] to-[#8FC340]',
+            'from-[#8FC340] to-[#d15a8a]',
+            'from-[#E368A7] to-[#7bb02d]',
+            'from-[#8FC340] to-[#E368A7]',
+            'from-[#E368A7] to-[#8FC340]',
+            'from-[#8FC340] to-[#d15a8a]',
+            'from-[#E368A7] to-[#7bb02d]'
         ];
         
         const icons = [
@@ -382,15 +382,15 @@
             const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             buttonText = `Resume Assessment (${timeString})`;
             buttonIcon = 'fas fa-play';
-            buttonClass = 'w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 rounded-xl font-semibold hover:from-orange-700 hover:to-red-700 transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse';
+            buttonClass = 'w-full bg-gradient-to-r from-[#E368A7] to-[#8FC340] text-white py-3 rounded-xl font-semibold hover:from-[#d15a8a] hover:to-[#7bb02d] transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse';
         } else if (hasEnoughTokens) {
             buttonText = 'Start Assessment';
             buttonIcon = 'fas fa-play';
-            buttonClass = 'w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-green-700 hover:to-blue-700 transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse';
+            buttonClass = 'w-full bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse';
         } else {
             buttonText = 'Purchase & Start';
             buttonIcon = 'fas fa-shopping-cart';
-            buttonClass = 'w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse';
+            buttonClass = 'w-full bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse';
         }
         
         return `
@@ -401,36 +401,36 @@
                 </div>
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">${assessment.title || 'Assessment'}</h3>
-                        <div class="w-3 h-3 ${isInProgress && remainingTime > 0 ? 'bg-orange-400' : 'bg-green-400'} rounded-full animate-pulse"></div>
+                        <h3 class="text-xl font-bold text-gray-900 group-hover:text-[#8FC340] transition-colors">${assessment.title || 'Assessment'}</h3>
+                        <div class="w-3 h-3 ${isInProgress && remainingTime > 0 ? 'bg-[#E368A7]' : 'bg-[#8FC340]'} rounded-full animate-pulse"></div>
                     </div>
                     <div class="mb-2">
-                        <span class="text-sm text-blue-600 font-semibold">${assessment.subject ? assessment.subject.name : 'General'}</span>
+                        <span class="text-sm text-[#8FC340] font-semibold">${assessment.subject ? assessment.subject.name : 'General'}</span>
                         ${assessment.paper_code ? `<span class="text-sm text-gray-500 ml-2">${assessment.paper_code}</span>` : ''}
                         ${assessment.year ? `<span class="text-sm text-gray-500 ml-2">${assessment.year}</span>` : ''}
                     </div>
                     <p class="text-gray-600 mb-4 leading-relaxed">${assessment.description ? assessment.description.replace(/<[^>]*>/g, '') : 'Take this assessment to test your skills and knowledge.'}</p>
                     <div class="grid grid-cols-3 gap-2 mb-4 text-xs">
-                        <div class="bg-blue-50 text-blue-600 px-2 py-1 rounded-lg text-center">
+                        <div class="bg-[#8FC340]/10 text-[#8FC340] px-2 py-1 rounded-lg text-center">
                             <i class="fas fa-clock mr-1"></i>${duration}
                         </div>
-                        <div class="bg-purple-50 text-purple-600 px-2 py-1 rounded-lg text-center">
+                        <div class="bg-[#E368A7]/10 text-[#E368A7] px-2 py-1 rounded-lg text-center">
                             <i class="fas fa-question-circle mr-1"></i>${questions}
                         </div>
-                        <div class="bg-yellow-50 text-yellow-700 px-2 py-1 rounded-lg text-center font-semibold">
+                        <div class="bg-[#8FC340]/10 text-[#8FC340] px-2 py-1 rounded-lg text-center font-semibold">
                             ${tokens} Tokens
                         </div>
                     </div>
                     ${isInProgress && remainingTime > 0 ? `
-                        <div class="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4">
-                            <div class="flex items-center text-orange-800 text-sm">
+                        <div class="bg-[#E368A7]/10 border border-[#E368A7]/20 rounded-lg p-3 mb-4">
+                            <div class="flex items-center text-[#E368A7] text-sm">
                                 <i class="fas fa-clock mr-2"></i>
                                 <span>Assessment in progress - ${Math.floor(remainingTime / 60)}:${(remainingTime % 60).toString().padStart(2, '0')} remaining</span>
                             </div>
                         </div>
                     ` : hasEnoughTokens ? `
-                        <div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
-                            <div class="flex items-center text-green-800 text-sm">
+                        <div class="bg-[#8FC340]/10 border border-[#8FC340]/20 rounded-lg p-3 mb-4">
+                            <div class="flex items-center text-[#8FC340] text-sm">
                                 <i class="fas fa-info-circle mr-2"></i>
                                 <span>This assessment will use ${tokens} tokens from your balance</span>
                             </div>

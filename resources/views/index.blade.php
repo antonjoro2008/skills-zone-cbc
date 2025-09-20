@@ -38,7 +38,7 @@
                                 <i class="fas fa-user-plus mr-2 group-hover:rotate-12 transition-transform"></i>
                                 Join Free
                             </button>
-                            <button id="buyTokensBtn" class="group border-2 border-green-400 text-green-400 hover:bg-green-400 hover:text-white px-8 py-4 rounded-full text-lg font-semibold transition-all hover:scale-105 hover:-translate-y-1 shadow-lg hidden" onclick="showModal('buyTokensModal')">
+                            <button id="buyTokensBtn" class="group border-2 border-[#8FC340] text-[#8FC340] hover:bg-[#8FC340] hover:text-white px-8 py-4 rounded-full text-lg font-semibold transition-all hover:scale-105 hover:-translate-y-1 shadow-lg hidden" onclick="showModal('buyTokensModal')">
                                 <i class="fas fa-coins mr-2 group-hover:animate-pulse"></i>
                                 Buy Tokens
                             </button>
@@ -48,10 +48,10 @@
                     <div class="hidden lg:block animate-fade-in-right">
                         <div class="relative">
                             <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-3xl p-8 transform rotate-6 hover:rotate-3 transition-transform duration-500">
-                                <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-6 mb-4">
+                                <div class="bg-gradient-to-br from-[#8FC340] to-[#E368A7] rounded-2xl p-6 mb-4">
                                     <div class="flex items-center justify-between mb-4">
                                         <h3 class="text-white font-bold text-lg">Assessment Progress</h3>
-                                        <span class="bg-white text-blue-600 px-3 py-1 rounded-full text-sm font-bold">85%</span>
+                                        <span class="bg-white text-[#8FC340] px-3 py-1 rounded-full text-sm font-bold">85%</span>
                                     </div>
                                     <div class="bg-white bg-opacity-20 rounded-full h-3 mb-4">
                                         <div class="bg-white rounded-full h-3 w-4/5 animate-pulse"></div>

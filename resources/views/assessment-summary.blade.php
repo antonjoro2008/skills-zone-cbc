@@ -246,6 +246,17 @@
     function loadAssessmentResults() {
         // Get results from localStorage
         const resultsData = localStorage.getItem('assessmentResults');
+        
+        // Debug: Log available data
+        console.log('=== ASSESSMENT RESULTS DEBUG ===');
+        console.log('Raw results data:', resultsData);
+        if (resultsData) {
+            const parsed = JSON.parse(resultsData);
+            console.log('Parsed results:', parsed);
+            console.log('Submission data:', parsed.submission_data);
+            console.log('Assessment data:', parsed.assessment);
+        }
+        console.log('=== END ASSESSMENT RESULTS DEBUG ===');
         if (!resultsData) {
             showAlert('Error', 'No assessment results found. Please try taking the assessment again.', 'error');
             window.location.href = '/assessments';
@@ -294,8 +305,48 @@
         document.getElementById('manualReviewQuestions').textContent = summary.not_auto_marked_questions || 0;
         document.getElementById('autoMarkedScore').textContent = `${summary.score || 0}/${summary.out_of || 0}`;
 
-        // Update time taken
-        const timeTaken = assessmentResults.submission_data?.time_taken_seconds || 0;
+        // Update time taken with fallback logic
+        let timeTaken = assessmentResults.submission_data?.time_taken_seconds || 0;
+        
+        // Fallback: Calculate duration from start and end times if time_taken_seconds is 0 or missing
+        if (timeTaken <= 0 && assessmentResults.submission_data) {
+            const startTime = assessmentResults.submission_data.start_time;
+            const endTime = assessmentResults.submission_data.end_time;
+            
+            if (startTime && endTime) {
+                const start = new Date(startTime);
+                const end = new Date(endTime);
+                timeTaken = Math.floor((end - start) / 1000);
+                console.log('Calculated duration from start/end times:', timeTaken, 'seconds');
+            }
+        }
+        
+        // Additional fallback: Check localStorage for time tracking data
+        if (timeTaken <= 0) {
+            const timeTrackingData = localStorage.getItem('assessmentTimeTracking');
+            if (timeTrackingData) {
+                try {
+                    const timeData = JSON.parse(timeTrackingData);
+                    if (timeData.assessmentId === assessmentResults.assessment_id) {
+                        // Calculate duration from assessment duration minus remaining time
+                        const totalDuration = (assessmentResults.assessment?.duration_minutes || 60) * 60;
+                        const remainingTime = timeData.timeRemaining || 0;
+                        timeTaken = Math.max(0, totalDuration - remainingTime);
+                        console.log('Calculated duration from localStorage time tracking:', timeTaken, 'seconds');
+                    }
+                } catch (e) {
+                    console.error('Error parsing time tracking data:', e);
+                }
+            }
+        }
+        
+        // Final fallback: Use assessment duration if still no valid time
+        if (timeTaken <= 0) {
+            timeTaken = (assessmentResults.assessment?.duration_minutes || 60) * 60;
+            console.log('Using assessment duration as fallback:', timeTaken, 'seconds');
+        }
+        
+        console.log('Final time taken:', timeTaken, 'seconds');
         document.getElementById('timeTaken').textContent = formatTime(timeTaken);
         document.getElementById('assessmentDuration').textContent = formatTime(timeTaken);
 

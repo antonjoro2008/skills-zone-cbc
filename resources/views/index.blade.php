@@ -19,7 +19,7 @@
                             <i class="fas fa-star text-yellow-600 mr-2"></i>
                             <span class="text-sm font-bold">Trusted by 50,000+ students across Africa</span>
                         </div>
-                        <h1 class="text-4xl md:text-6xl lg:text-6xl font-bold mb-6 leading-tight text-white">
+                        <h1 class="text-4xl md:text-6xl lg:text-5xl font-bold mb-6 leading-tight text-white">
                             Unlock Your
                             <span class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
                                 Kids Potential

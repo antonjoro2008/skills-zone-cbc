@@ -4,7 +4,7 @@
         <div class="flex justify-between items-center h-16">
             <div class="flex items-center">
                 <!-- <a href="{{ route('home') }}" class="text-2xl font-bold bg-gradient-to-r from-[#EC2834] via-[#E368A7] to-[#8FC340] bg-clip-text text-transparent animate-pulse-glow"> -->
-                    <!-- <i class="fas fa-graduation-cap mr-2"></i>SkillsZone
+                    <!-- <i class="fas fa-graduation-cap mr-2"></i>Gravity CBC
                      <img src="{{ asset('images/logo.png') }}" alt="CBC Assessment" class="h-10 w-10"/>
                     </a> -->
                 <a href="{{ route('home') }}" class="py-3"> 

@@ -1,6 +1,6 @@
-# SkillsZone Blade Templates - Partials Structure
+# Gravity CBC Blade Templates - Partials Structure
 
-This document explains the new partials structure implemented for the SkillsZone Laravel project.
+This document explains the new partials structure implemented for the Gravity CBC Laravel project.
 
 ## Overview
 
@@ -108,11 +108,11 @@ Example:
 ```blade
 @extends('layouts.app')
 
-@section('title', 'About Us - SkillsZone')
+@section('title', 'About Us - Gravity CBC')
 
 @section('content')
     <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-4">About SkillsZone</h1>
+        <h1 class="text-3xl font-bold mb-4">About Gravity CBC</h1>
         <p class="text-gray-600">Your content here...</p>
     </div>
 @endsection

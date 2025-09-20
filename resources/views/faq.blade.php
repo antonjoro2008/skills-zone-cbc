@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'FAQ - SkillsZone')
+@section('title', 'FAQ - Gravity CBC')
 
 @section('content')
     <!-- Hero Section -->
     <div class="gradient-bg text-white py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-4xl font-bold mb-4">Frequently Asked Questions</h1>
-            <p class="text-xl text-gray-100">Find answers to common questions about SkillsZone</p>
+            <p class="text-xl text-gray-100">Find answers to common questions about Gravity CBC</p>
         </div>
     </div>
     

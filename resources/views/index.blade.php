@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'SkillsZone - Skills Assessment for African Students')
+@section('title', 'Gravity CBC - Skills Assessment for African Students')
 
 @section('content')
     <!-- Landing Page -->
@@ -84,7 +84,7 @@
                 <div class="text-center mb-20">
                     <div class="inline-flex items-center bg-blue-100 rounded-full px-4 py-2 mb-4">
                         <i class="fas fa-magic text-blue-600 mr-2"></i>
-                        <span class="text-blue-600 font-medium text-sm">Why Choose SkillsZone?</span>
+                        <span class="text-blue-600 font-medium text-sm">Why Choose Gravity CBC?</span>
                     </div>
                     <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Features that make us
                         <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">extraordinary</span>
@@ -172,7 +172,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Trusted by professionals worldwide</h2>
-                    <p class="text-blue-200 text-lg">Join thousands who have advanced their careers with SkillsZone</p>
+                    <p class="text-blue-200 text-lg">Join thousands who have advanced their careers with Gravity CBC</p>
                 </div>
                 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8">

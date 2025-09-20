@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Assessment - SkillsZone')
+@section('title', 'Assessment - Gravity CBC')
 
 @section('content')
     <!-- Assessment Start Page -->
@@ -1234,7 +1234,7 @@
                     browser_info: navigator.userAgent,
                     submission_method: 'manual',
                     ip_address: '127.0.0.1', // This would be set by the server
-                    user_agent: 'SkillsZone Assessment Platform'
+                    user_agent: 'Gravity CBC Assessment Platform'
                 }
             };
 

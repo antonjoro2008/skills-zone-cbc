@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Transaction History - SkillsZone')
+@section('title', 'Transaction History - Gravity CBC')
 
 @section('content')
     <!-- Hero Section -->

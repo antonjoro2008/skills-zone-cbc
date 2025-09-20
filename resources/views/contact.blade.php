@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Contact Us - SkillsZone')
+@section('title', 'Contact Us - Gravity CBC')
 
 @section('content')
     <!-- Hero Section -->
@@ -66,7 +66,7 @@
                         </div>
                         <div>
                             <h3 class="font-semibold text-gray-900">Email Support</h3>
-                            <p class="text-gray-600">support@skills-zone.africa</p>
+                            <p class="text-gray-600">support@assessments.gravitycbc.co.ke</p>
                             <p class="text-sm text-gray-500">Response within 24 hours</p>
                         </div>
                     </div>
@@ -97,7 +97,7 @@
                 <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6">
                     <h3 class="font-semibold text-gray-900 mb-3">Office Address</h3>
                     <p class="text-gray-600">
-                        SkillsZone Africa<br>
+                        Gravity CBC Africa<br>
                         Westlands, Nairobi<br>
                         Kenya
                     </p>

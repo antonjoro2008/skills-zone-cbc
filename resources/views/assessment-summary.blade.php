@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Assessment Summary - SkillsZone')
+@section('title', 'Assessment Summary - Gravity CBC')
 
 @section('content')
     <!-- Assessment Summary Page -->

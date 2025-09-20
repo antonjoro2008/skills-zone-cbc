@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Institution Dashboard - SkillsZone')
+@section('title', 'Institution Dashboard - Gravity CBC')
 
 @section('content')
     <!-- Hero Section -->

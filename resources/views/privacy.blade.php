@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Privacy Policy - SkillsZone')
+@section('title', 'Privacy Policy - Gravity CBC')
 
 @section('content')
     <!-- Hero Section -->
@@ -34,7 +34,7 @@
                 <p class="text-gray-600 mb-6">We use cookies and similar technologies to enhance your experience and analyze how our services are used.</p>
                 
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">Contact Us</h2>
-                <p class="text-gray-600 mb-6">If you have questions about this Privacy Policy, please contact us at privacy@skills-zone.africa</p>
+                <p class="text-gray-600 mb-6">If you have questions about this Privacy Policy, please contact us at privacy@assessments.gravitycbc.co.ke</p>
                 
                 <div class="mt-8 p-4 bg-blue-50 rounded-xl">
                     <p class="text-sm text-blue-800">

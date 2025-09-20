@@ -3,7 +3,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
-                    <h3 class="text-xl font-bold mb-4 text-yellow-400">SkillsZone</h3>
+                    <h3 class="text-xl font-bold mb-4 text-yellow-400">Gravity CBC</h3>
                     <p class="text-gray-300 mb-4">Empowering Kenyan students with accessible, quality assessment tools.</p>
                     <div class="flex space-x-4">
                         <a href="#" class="text-gray-400 hover:text-white transition-colors">
@@ -53,7 +53,7 @@
             </div>
             
             <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-                <p class="text-gray-400">&copy; 2025 SkillsZone. All rights reserved. Built with ❤️ for Africa | skills-zone.africa</p>
+                <p class="text-gray-400">&copy; 2025 Gravity CBC. All rights reserved. Built with ❤️ for Africa | assessments.gravitycbc.co.ke</p>
             </div>
         </div>
     </footer> 

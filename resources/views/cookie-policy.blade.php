@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Cookie Policy - SkillsZone')
+@section('title', 'Cookie Policy - Gravity CBC')
 
 @section('content')
     <!-- Hero Section -->

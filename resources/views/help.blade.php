@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Help Center - SkillsZone')
+@section('title', 'Help Center - Gravity CBC')
 
 @section('content')
     <!-- Hero Section -->
     <div class="gradient-bg text-white py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-4xl font-bold mb-4">Help Center</h1>
-            <p class="text-xl text-gray-100">Get help and support for all your SkillsZone needs</p>
+            <p class="text-xl text-gray-100">Get help and support for all your Gravity CBC needs</p>
         </div>
     </div>
     
@@ -20,7 +20,7 @@
                     <i class="fas fa-rocket text-blue-600 text-2xl"></i>
                 </div>
                 <h3 class="text-xl font-bold text-gray-900 mb-3">Getting Started</h3>
-                <p class="text-gray-600 mb-4">Learn the basics of using SkillsZone for assessments and skill development.</p>
+                <p class="text-gray-600 mb-4">Learn the basics of using Gravity CBC for assessments and skill development.</p>
                 <a href="#" class="text-blue-600 font-semibold hover:text-blue-800 transition-colors">View Guide →</a>
             </div>
             
@@ -70,7 +70,7 @@
                     <i class="fas fa-mobile-alt text-teal-600 text-2xl"></i>
                 </div>
                 <h3 class="text-xl font-bold text-gray-900 mb-3">Mobile App</h3>
-                <p class="text-gray-600 mb-4">Get the most out of SkillsZone on your mobile device.</p>
+                <p class="text-gray-600 mb-4">Get the most out of Gravity CBC on your mobile device.</p>
                 <a href="#" class="text-teal-600 font-semibold hover:text-teal-800 transition-colors">View Guide →</a>
             </div>
         </div>
@@ -79,7 +79,7 @@
         <div class="mt-16 text-center">
             <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-8">
                 <h2 class="text-2xl font-bold text-gray-900 mb-4">Still Need Help?</h2>
-                <p class="text-gray-600 mb-6">Our support team is here to help you succeed with SkillsZone</p>
+                <p class="text-gray-600 mb-6">Our support team is here to help you succeed with Gravity CBC</p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
                     <a href="{{ route('contact') }}" class="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all">
                         <i class="fas fa-envelope mr-2"></i>

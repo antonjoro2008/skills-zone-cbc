@@ -325,7 +325,7 @@
                     <i class="fas fa-sign-out-alt"></i>
                 </div>
                 <h2 class="text-2xl font-bold text-gray-900 mb-4">Logged Out Successfully</h2>
-                <p class="text-gray-600 mb-6">You have been logged out of your account. Thank you for using SkillsZone!</p>
+                <p class="text-gray-600 mb-6">You have been logged out of your account. Thank you for using Gravity CBC!</p>
                 <div class="space-y-3">
                     <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl hover:scale-105" onclick="closeModal('logoutSuccessModal'); updateAuthState();">
                         <i class="fas fa-home mr-2"></i>

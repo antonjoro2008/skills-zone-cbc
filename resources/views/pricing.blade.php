@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Token Packages - SkillsZone')
+@section('title', 'Token Packages - Gravity CBC')
 
 @section('additional_head')
 <style>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Refund Policy - SkillsZone')
+@section('title', 'Refund Policy - Gravity CBC')
 
 @section('content')
     <!-- Hero Section -->
@@ -16,7 +16,7 @@
         <div class="bg-white rounded-3xl shadow-lg p-8">
             <div class="prose prose-lg max-w-none">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">Token Purchase Policy</h2>
-                <p class="text-gray-600 mb-6">Tokens purchased on SkillsZone are non-refundable once they have been used to access assessments. This policy ensures fair usage of our platform.</p>
+                <p class="text-gray-600 mb-6">Tokens purchased on Gravity CBC are non-refundable once they have been used to access assessments. This policy ensures fair usage of our platform.</p>
                 
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">Unused Tokens</h2>
                 <p class="text-gray-600 mb-6">If you have unused tokens and wish to request a refund, you may do so within 30 days of purchase, provided the tokens have not been used.</p>
@@ -31,7 +31,7 @@
                 <p class="text-gray-600 mb-6">Refunds may be granted in exceptional circumstances at our discretion, such as duplicate charges or system errors.</p>
                 
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">Contact Us</h2>
-                <p class="text-gray-600 mb-6">For refund requests or questions about this policy, please contact us at support@skills-zone.africa</p>
+                <p class="text-gray-600 mb-6">For refund requests or questions about this policy, please contact us at support@assessments.gravitycbc.co.ke</p>
                 
                 <div class="mt-8 p-4 bg-blue-50 rounded-xl">
                     <p class="text-sm text-blue-800">

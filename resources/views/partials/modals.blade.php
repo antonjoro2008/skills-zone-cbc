@@ -27,7 +27,12 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <input type="password" id="loginPassword" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter your password" required>
+                        <div class="relative">
+                            <input type="password" id="loginPassword" class="form-input w-full px-4 py-3 pr-12 rounded-xl" placeholder="Enter your password" required>
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('loginPassword', 'loginPasswordToggle')">
+                                <i id="loginPasswordToggle" class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="flex items-center justify-between">
                         <label class="flex items-center group cursor-pointer">
@@ -116,11 +121,21 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <input type="password" id="registerPassword" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Create a strong password" required>
+                        <div class="relative">
+                            <input type="password" id="registerPassword" class="form-input w-full px-4 py-3 pr-12 rounded-xl" placeholder="Create a strong password" required>
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('registerPassword', 'registerPasswordToggle')">
+                                <i id="registerPasswordToggle" class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-                        <input type="password" id="registerPasswordConfirmation" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Confirm your password" required>
+                        <div class="relative">
+                            <input type="password" id="registerPasswordConfirmation" class="form-input w-full px-4 py-3 pr-12 rounded-xl" placeholder="Confirm your password" required>
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('registerPasswordConfirmation', 'registerPasswordConfirmationToggle')">
+                                <i id="registerPasswordConfirmationToggle" class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">M-PESA Phone Number</label>
@@ -166,7 +181,12 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <input type="password" id="institutionPassword" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Create a strong password" required>
+                        <div class="relative">
+                            <input type="password" id="institutionPassword" class="form-input w-full px-4 py-3 pr-12 rounded-xl" placeholder="Create a strong password" required>
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('institutionPassword', 'institutionPasswordToggle')">
+                                <i id="institutionPasswordToggle" class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">M-PESA Phone Number</label>

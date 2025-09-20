@@ -19,12 +19,12 @@
                             <i class="fas fa-star text-yellow-600 mr-2"></i>
                             <span class="text-sm font-bold">Trusted by 50,000+ students across Africa</span>
                         </div>
-                        <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-white">
+                        <h1 class="text-4xl md:text-6xl lg:text-6xl font-bold mb-6 leading-tight text-white">
                             Unlock Your
                             <span class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                                Potential
+                                Kids Potential
                             </span>
-                            <br>with SkillsZone
+                            <br>with Gravity CBC 
                         </h1>
                         <p class="text-xl md:text-2xl mb-8 max-w-2xl mx-auto lg:mx-0 text-gray-100 leading-relaxed">
                             Affordable, token-based assessments for African students. Build skills, track progress, and excel in your academic journey.

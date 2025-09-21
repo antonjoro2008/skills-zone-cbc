@@ -14,18 +14,35 @@
                 <div class="flex items-center space-x-4">
                     <a href="javascript:history.back()" class="inline-flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full px-6 py-3 transition-all backdrop-blur-sm">
                         <i class="fas fa-arrow-left mr-2"></i>
-                        <span>Back to Assessments</span>
+                        <span class="hidden sm:inline">Back to Assessments</span>
                     </a>
                 </div>
                 <div class="text-center">
                     <h1 class="text-3xl font-bold text-white mb-2" id="assessmentTitle">Loading Questions...</h1>
                     <p class="text-white/80" id="questionCounter">Question 1 of 1</p>
                 </div>
-                <div class="w-32"></div> <!-- Spacer for centering -->
+                <div class="flex items-center space-x-4">
+                    <!-- Sound Toggle Button -->
+                    <button id="soundToggle" class="inline-flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full p-3 transition-all backdrop-blur-sm" title="Toggle Sound">
+                        <i id="soundIcon" class="fas fa-volume-up text-white"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Mobile Flip Container -->
+    <div class="mobile-flip-container" id="mobileFlipContainer">
+        <div class="mobile-page" id="mobilePage">
+            <div class="mobile-page-content" id="mobilePageContent">
+                <!-- Content will be loaded here -->
+            </div>
+            <div class="mobile-page-back" id="mobilePageBack">
+                <!-- Back content will be loaded here -->
+            </div>
+        </div>
+    </div>
+    
     <!-- Book Container -->
     <div class="relative z-10 flex-1 flex items-center justify-center px-4 py-8">
         <div class="book-container w-full max-w-4xl mx-auto">
@@ -145,6 +162,14 @@
     position: relative;
     perspective: 1500px; /* Creates 3D depth */
     margin: 0 auto;
+}
+
+/* Remove fixed height on mobile */
+@media (max-width: 768px) {
+    .book-container {
+        height: 100vh;
+        min-height: 100vh;
+    }
 }
 
 .book-spine {
@@ -418,41 +443,275 @@
     100% { transform: rotate(360deg); }
 }
 
+/* Mobile Flip Effect - Heyzine Style */
+.mobile-flip-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    perspective: 1200px;
+    perspective-origin: center center;
+}
+
+.mobile-page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: -8px 0 20px rgba(0, 0, 0, 0.15);
+    border-radius: 0 8px 8px 0;
+}
+
+.mobile-page.flipping {
+    transform: rotateY(-180deg);
+    box-shadow: 8px 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.mobile-page-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    padding-bottom: 80px; /* Space for navigation buttons */
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-page-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    transform: rotateY(180deg);
+    backface-visibility: hidden;
+    padding: 20px;
+    padding-bottom: 80px; /* Space for navigation buttons */
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    border-radius: 8px 0 0 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Mobile question content styling */
+.mobile-question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.mobile-question-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #8FC340;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    margin-right: 8px;
+}
+
+.mobile-question-meta {
+    display: flex;
+    gap: 8px;
+}
+
+.mobile-subject-badge, .mobile-difficulty-badge {
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mobile-subject-badge {
+    background: linear-gradient(135deg, #8FC340, #7bb02d);
+    color: white;
+}
+
+.mobile-difficulty-badge {
+    background: linear-gradient(135deg, #E368A7, #d15a8a);
+    color: white;
+}
+
+.mobile-question-text {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #2d3748;
+    margin-bottom: 20px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    flex-shrink: 0;
+}
+
+.mobile-question-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    margin-bottom: 20px;
+}
+
+.mobile-option {
+    padding: 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    background: #f8f9fa;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mobile-option-letter {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #8FC340, #7bb02d);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.mobile-option-text {
+    flex: 1;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #2d3748;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Mobile end of assessment styling */
+.mobile-end-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    padding: 20px;
+}
+
+.mobile-end-icon {
+    font-size: 4rem;
+    color: #8FC340;
+    margin-bottom: 20px;
+}
+
+.mobile-end-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #8FC340;
+    margin-bottom: 15px;
+}
+
+.mobile-end-message {
+    font-size: 1rem;
+    color: #6b7280;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.mobile-end-subtitle {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    line-height: 1.4;
+}
+
 /* Mobile Touch Gestures */
 @media (max-width: 768px) {
     .book-pages {
         min-height: 500px;
     }
     
-    /* Mobile: Show only one page at a time */
-    .page {
-        width: 100% !important; /* Full width on mobile */
-    }
-    
-    .left-page {
-        left: 0 !important;
-        width: 100% !important;
-    }
-    
-    .right-page {
-        right: 0 !important;
-        width: 100% !important;
-        /* Hide the right page on mobile by default */
+    /* Mobile: Use flip container instead of book pages */
+    .book-pages {
         display: none;
     }
     
-    /* Show right page only when it's the active page */
-    .right-page.active {
+    .mobile-flip-container {
         display: block;
-    }
-    
-    /* Hide left page when right page is active */
-    .left-page.hidden {
-        display: none;
+        width: 100%;
+        height: 100vh;
+        min-height: 100vh;
     }
     
     .page-content {
         padding: 20px;
+    }
+    
+    /* Adjust mobile page content spacing */
+    .mobile-page-content,
+    .mobile-page-back {
+        padding: 15px;
+        padding-bottom: 60px; /* Reduced space for navigation on mobile */
+    }
+    
+    .mobile-question-header {
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+    }
+    
+    .mobile-question-text {
+        margin-bottom: 12px;
+        font-size: 1rem;
+    }
+    
+    .mobile-question-options {
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+    
+    .mobile-option {
+        padding: 10px;
+    }
+    
+    /* Mobile end of assessment adjustments */
+    .mobile-end-container {
+        padding: 15px;
+        height: auto;
+        min-height: 300px;
+    }
+    
+    .mobile-end-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+    }
+    
+    .mobile-end-title {
+        font-size: 1.25rem;
+        margin-bottom: 12px;
+    }
+    
+    .mobile-end-message {
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+    
+    .mobile-end-subtitle {
+        font-size: 0.8rem;
     }
     
     .question-number {
@@ -489,6 +748,13 @@
     }
 }
 
+/* Desktop: Hide mobile flip container */
+@media (min-width: 769px) {
+    .mobile-flip-container {
+        display: none;
+    }
+}
+
 /* Touch gesture area */
 .touch-area {
     position: absolute;
@@ -513,8 +779,174 @@ let assessmentData = null;
 let isFlipping = false;
 let isMobile = window.innerWidth <= 768;
 
+// Page flip sound
+const pageFlipSound = new Audio('/sounds/flip-sm.mp3');
+let soundEnabled = true;
+
 // API Configuration
 const QUESTION_VIEWER_API_BASE_URL = 'https://admin.skillszone.africa';
+
+// Mobile flip animation functions - Heyzine style
+function playPageFlipSound() {
+    if (!soundEnabled) return;
+    
+    try {
+        pageFlipSound.currentTime = 0;
+        pageFlipSound.volume = 0.3;
+        pageFlipSound.play().catch(e => {
+            // Ignore autoplay restrictions
+            console.log('Audio autoplay prevented:', e);
+        });
+    } catch (e) {
+        console.log('Audio not available:', e);
+    }
+}
+
+// Sound toggle functionality
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    const soundIcon = document.getElementById('soundIcon');
+    const soundToggle = document.getElementById('soundToggle');
+    
+    if (soundEnabled) {
+        soundIcon.className = 'fas fa-volume-up text-white';
+        soundToggle.title = 'Mute Sound';
+    } else {
+        soundIcon.className = 'fas fa-volume-mute text-white';
+        soundToggle.title = 'Enable Sound';
+    }
+}
+
+function showMobileFlipAnimation(direction = 'next') {
+    const mobilePage = document.getElementById('mobilePage');
+    if (!mobilePage) return;
+    
+    // Play flip sound
+    playPageFlipSound();
+    
+    // Prepare next content on the back
+    const nextQuestion = direction === 'next' ? questions[currentPage + 1] : questions[currentPage - 1];
+    if (nextQuestion) {
+        updateMobilePageContent('back', nextQuestion, direction === 'next' ? currentPage + 2 : currentPage);
+    }
+    
+    // Reset any existing flip state first
+    mobilePage.classList.remove('flipping');
+    
+    // Force a reflow to ensure the class removal takes effect
+    mobilePage.offsetHeight;
+    
+    // Start flip animation with proper timing
+    requestAnimationFrame(() => {
+        mobilePage.classList.add('flipping');
+    });
+    
+    // After flip completes, update content and reset
+    setTimeout(() => {
+        // Update the front content
+        const currentQuestion = questions[currentPage];
+        if (currentQuestion) {
+            updateMobilePageContent('front', currentQuestion, currentPage + 1);
+        }
+        
+        // Reset flip state
+        mobilePage.classList.remove('flipping');
+    }, 600);
+}
+
+function updateMobilePageContent(side, question, questionNumber) {
+    const contentEl = side === 'front' ? 
+        document.getElementById('mobilePageContent') : 
+        document.getElementById('mobilePageBack');
+    
+    if (!contentEl) return;
+    
+    if (!question) {
+        // End of assessment - mobile optimized
+        contentEl.innerHTML = `
+            <div class="mobile-end-container">
+                <div class="mobile-end-icon">
+                    <i class="fas fa-flag-checkered"></i>
+                </div>
+                <h3 class="mobile-end-title">Assessment Complete!</h3>
+                <p class="mobile-end-message">You've reached the end of this assessment.</p>
+                <p class="mobile-end-subtitle">Thank you for viewing all the questions.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Get subject name from assessment data
+    const subjectName = assessmentData && assessmentData.subject ? assessmentData.subject.name : 'Subject';
+    
+    // Update difficulty based on question type (same as desktop)
+    const difficultyMap = {
+        'mcq': 'Multiple Choice',
+        'true_false': 'True/False',
+        'short_answer': 'Short Answer',
+        'essay': 'Essay',
+        'matching': 'Matching',
+        'fill_blank': 'Fill in Blank'
+    };
+    const difficultyText = difficultyMap[question.question_type] || 'Question';
+    
+    // Generate options based on question type (mobile-specific styling)
+    let optionsHtml = '';
+    if (question.question_type === 'mcq' && question.answers && question.answers.length > 0) {
+        // Multiple choice questions
+        optionsHtml = question.answers.map((answer, index) => `
+            <div class="mobile-option">
+                <div class="mobile-option-letter">${String.fromCharCode(65 + index)}</div>
+                <div class="mobile-option-text">${answer.answer_text}</div>
+            </div>
+        `).join('');
+    } else if (question.question_type === 'true_false') {
+        // True/False questions
+        optionsHtml = `
+            <div class="mobile-option">
+                <div class="mobile-option-letter">A</div>
+                <div class="mobile-option-text">True</div>
+            </div>
+            <div class="mobile-option">
+                <div class="mobile-option-letter">B</div>
+                <div class="mobile-option-text">False</div>
+            </div>
+        `;
+    } else if (['short_answer', 'essay'].includes(question.question_type)) {
+        // Text input questions
+        optionsHtml = `
+            <div class="mobile-option">
+                <div class="mobile-option-text" style="font-style: italic; color: #6b7280;">This is a text input question. Type your answer in the text box.</div>
+            </div>
+        `;
+    } else if (question.question_type === 'matching') {
+        // Matching questions
+        optionsHtml = `
+            <div class="mobile-option">
+                <div class="mobile-option-text" style="font-style: italic; color: #6b7280;">This is a matching question. Match items from column A to column B.</div>
+            </div>
+        `;
+    } else {
+        // Default case
+        optionsHtml = `
+            <div class="mobile-option">
+                <div class="mobile-option-text" style="font-style: italic; color: #6b7280;">No options available for this question type.</div>
+            </div>
+        `;
+    }
+    
+    contentEl.innerHTML = `
+        <div class="mobile-question-header">
+            <div class="mobile-question-number">${questionNumber}</div>
+            <div class="mobile-question-meta">
+                <span class="mobile-subject-badge">${subjectName}</span>
+                <span class="mobile-difficulty-badge">${difficultyText}</span>
+            </div>
+        </div>
+        <div class="mobile-question-text">${question.question_text || 'No question text available'}</div>
+        <div class="mobile-question-options">${optionsHtml}</div>
+    `;
+}
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
@@ -527,6 +959,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add click handlers for pages
     const leftPage = document.getElementById('leftPage');
     const rightPage = document.getElementById('rightPage');
+    const mobilePage = document.getElementById('mobilePage');
     
     if (leftPage) {
         leftPage.addEventListener('click', () => {
@@ -540,6 +973,59 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Mobile page click and touch handlers
+    if (mobilePage) {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        
+        // Touch start
+        mobilePage.addEventListener('touchstart', (e) => {
+            if (isMobile && !isFlipping) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            }
+        }, { passive: true });
+        
+        // Touch end
+        mobilePage.addEventListener('touchend', (e) => {
+            if (isMobile && !isFlipping) {
+                touchEndX = e.changedTouches[0].clientX;
+                touchEndY = e.changedTouches[0].clientY;
+                
+                const deltaX = touchEndX - touchStartX;
+                const deltaY = touchEndY - touchStartY;
+                
+                // Only trigger if horizontal swipe is more significant than vertical
+                if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+                    if (deltaX > 0) {
+                        // Swipe right - go to previous
+                        flipPrevious();
+                    } else {
+                        // Swipe left - go to next
+                        flipNext();
+                    }
+                }
+            }
+        }, { passive: true });
+        
+        // Click handlers for non-touch devices
+        mobilePage.addEventListener('click', (e) => {
+            if (isMobile && !isFlipping) {
+                const rect = mobilePage.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const centerX = rect.width / 2;
+                
+                if (clickX < centerX) {
+                    flipPrevious();
+                } else {
+                    flipNext();
+                }
+            }
+        });
+    }
+    
     // Handle window resize to update mobile detection
     window.addEventListener('resize', function() {
         const wasMobile = isMobile;
@@ -550,6 +1036,12 @@ document.addEventListener('DOMContentLoaded', function() {
             loadQuestionsIntoPages();
         }
     });
+    
+    // Sound toggle button
+    const soundToggle = document.getElementById('soundToggle');
+    if (soundToggle) {
+        soundToggle.addEventListener('click', toggleSound);
+    }
 });
 
 async function loadAssessmentQuestions(assessmentId) {
@@ -637,21 +1129,13 @@ function loadQuestionsIntoPages() {
 
 function loadMobilePages() {
     const currentQuestion = questions[currentPage];
-    const leftPage = document.getElementById('leftPage');
-    const rightPage = document.getElementById('rightPage');
     
-    // Hide both pages first
-    leftPage.classList.add('hidden');
-    rightPage.classList.remove('active');
-    
-    // Show the current page
+    // Update mobile page content
     if (currentQuestion) {
-        updateLeftPageContent(currentQuestion, currentPage + 1);
-        leftPage.classList.remove('hidden');
+        updateMobilePageContent('front', currentQuestion, currentPage + 1);
     } else {
         // At the end - show end message
-        updateLeftPageContent(null, 'End of Assessment');
-        leftPage.classList.remove('hidden');
+        updateMobilePageContent('front', null, 'End of Assessment');
     }
 }
 
@@ -698,11 +1182,31 @@ function flipNext() {
     isFlipping = true;
     
     if (isMobile) {
-        // Mobile: Simple page transition
+        // Mobile: Heyzine-style flip animation
         currentPage++;
-        loadQuestionsIntoPages();
-        updateNavigation();
-        isFlipping = false;
+        
+        // Check if we've reached the end
+        if (currentPage >= questions.length) {
+            // Show end of assessment page
+            showMobileFlipAnimation('next');
+            setTimeout(() => {
+                updateMobilePageContent('front', null, 'End of Assessment');
+                updateNavigation();
+                updatePageDots();
+                isFlipping = false;
+            }, 300);
+        } else {
+            showMobileFlipAnimation('next');
+            
+            // Update navigation and page dots
+            updateNavigation();
+            updatePageDots();
+            
+            // Reset flipping state after animation
+            setTimeout(() => {
+                isFlipping = false;
+            }, 600);
+        }
     } else {
         // Desktop: Flip animation
         const rightPage = document.getElementById('rightPage');
@@ -739,11 +1243,18 @@ function flipPrevious() {
         isFlipping = true;
         
         if (isMobile) {
-            // Mobile: Simple page transition
+            // Mobile: Heyzine-style flip animation
             currentPage--;
-            loadQuestionsIntoPages();
+            showMobileFlipAnimation('previous');
+            
+            // Update navigation and page dots
             updateNavigation();
-            isFlipping = false;
+            updatePageDots();
+            
+            // Reset flipping state after animation
+            setTimeout(() => {
+                isFlipping = false;
+            }, 600);
         } else {
             // Desktop: Flip animation
             const rightPage = document.getElementById('rightPage');
@@ -1048,3 +1559,4 @@ function showError(message) {
 }
 </script>
 @endsection
+

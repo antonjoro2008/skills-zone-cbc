@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Gravity CBC - Skills Assessment for African Students')
+@section('title', 'Gravity CBC - Skills Assessment for Competency Based Curriculum')
 
 @section('content')
     <!-- Landing Page -->
@@ -17,24 +17,24 @@
                     <div class="text-center lg:text-left animate-fade-in-left">
                         <div class="inline-flex items-center bg-yellow-400 bg-opacity-90 text-gray-900 rounded-full px-4 py-2 mb-6 shadow-lg">
                             <i class="fas fa-star text-yellow-600 mr-2"></i>
-                            <span class="text-sm font-bold">Trusted by 50,000+ students across Africa</span>
+                            <span class="text-sm font-bold">Trusted by 50,000+ learners across the country</span>
                         </div>
                         <h1 class="text-4xl md:text-6xl lg:text-5xl font-bold mb-6 leading-tight text-white">
-                            Unlock Your
+                            Unlocking CBC
                             <span class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                                Kids Potential
+                                Learners Potential
                             </span>
                             <br>with Gravity CBC 
                         </h1>
                         <p class="text-xl md:text-2xl mb-8 max-w-2xl mx-auto lg:mx-0 text-gray-100 leading-relaxed">
-                            Affordable, token-based assessments for African students. Build skills, track progress, and excel in your academic journey.
+                            Affordable, token-based assessments for CBC Based learners. Build skills, track progress, and excel in your academic journey.
                         </p>
                         <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                             <a href="{{ route('subjects') }}" class="group bg-white text-blue-600 hover:bg-gray-50 px-8 py-4 rounded-full text-lg font-semibold transition-all shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 inline-block">
                                 <i class="fas fa-rocket mr-2 group-hover:animate-bounce"></i>
                                 Explore Assessments
                             </a>
-                            <button class="group border-2 border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-gray-900 px-8 py-4 rounded-full text-lg font-semibold transition-all hover:scale-105 hover:-translate-y-1 shadow-lg" onclick="showModal('registerModal')">
+                            <button id="joinFreeBtn" class="group border-2 border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-gray-900 px-8 py-4 rounded-full text-lg font-semibold transition-all hover:scale-105 hover:-translate-y-1 shadow-lg" onclick="showModal('registerModal')">
                                 <i class="fas fa-user-plus mr-2 group-hover:rotate-12 transition-transform"></i>
                                 Join Free
                             </button>
@@ -56,15 +56,15 @@
                                     <div class="bg-white bg-opacity-20 rounded-full h-3 mb-4">
                                         <div class="bg-white rounded-full h-3 w-4/5 animate-pulse"></div>
                                     </div>
-                                    <p class="text-gray-200 text-sm">JavaScript Fundamentals</p>
+                                    <p class="text-gray-200 text-sm">KJSEA Mathematics</p>
                                 </div>
                                 <div class="space-y-3">
                                     <div class="flex items-center justify-between bg-white bg-opacity-20 rounded-lg p-3">
-                                        <span class="text-white text-sm">✅ Variables & Functions</span>
+                                        <span class="text-white text-sm">✅ Algebra & Equations</span>
                                         <i class="fas fa-check text-green-300"></i>
                                     </div>
                                     <div class="flex items-center justify-between bg-white bg-opacity-20 rounded-lg p-3">
-                                        <span class="text-white text-sm">📝 Arrays & Objects</span>
+                                        <span class="text-white text-sm">📝 Integrated Science</span>
                                         <i class="fas fa-clock text-yellow-300"></i>
                                     </div>
                                 </div>
@@ -84,12 +84,12 @@
                 <div class="text-center mb-20">
                     <div class="inline-flex items-center bg-blue-100 rounded-full px-4 py-2 mb-4">
                         <i class="fas fa-magic text-blue-600 mr-2"></i>
-                        <span class="text-blue-600 font-medium text-sm">Why Choose Gravity CBC?</span>
+                        <span class="text-blue-600 font-medium text-sm">Why Choose Gravity CBC Assessments?</span>
                     </div>
                     <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Features that make us
                         <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">extraordinary</span>
                     </h2>
-                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">Discover the affordable, accessible features that make us the leading assessment platform for African students</p>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">Discover the affordable, accessible features that make us the leading assessment platform for Competency Based Curriculum Based Curriculum learners practicing with us</p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -109,7 +109,7 @@
                             <i class="fas fa-certificate"></i>
                         </div>
                         <h3 class="text-xl font-bold mb-4 text-gray-900 group-hover:text-green-600 transition-colors">Affordable Learning</h3>
-                        <p class="text-gray-600 leading-relaxed">Designed for African students with competitive pricing and flexible payment options.</p>
+                        <p class="text-gray-600 leading-relaxed">Designed for CBC Based learners with competitive pricing and flexible payment options.</p>
                         <div class="mt-6 text-green-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
                             <a href="{{ route('subjects') }}">View certificates →</a>
                         </div>
@@ -171,8 +171,8 @@
             
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 relative z-10">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Trusted by professionals worldwide</h2>
-                    <p class="text-blue-200 text-lg">Join thousands who have advanced their careers with Gravity CBC</p>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Trusted by education actors in the country</h2>
+                    <p class="text-blue-200 text-lg">Join thousands of learners across the country who practice with Gravity CBC Assessments</p>
                 </div>
                 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -180,7 +180,7 @@
                         <div class="text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text mb-2 group-hover:scale-110 transition-transform">
                             50K+
                         </div>
-                        <p class="text-gray-300 font-medium">Students Certified</p>
+                        <p class="text-gray-300 font-medium">Learners Assessed</p>
                         <div class="w-12 h-1 bg-gradient-to-r from-yellow-400 to-orange-400 mx-auto mt-3 rounded-full"></div>
                     </div>
                     <div class="stat-counter rounded-2xl p-6 text-center group hover:scale-105 transition-all duration-300">
@@ -194,7 +194,7 @@
                         <div class="text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text mb-2 group-hover:scale-110 transition-transform">
                             95%
                         </div>
-                        <p class="text-gray-300 font-medium">Success Rate</p>
+                        <p class="text-gray-300 font-medium">Reported Improvement</p>
                         <div class="w-12 h-1 bg-gradient-to-r from-purple-400 to-pink-400 mx-auto mt-3 rounded-full"></div>
                     </div>
                     <div class="stat-counter rounded-2xl p-6 text-center group hover:scale-105 transition-all duration-300">
@@ -217,10 +217,18 @@
         const user = localStorage.getItem('user');
         const token = localStorage.getItem('token');
         const buyTokensBtn = document.getElementById('buyTokensBtn');
+        const joinFreeBtn = document.getElementById('joinFreeBtn');
         
-        if (user && token && buyTokensBtn) {
-            // User is logged in, show the Buy Tokens button
-            buyTokensBtn.classList.remove('hidden');
+        if (user && token) {
+            // User is logged in
+            if (buyTokensBtn) {
+                // Show the Buy Tokens button
+                buyTokensBtn.classList.remove('hidden');
+            }
+            if (joinFreeBtn) {
+                // Hide the Join Free button
+                joinFreeBtn.style.display = 'none';
+            }
         }
     });
 </script>

@@ -2,11 +2,257 @@
         // Global state
         let currentUser = null;
         let resetPhoneNumber = null; // Store phone number for password reset flow
+        let tokenBalanceInterval = null; // Store interval for token balance updates
+        let assessmentTrackingInterval = null; // Store interval for assessment progress tracking
+        let currentAttemptId = null; // Store current assessment attempt ID
+        let assessmentMinutesElapsed = 0; // Track minutes elapsed in current assessment
         
         // API Configuration
         // Change this URL to match your API server
         const API_BASE_URL = 'https://admin.skillszone.africa';
         
+        // Token Balance Functions
+        async function fetchTokenBalance() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    return null;
+                }
+
+                const response = await fetch(`${API_BASE_URL}/api/token-balance`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    return data.data;
+                } else {
+                    console.error('Failed to fetch token balance:', data.message);
+                    return null;
+                }
+            } catch (error) {
+                console.error('Error fetching token balance:', error);
+                return null;
+            }
+        }
+
+        async function updateTokenBalanceDisplay() {
+            const balanceData = await fetchTokenBalance();
+            if (!balanceData) {
+                return;
+            }
+
+            // Update all token balance elements on the page
+            const tokenBalanceElements = document.querySelectorAll('#tokenBalance');
+            tokenBalanceElements.forEach(element => {
+                element.textContent = `${balanceData.token_balance || 0} Tokens`;
+            });
+
+            // Update available minutes elements
+            const availableMinutesElements = document.querySelectorAll('#availableMinutes');
+            availableMinutesElements.forEach(element => {
+                element.textContent = `${balanceData.minutes_balance || 0} Minutes`;
+            });
+
+            // Update localStorage with new balance data
+            const storedDashboard = localStorage.getItem('dashboard');
+            if (storedDashboard) {
+                try {
+                    const dashboard = JSON.parse(storedDashboard);
+                    dashboard.token_balance = balanceData.token_balance;
+                    dashboard.available_minutes = balanceData.minutes_balance;
+                    localStorage.setItem('dashboard', JSON.stringify(dashboard));
+                } catch (e) {
+                    console.error('Error updating dashboard in localStorage:', e);
+                }
+            }
+        }
+
+        function startTokenBalanceUpdates() {
+            // Clear any existing interval
+            if (tokenBalanceInterval) {
+                clearInterval(tokenBalanceInterval);
+            }
+
+            // Update immediately
+            updateTokenBalanceDisplay();
+
+            // Set up interval to update every 10 seconds (10000ms)
+            tokenBalanceInterval = setInterval(updateTokenBalanceDisplay, 10000);
+        }
+
+        function stopTokenBalanceUpdates() {
+            if (tokenBalanceInterval) {
+                clearInterval(tokenBalanceInterval);
+                tokenBalanceInterval = null;
+            }
+        }
+
+        // Assessment Progress Tracking Functions
+        async function trackAssessmentProgress() {
+            if (!currentAttemptId) {
+                console.warn('No active assessment attempt to track');
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    console.error('No authentication token available');
+                    return;
+                }
+
+                assessmentMinutesElapsed += 1;
+
+                const response = await fetch(`${API_BASE_URL}/api/assessments/track-progress`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        attempt_id: currentAttemptId,
+                        minutes_elapsed: assessmentMinutesElapsed
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    console.log('Assessment progress tracked:', data.data);
+                    
+                    // Update token balance display with new balances
+                    updateTokenBalanceFromTracking(data.data);
+                    
+                    // Check if user has sufficient minutes balance to continue
+                    if (data.data.remaining_minutes_balance <= 0) {
+                        console.warn('Insufficient minutes balance to continue assessment');
+                        handleInsufficientMinutes();
+                        return; // Stop further tracking
+                    }
+                    
+                    // Check if user has sufficient token balance to continue
+                    if (data.data.remaining_token_balance <= 0) {
+                        console.warn('Insufficient token balance to continue assessment');
+                        handleInsufficientTokens();
+                        return; // Stop further tracking
+                    }
+                } else {
+                    console.error('Failed to track assessment progress:', data.message);
+                }
+            } catch (error) {
+                console.error('Error tracking assessment progress:', error);
+            }
+        }
+
+        function updateTokenBalanceFromTracking(trackingData) {
+            // Update all token balance elements on the page
+            const tokenBalanceElements = document.querySelectorAll('#tokenBalance');
+            tokenBalanceElements.forEach(element => {
+                element.textContent = `${trackingData.remaining_token_balance || 0} Tokens`;
+            });
+
+            // Update available minutes elements
+            const availableMinutesElements = document.querySelectorAll('#availableMinutes');
+            availableMinutesElements.forEach(element => {
+                element.textContent = `${trackingData.remaining_minutes_balance || 0} Minutes`;
+            });
+
+            // Update localStorage with new balance data
+            const storedDashboard = localStorage.getItem('dashboard');
+            if (storedDashboard) {
+                try {
+                    const dashboard = JSON.parse(storedDashboard);
+                    dashboard.token_balance = trackingData.remaining_token_balance;
+                    dashboard.available_minutes = trackingData.remaining_minutes_balance;
+                    localStorage.setItem('dashboard', JSON.stringify(dashboard));
+                } catch (e) {
+                    console.error('Error updating dashboard in localStorage:', e);
+                }
+            }
+        }
+
+        function handleInsufficientMinutes() {
+            // Stop assessment tracking immediately
+            stopAssessmentTracking();
+            
+            // Clear assessment data to prevent confusion
+            localStorage.removeItem('currentAssessment');
+            localStorage.removeItem('currentAttemptId');
+            localStorage.removeItem('assessmentStartTime');
+            
+            // Show attention popup
+            showAlert(
+                'Insufficient Minutes',
+                'You have run out of minutes to continue this assessment. Your progress has been saved and you can resume later after purchasing more minutes.',
+                'warning',
+                () => {
+                    // Redirect to assessments page after user clicks OK
+                    window.location.href = '/assessments';
+                }
+            );
+        }
+
+        function handleInsufficientTokens() {
+            // Stop assessment tracking immediately
+            stopAssessmentTracking();
+            
+            // Clear assessment data to prevent confusion
+            localStorage.removeItem('currentAssessment');
+            localStorage.removeItem('currentAttemptId');
+            localStorage.removeItem('assessmentStartTime');
+            
+            // Show attention popup
+            showAlert(
+                'Insufficient Tokens',
+                'You have run out of tokens to continue this assessment. Your progress has been saved and you can resume later after purchasing more tokens.',
+                'warning',
+                () => {
+                    // Redirect to assessments page after user clicks OK
+                    window.location.href = '/assessments';
+                }
+            );
+        }
+
+        function startAssessmentTracking(attemptId) {
+            // Clear any existing tracking interval
+            if (assessmentTrackingInterval) {
+                clearInterval(assessmentTrackingInterval);
+            }
+
+            // Set current attempt ID and reset elapsed time
+            currentAttemptId = attemptId;
+            assessmentMinutesElapsed = 0;
+
+            // Start tracking immediately (for the first minute)
+            trackAssessmentProgress();
+
+            // Set up interval to track every minute (60000ms)
+            assessmentTrackingInterval = setInterval(trackAssessmentProgress, 60000);
+            
+            console.log(`Started tracking assessment progress for attempt ID: ${attemptId}`);
+        }
+
+        function stopAssessmentTracking() {
+            if (assessmentTrackingInterval) {
+                clearInterval(assessmentTrackingInterval);
+                assessmentTrackingInterval = null;
+            }
+            
+            // Reset tracking variables
+            currentAttemptId = null;
+            assessmentMinutesElapsed = 0;
+            
+            console.log('Stopped assessment progress tracking');
+        }
+
         // Load institutions for registration form
         async function loadInstitutions() {
             try {
@@ -222,6 +468,14 @@
                 // Clear reset data when closing forgot password modals
                 if (['forgotModal', 'verifyCodeModal', 'resetPasswordModal'].includes(modalId)) {
                     clearResetData();
+                }
+                
+                // Call callback when alert modal is closed
+                if (modalId === 'alertModal' && window.alertModalCallback) {
+                    setTimeout(() => {
+                        window.alertModalCallback();
+                        window.alertModalCallback = null; // Clear the callback after use
+                    }, 300); // Wait for animation to complete
                 }
             }
         }
@@ -506,6 +760,11 @@
             sessionStorage.removeItem('user');
             sessionStorage.removeItem('token');
             sessionStorage.removeItem('dashboard');
+            
+            // Stop token balance updates and assessment tracking
+            stopTokenBalanceUpdates();
+            stopAssessmentTracking();
+            
             console.log('User data cleared, updating auth state...');
             updateAuthState();
             showModal('logoutSuccessModal');
@@ -554,6 +813,9 @@
                     if (institutionDashboardLink) institutionDashboardLink.style.display = 'none';
                     if (institutionDashboardLinkMobile) institutionDashboardLinkMobile.style.display = 'none';
                 }
+
+                // Start token balance updates for logged-in users
+                startTokenBalanceUpdates();
             } else {
                 // User is logged out
                 if (loginBtn) loginBtn.style.display = 'block';
@@ -569,6 +831,9 @@
                 if (dashboardLinkMobile) dashboardLinkMobile.style.display = 'none';
                 if (institutionDashboardLinkMobile) institutionDashboardLinkMobile.style.display = 'none';
                 if (transactionsLinkMobile) transactionsLinkMobile.style.display = 'none';
+
+                // Stop token balance updates for logged-out users
+                stopTokenBalanceUpdates();
             }
         }
         
@@ -960,7 +1225,7 @@
         }
 
         // Custom alert function
-        function showAlert(title, message, type = 'warning') {
+        function showAlert(title, message, type = 'warning', onConfirm = null) {
             console.log('showAlert called with:', title, message, type);
             
             // Check if alert modal exists
@@ -1010,6 +1275,13 @@
                 // Default warning
                 alertIcon.className = 'fas fa-exclamation-triangle text-white text-2xl';
                 alertContainer.className = 'w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4';
+            }
+            
+            // Store the callback function for when the modal is closed
+            if (onConfirm) {
+                window.alertModalCallback = onConfirm;
+            } else {
+                window.alertModalCallback = null;
             }
             
             showModal('alertModal');

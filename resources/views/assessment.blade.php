@@ -306,6 +306,12 @@
         localStorage.removeItem('assessmentAnswers');
         localStorage.removeItem('currentAttemptId');
         localStorage.removeItem('assessmentStartTime');
+        
+        // Stop assessment progress tracking
+        if (typeof stopAssessmentTracking === 'function') {
+            stopAssessmentTracking();
+        }
+        
         console.log('All assessment data cleared for new attempt');
     }
 
@@ -356,6 +362,10 @@
         window.addEventListener('beforeunload', function() {
             if (timeRemaining > 0 && currentAssessment) {
                 saveTimeTracking();
+            }
+            // Stop assessment progress tracking
+            if (typeof stopAssessmentTracking === 'function') {
+                stopAssessmentTracking();
             }
         });
         
@@ -611,18 +621,17 @@
                     clearAllAssessmentData();
                 }
 
-                // Update token balance in localStorage (only if tokens were deducted)
-                if (data.data.tokens_deducted > 0) {
-                    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-                    if (currentUser.wallet) {
-                        currentUser.wallet.balance = data.data.remaining_balance;
-                        localStorage.setItem('user', JSON.stringify(currentUser));
-                    }
-                }
+                // Note: Token deduction is now handled by the time-based API endpoint called every minute
+                // No need to update token balance here as it will be updated by the tracking system
 
                 // Store attempt data for later use
                 localStorage.setItem('currentAttemptId', data.data.attempt_id);
                 localStorage.setItem('assessmentStartTime', data.data.started_at);
+
+                // Start assessment progress tracking for time-based token deduction
+                if (typeof startAssessmentTracking === 'function') {
+                    startAssessmentTracking(data.data.attempt_id);
+                }
 
                 // Initialize assessment
                 startTime = new Date(data.data.started_at);
@@ -672,10 +681,10 @@
                 loadQuestion();
 
                 // Show appropriate message based on status
-                if (data.data.status === 'in_progress' && data.data.tokens_deducted === 0) {
+                if (data.data.status === 'in_progress') {
                     showAssessmentAlert('Resuming Assessment', 'Continuing your previous assessment session.', 'info');
                 } else {
-                    showAssessmentAlert('Assessment Started', `Assessment started successfully! ${data.data.tokens_deducted} token(s) deducted.`, 'success');
+                    showAssessmentAlert('Assessment Started', 'Assessment started successfully! Tokens will be deducted based on time spent.', 'success');
                 }
             } else {
                 // Reset button state for all error cases
@@ -1118,6 +1127,10 @@
 
     function autoSubmitAssessment() {
         clearInterval(timerInterval);
+        // Stop assessment progress tracking
+        if (typeof stopAssessmentTracking === 'function') {
+            stopAssessmentTracking();
+        }
         // Don't clear assessment data yet - submitAssessment needs it
         showAssessmentAlert('Time Up!', 'Your time has expired. The assessment will be submitted automatically.', 'warning');
         submitAssessment();
@@ -1259,6 +1272,11 @@
                 
                 // Clean up all assessment data after successful submission
                 clearAllAssessmentData();
+                
+                // Stop assessment progress tracking
+                if (typeof stopAssessmentTracking === 'function') {
+                    stopAssessmentTracking();
+                }
                 
                 // Redirect to summary page
                 window.location.href = `/assessment-summary/${currentAssessment.id}`;

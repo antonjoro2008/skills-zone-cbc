@@ -29,6 +29,9 @@
                         <p class="text-2xl font-bold text-gray-900" id="tokenBalance">
                             <i class="fas fa-spinner fa-spin text-gray-400"></i>
                         </p>
+                        <p class="text-sm font-semibold text-[#333333] mt-1" id="availableMinutes">
+                            <i class="fas fa-spinner fa-spin text-[#333333]"></i>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -279,6 +282,12 @@
             tokenBalanceElement.textContent = dashboard.token_balance || 0;
         }
         
+        // Update available minutes
+        const availableMinutesElement = document.getElementById('availableMinutes');
+        if (availableMinutesElement) {
+            availableMinutesElement.textContent = `${dashboard.available_minutes || 0} Minutes`;
+        }
+        
         // Update assessment statistics
         const completedElement = document.getElementById('completedAssessments');
         const inProgressElement = document.getElementById('inProgressAssessments');
@@ -428,11 +437,13 @@
     function setDefaultDashboardValues() {
         // Set default values when no dashboard data is available
         const tokenBalanceElement = document.getElementById('tokenBalance');
+        const availableMinutesElement = document.getElementById('availableMinutes');
         const completedElement = document.getElementById('completedAssessments');
         const inProgressElement = document.getElementById('inProgressAssessments');
         const averageScoreElement = document.getElementById('averageScore');
         
         if (tokenBalanceElement) tokenBalanceElement.textContent = '0';
+        if (availableMinutesElement) availableMinutesElement.textContent = '0 Minutes';
         if (completedElement) completedElement.textContent = '0';
         if (inProgressElement) inProgressElement.textContent = '0';
         if (averageScoreElement) averageScoreElement.textContent = '0%';

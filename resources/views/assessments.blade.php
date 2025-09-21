@@ -23,6 +23,7 @@
                 <div class="text-left">
                     <div class="text-sm text-gray-200">Your Token Balance</div>
                     <div class="text-xl font-bold" id="tokenBalance">Loading...</div>
+                    <div class="text-sm font-semibold text-[#333333]" id="availableMinutes">Loading...</div>
                 </div>
             </div>
         </div>
@@ -167,9 +168,34 @@
             return false;
         }
         
+        // Check if assessment results exist (indicating completion)
+        const assessmentResults = localStorage.getItem('assessmentResults');
+        if (assessmentResults) {
+            try {
+                const results = JSON.parse(assessmentResults);
+                if (results.assessment_id === assessmentId) {
+                    console.log('Assessment already completed, clearing time tracking data');
+                    localStorage.removeItem('assessmentTimeTracking');
+                    localStorage.removeItem('currentAttemptId');
+                    localStorage.removeItem('assessmentStartTime');
+                    return false;
+                }
+            } catch (e) {
+                console.error('Error parsing assessment results:', e);
+            }
+        }
+        
         // Check if time hasn't expired
         const remainingTime = calculateRemainingTime(timeData);
-        return remainingTime > 0;
+        if (remainingTime <= 0) {
+            console.log('Assessment time expired, clearing time tracking data');
+            localStorage.removeItem('assessmentTimeTracking');
+            localStorage.removeItem('currentAttemptId');
+            localStorage.removeItem('assessmentStartTime');
+            return false;
+        }
+        
+        return true;
     }
 
     // Custom alert function for assessments page
@@ -242,6 +268,9 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        // Clean up any stale assessment data on page load
+        cleanupStaleAssessmentData();
+        
         // Load token balance from localStorage
         updateTokenBalance();
         
@@ -256,10 +285,45 @@
             loadAssessments();
         }
     });
+
+    function cleanupStaleAssessmentData() {
+        // Check if assessment results exist (indicating completion)
+        const assessmentResults = localStorage.getItem('assessmentResults');
+        if (assessmentResults) {
+            try {
+                const results = JSON.parse(assessmentResults);
+                console.log('Found completed assessment results, cleaning up stale data');
+                
+                // Clear all assessment tracking data since assessment is completed
+                localStorage.removeItem('assessmentTimeTracking');
+                localStorage.removeItem('currentAttemptId');
+                localStorage.removeItem('assessmentStartTime');
+                localStorage.removeItem('assessmentAnswers');
+                
+                // Clear assessment results after cleanup (optional - you might want to keep them for summary page)
+                // localStorage.removeItem('assessmentResults');
+            } catch (e) {
+                console.error('Error parsing assessment results during cleanup:', e);
+            }
+        }
+        
+        // Also check for expired time tracking data
+        const timeData = loadTimeTracking();
+        if (timeData) {
+            const remainingTime = calculateRemainingTime(timeData);
+            if (remainingTime <= 0) {
+                console.log('Found expired time tracking data, cleaning up');
+                localStorage.removeItem('assessmentTimeTracking');
+                localStorage.removeItem('currentAttemptId');
+                localStorage.removeItem('assessmentStartTime');
+            }
+        }
+    }
     
     function updateTokenBalance() {
         const storedDashboard = localStorage.getItem('dashboard');
         const tokenBalanceElement = document.getElementById('tokenBalance');
+        const availableMinutesElement = document.getElementById('availableMinutes');
         
         if (storedDashboard) {
             try {
@@ -267,15 +331,24 @@
                 if (tokenBalanceElement) {
                     tokenBalanceElement.textContent = `${dashboard.token_balance || 0} Tokens`;
                 }
+                if (availableMinutesElement) {
+                    availableMinutesElement.textContent = `${dashboard.available_minutes || 0} Minutes`;
+                }
             } catch (e) {
                 console.error('Error parsing dashboard data:', e);
                 if (tokenBalanceElement) {
                     tokenBalanceElement.textContent = '0 Tokens';
                 }
+                if (availableMinutesElement) {
+                    availableMinutesElement.textContent = '0 Minutes';
+                }
             }
         } else {
             if (tokenBalanceElement) {
                 tokenBalanceElement.textContent = '0 Tokens';
+            }
+            if (availableMinutesElement) {
+                availableMinutesElement.textContent = '0 Minutes';
             }
         }
     }
@@ -384,6 +457,7 @@
         
         gridElement.innerHTML = assessments.map(assessment => createAssessmentCard(assessment)).join('');
     }
+
     
     function createAssessmentCard(assessment) {
         const gradientColors = [
@@ -418,19 +492,6 @@
         // Format duration and questions
         const duration = assessment.duration_minutes ? `${assessment.duration_minutes} min` : 'N/A';
         const questions = assessment.questions_count ? `${assessment.questions_count} Questions` : 'Multiple Choice';
-        const tokens = assessment.token_cost || 5; // Use token_cost from API or default to 5
-        
-        // Check if user has enough tokens
-        const storedDashboard = localStorage.getItem('dashboard');
-        let userTokenBalance = 0;
-        if (storedDashboard) {
-            try {
-                const dashboard = JSON.parse(storedDashboard);
-                userTokenBalance = dashboard.token_balance || 0;
-            } catch (e) {
-                console.error('Error parsing dashboard data:', e);
-            }
-        }
         
         // Check if assessment is in progress
         const isInProgress = isAssessmentInProgress(assessment.id);
@@ -440,8 +501,6 @@
         if (isInProgress && timeData) {
             remainingTime = calculateRemainingTime(timeData);
         }
-
-        const hasEnoughTokens = userTokenBalance >= tokens;
         let buttonText, buttonIcon, buttonClass;
         
         if (isInProgress && remainingTime > 0) {
@@ -452,13 +511,9 @@
             buttonText = `Resume Assessment (${timeString})`;
             buttonIcon = 'fas fa-play';
             buttonClass = 'w-full bg-gradient-to-r from-[#E368A7] to-[#8FC340] text-white py-3 rounded-xl font-semibold hover:from-[#d15a8a] hover:to-[#7bb02d] transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse';
-        } else if (hasEnoughTokens) {
+        } else {
             buttonText = 'Start Assessment';
             buttonIcon = 'fas fa-play';
-            buttonClass = 'w-full bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse';
-        } else {
-            buttonText = 'Purchase & Start';
-            buttonIcon = 'fas fa-shopping-cart';
             buttonClass = 'w-full bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse';
         }
         
@@ -479,15 +534,12 @@
                         ${assessment.year ? `<span class="text-sm text-gray-500 ml-2">${assessment.year}</span>` : ''}
                     </div>
                     <p class="text-gray-600 mb-4 leading-relaxed">${assessment.description ? assessment.description.replace(/<[^>]*>/g, '') : 'Take this assessment to test your skills and knowledge.'}</p>
-                    <div class="grid grid-cols-3 gap-2 mb-4 text-xs">
+                    <div class="grid grid-cols-2 gap-2 mb-4 text-xs">
                         <div class="bg-[#8FC340]/10 text-[#8FC340] px-2 py-1 rounded-lg text-center">
                             <i class="fas fa-clock mr-1"></i>${duration}
                         </div>
                         <div class="bg-[#E368A7]/10 text-[#E368A7] px-2 py-1 rounded-lg text-center">
                             <i class="fas fa-question-circle mr-1"></i>${questions}
-                        </div>
-                        <div class="bg-[#8FC340]/10 text-[#8FC340] px-2 py-1 rounded-lg text-center font-semibold">
-                            ${tokens} Tokens
                         </div>
                     </div>
                     ${isInProgress && remainingTime > 0 ? `
@@ -497,17 +549,10 @@
                                 <span>Assessment in progress - ${Math.floor(remainingTime / 60)}:${(remainingTime % 60).toString().padStart(2, '0')} remaining</span>
                             </div>
                         </div>
-                    ` : hasEnoughTokens ? `
-                        <div class="bg-[#8FC340]/10 border border-[#8FC340]/20 rounded-lg p-3 mb-4">
-                            <div class="flex items-center text-[#8FC340] text-sm">
-                                <i class="fas fa-info-circle mr-2"></i>
-                                <span>This assessment will use ${tokens} tokens from your balance</span>
-                            </div>
-                        </div>
                     ` : ''}
                     <div class="space-y-3">
                         <button class="${buttonClass}" 
-                                onclick="${isInProgress && remainingTime > 0 ? `startAssessment(${assessment.id}, ${tokens})` : hasEnoughTokens ? `startAssessment(${assessment.id}, ${tokens})` : `purchaseAssessment('${assessment.title || 'Assessment'}', ${assessment.id}, ${tokens})`}"
+                                onclick="${isInProgress && remainingTime > 0 ? `startAssessment(${assessment.id})` : `startAssessment(${assessment.id})`}"
                                 ontouchstart=""
                                 style="min-height: 48px; touch-action: manipulation;">
                             <i class="${buttonIcon} mr-2"></i>${buttonText}
@@ -529,17 +574,10 @@
         window.location.href = `/questions/${assessmentId}`;
     }
 
-    async function purchaseAssessment(title, assessmentId, tokenCost) {
+    async function purchaseAssessment(title, assessmentId) {
         try {
-            // Check if user has enough tokens
-            const storedDashboard = localStorage.getItem('dashboard');
-            if (storedDashboard) {
-                const dashboard = JSON.parse(storedDashboard);
-                if (dashboard.token_balance < tokenCost) {
-                    showAlert('Insufficient Tokens', `You need ${tokenCost} tokens but only have ${dashboard.token_balance}. Please buy more tokens first.`, 'warning');
-                    return;
-                }
-            }
+            // Note: Token validation is now handled by the backend API
+            // No need to check token balance on frontend since time-based deduction is used
             
             const token = localStorage.getItem('token');
             if (!token) {
@@ -562,7 +600,7 @@
         }
     }
 
-    async function startAssessment(assessmentId, tokenCost = 1) {
+    async function startAssessment(assessmentId) {
         try {
             // Debug mobile localStorage access
             console.log('Starting assessment for ID:', assessmentId);
@@ -598,9 +636,6 @@
             const data = await response.json();
             
             if (data.success && data.data) {
-                // Add token cost to assessment data
-                data.data.token_cost = tokenCost;
-                
                 // Store assessment data and redirect to assessment page
                 localStorage.setItem('currentAssessment', JSON.stringify(data.data));
                 window.location.href = `/assessment/${assessmentId}`;

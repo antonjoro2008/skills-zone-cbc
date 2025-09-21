@@ -15,6 +15,7 @@
                 <div class="text-left">
                     <div class="text-sm text-gray-200">Your Token Balance</div>
                     <div class="text-xl font-bold" id="tokenBalance">Loading...</div>
+                    <div class="text-sm font-semibold text-[#333333]" id="availableMinutes">Loading...</div>
                 </div>
             </div>
         </div>
@@ -183,6 +184,7 @@
     function updateTokenBalance() {
         const storedDashboard = localStorage.getItem('dashboard');
         const tokenBalanceElement = document.getElementById('tokenBalance');
+        const availableMinutesElement = document.getElementById('availableMinutes');
         
         if (storedDashboard) {
             try {
@@ -190,15 +192,24 @@
                 if (tokenBalanceElement) {
                     tokenBalanceElement.textContent = `${dashboard.token_balance || 0} Tokens`;
                 }
+                if (availableMinutesElement) {
+                    availableMinutesElement.textContent = `${dashboard.available_minutes || 0} Minutes`;
+                }
             } catch (e) {
                 console.error('Error parsing dashboard data:', e);
                 if (tokenBalanceElement) {
                     tokenBalanceElement.textContent = '0 Tokens';
                 }
+                if (availableMinutesElement) {
+                    availableMinutesElement.textContent = '0 Minutes';
+                }
             }
         } else {
             if (tokenBalanceElement) {
                 tokenBalanceElement.textContent = '0 Tokens';
+            }
+            if (availableMinutesElement) {
+                availableMinutesElement.textContent = '0 Minutes';
             }
         }
     }

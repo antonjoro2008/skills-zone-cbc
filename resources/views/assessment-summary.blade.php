@@ -243,6 +243,18 @@
         loadAssessmentResults();
     });
 
+    // Clear assessment results when user navigates away from summary page
+    window.addEventListener('beforeunload', function() {
+        console.log('Clearing assessment results on page unload');
+        localStorage.removeItem('assessmentResults');
+    });
+
+    // Also clear results when user clicks back to assessments
+    function goBackToAssessments() {
+        localStorage.removeItem('assessmentResults');
+        window.location.href = '/assessments';
+    }
+
     function loadAssessmentResults() {
         // Get results from localStorage
         const resultsData = localStorage.getItem('assessmentResults');

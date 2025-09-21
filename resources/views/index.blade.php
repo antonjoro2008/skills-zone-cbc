@@ -30,7 +30,7 @@
                             Affordable, token-based assessments for African students. Build skills, track progress, and excel in your academic journey.
                         </p>
                         <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                            <a href="{{ route('assessments') }}" class="group bg-white text-blue-600 hover:bg-gray-50 px-8 py-4 rounded-full text-lg font-semibold transition-all shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 inline-block">
+                            <a href="{{ route('subjects') }}" class="group bg-white text-blue-600 hover:bg-gray-50 px-8 py-4 rounded-full text-lg font-semibold transition-all shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 inline-block">
                                 <i class="fas fa-rocket mr-2 group-hover:animate-bounce"></i>
                                 Explore Assessments
                             </a>
@@ -111,7 +111,7 @@
                         <h3 class="text-xl font-bold mb-4 text-gray-900 group-hover:text-green-600 transition-colors">Affordable Learning</h3>
                         <p class="text-gray-600 leading-relaxed">Designed for African students with competitive pricing and flexible payment options.</p>
                         <div class="mt-6 text-green-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                            <a href="{{ route('assessments') }}">View certificates →</a>
+                            <a href="{{ route('subjects') }}">View certificates →</a>
                         </div>
                     </div>
                     
@@ -133,7 +133,7 @@
                         <h3 class="text-xl font-bold mb-4 text-gray-900 group-hover:text-orange-600 transition-colors">Mobile Friendly</h3>
                         <p class="text-gray-600 leading-relaxed">Take assessments anywhere, anytime on any device with our responsive platform.</p>
                         <div class="mt-6 text-orange-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                            <a href="{{ route('assessments') }}">Try mobile →</a>
+                            <a href="{{ route('subjects') }}">Try mobile →</a>
                         </div>
                     </div>
                     

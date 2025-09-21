@@ -1,10 +1,45 @@
     <script>
         // Global state
         let currentUser = null;
+        let resetPhoneNumber = null; // Store phone number for password reset flow
         
         // API Configuration
         // Change this URL to match your API server
         const API_BASE_URL = 'https://admin.skillszone.africa';
+        
+        // Load institutions for registration form
+        async function loadInstitutions() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/institutions`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    const institutionSelect = document.getElementById('registerInstitutionId');
+                    if (institutionSelect) {
+                        // Clear existing options except the first one
+                        institutionSelect.innerHTML = '<option value="">Select your institution</option>';
+                        
+                        // Add institutions from API
+                        data.data.forEach(institution => {
+                            const option = document.createElement('option');
+                            option.value = institution.id;
+                            option.textContent = institution.name;
+                            institutionSelect.appendChild(option);
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading institutions:', error);
+                // Keep the default options if API fails
+            }
+        }
 
         // Phone number standardization function
         function standardizePhoneNumber(phone) {
@@ -183,14 +218,26 @@
                 } else {
                     modal.classList.add('hidden');
                 }
+                
+                // Clear reset data when closing forgot password modals
+                if (['forgotModal', 'verifyCodeModal', 'resetPasswordModal'].includes(modalId)) {
+                    clearResetData();
+                }
             }
         }
         
-        function showErrorModal(message) {
+        function showErrorModal(message, title = 'Error') {
             const errorMessageElement = document.getElementById('errorMessage');
+            const errorTitleElement = document.getElementById('errorTitle');
+            
             if (errorMessageElement) {
                 errorMessageElement.textContent = message;
             }
+            
+            if (errorTitleElement) {
+                errorTitleElement.textContent = title;
+            }
+            
             showModal('errorModal');
         }
         
@@ -198,7 +245,7 @@
         async function login(event) {
             event.preventDefault();
             
-            const email = document.getElementById('loginEmail').value;
+            const phone = document.getElementById('loginPhone').value;
             const password = document.getElementById('loginPassword').value;
             
             // Show loading state
@@ -215,7 +262,7 @@
                         'Accept': 'application/json',
                     },
                     body: JSON.stringify({
-                        email: email,
+                        phone_number: standardizePhoneNumber(phone),
                         password: password
                     })
                 });
@@ -241,13 +288,13 @@
                     // Redirect to dashboard
                     window.location.href = '/dashboard';
                 } else {
-                    // Show error modal with specific error message
-                    const errorMessage = data.message || 'Login failed. Please try again.';
-                    showErrorModal(errorMessage);
+                    // Show error modal with specific error message from API
+                    const errorMessage = data.message || data.error || 'Login failed. Please try again.';
+                    showErrorModal(errorMessage, 'Login Failed');
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                showErrorModal('Network error. Please check your connection and try again.');
+                showErrorModal('Network error. Please check your connection and try again.', 'Login Failed');
             } finally {
                 // Reset button state
                 submitBtn.innerHTML = originalText;
@@ -259,18 +306,17 @@
             event.preventDefault();
             
             const name = document.getElementById('registerName').value;
+            const phone = document.getElementById('registerPhone').value;
             const email = document.getElementById('registerEmail').value;
+            const institutionId = document.getElementById('registerInstitutionId').value;
             const gradeLevel = document.getElementById('registerGradeLevel').value;
             const password = document.getElementById('registerPassword').value;
             const passwordConfirmation = document.getElementById('registerPasswordConfirmation').value;
             const mpesaPhone = document.getElementById('registerMpesaPhone').value;
             
-            // Standardize phone number
-            const standardizedPhone = standardizePhoneNumber(mpesaPhone);
-            
             // Validate password confirmation
             if (password !== passwordConfirmation) {
-                showErrorModal('Passwords do not match. Please try again.');
+                showErrorModal('Passwords do not match. Please try again.', 'Registration Failed');
                 return;
             }
             
@@ -289,11 +335,13 @@
                     },
                     body: JSON.stringify({
                         name: name,
-                        email: email,
+                        phone_number: standardizePhoneNumber(phone),
+                        email: email || null,
                         password: password,
                         password_confirmation: passwordConfirmation,
-                        grade_level: gradeLevel,
-                        mpesa_phone: standardizedPhone
+                        mpesa_phone: standardizePhoneNumber(mpesaPhone),
+                        institution_id: parseInt(institutionId),
+                        grade_level: gradeLevel
                     })
                 });
                 
@@ -318,13 +366,13 @@
                     // Redirect to dashboard
                     window.location.href = '/dashboard';
                 } else {
-                    // Show error modal with specific error message
-                    const errorMessage = data.message || 'Registration failed. Please try again.';
-                    showErrorModal(errorMessage);
+                    // Show error modal with specific error message from API
+                    const errorMessage = data.message || data.error || 'Registration failed. Please try again.';
+                    showErrorModal(errorMessage, 'Registration Failed');
                 }
             } catch (error) {
                 console.error('Registration error:', error);
-                showErrorModal('Network error. Please check your connection and try again.');
+                showErrorModal('Network error. Please check your connection and try again.', 'Registration Failed');
             } finally {
                 // Reset button state
                 submitBtn.innerHTML = originalText;
@@ -335,17 +383,22 @@
         async function registerInstitution(event) {
             event.preventDefault();
             
-            const name = document.getElementById('institutionName').value;
-            const email = document.getElementById('institutionEmail').value;
-            const phone = document.getElementById('institutionPhone').value;
-            const address = document.getElementById('institutionAddress').value;
-            const motto = document.getElementById('institutionMotto').value;
-            const themeColor = document.getElementById('institutionThemeColor').value;
-            const password = document.getElementById('institutionPassword').value;
+            const institutionName = document.getElementById('institutionName').value;
+            const institutionEmail = document.getElementById('institutionEmail').value;
+            const institutionPhone = document.getElementById('institutionPhone').value;
+            const institutionAddress = document.getElementById('institutionAddress').value;
             const mpesaPhone = document.getElementById('institutionMpesaPhone').value;
+            const adminName = document.getElementById('adminName').value;
+            const adminPhone = document.getElementById('adminPhone').value;
+            const adminEmail = document.getElementById('adminEmail').value;
+            const adminPassword = document.getElementById('adminPassword').value;
+            const adminPasswordConfirmation = document.getElementById('adminPasswordConfirmation').value;
             
-            // Standardize phone number
-            const standardizedPhone = standardizePhoneNumber(mpesaPhone);
+            // Validate password confirmation
+            if (adminPassword !== adminPasswordConfirmation) {
+                showErrorModal('Admin passwords do not match. Please try again.', 'Institution Registration Failed');
+                return;
+            }
             
             // Show loading state
             const submitBtn = event.target.querySelector('button[type="submit"]');
@@ -354,22 +407,23 @@
             submitBtn.disabled = true;
             
             try {
-                const response = await fetch(`${API_BASE_URL}/api/register-institution`, {
+                const response = await fetch(`${API_BASE_URL}/api/institution/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                     },
                     body: JSON.stringify({
-                        name: name,
-                        email: email,
-                        phone: phone,
-                        address: address,
-                        motto: motto,
-                        theme_color: themeColor,
-                        password: password,
-                        password_confirmation: password,
-                        mpesa_phone: standardizedPhone
+                        institution_name: institutionName,
+                        institution_email: institutionEmail,
+                        institution_phone: standardizePhoneNumber(institutionPhone),
+                        institution_address: institutionAddress,
+                        mpesa_phone: standardizePhoneNumber(mpesaPhone),
+                        admin_name: adminName,
+                        admin_phone_number: standardizePhoneNumber(adminPhone),
+                        admin_email: adminEmail,
+                        admin_password: adminPassword,
+                        admin_password_confirmation: adminPasswordConfirmation
                     })
                 });
                 
@@ -394,13 +448,13 @@
                     // Redirect to institution dashboard
                     window.location.href = '/institution-dashboard';
                 } else {
-                    // Show error modal with specific error message
-                    const errorMessage = data.message || 'Institution registration failed. Please try again.';
-                    showErrorModal(errorMessage);
+                    // Show error modal with specific error message from API
+                    const errorMessage = data.message || data.error || 'Institution registration failed. Please try again.';
+                    showErrorModal(errorMessage, 'Institution Registration Failed');
                 }
             } catch (error) {
                 console.error('Institution registration error:', error);
-                showErrorModal('Network error. Please check your connection and try again.');
+                showErrorModal('Network error. Please check your connection and try again.', 'Institution Registration Failed');
             } finally {
                 // Reset button state
                 submitBtn.innerHTML = originalText;
@@ -551,6 +605,9 @@
         
         // Initialize auth state
         document.addEventListener('DOMContentLoaded', function() {
+            // Load institutions for registration form
+            loadInstitutions();
+            
             // Load user from localStorage if available
             const storedUser = localStorage.getItem('user');
             if (storedUser) {
@@ -656,12 +713,250 @@
             }
         }
 
+        // Forgot Password Functions
+        async function forgotPassword(event) {
+            event.preventDefault();
+            
+            const phone = document.getElementById('forgotPhone').value;
+            
+            // Show loading state
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending Code...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/forgot-password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone_number: standardizePhoneNumber(phone)
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Store phone number for next steps
+                    resetPhoneNumber = standardizePhoneNumber(phone);
+                    
+                    // Show success message and move to verify code modal
+                    showAlert('Code Sent', data.message || 'Reset code sent successfully to your phone', 'success');
+                    closeModal('forgotModal');
+                    showModal('verifyCodeModal');
+                } else {
+                    // Show error modal with specific error message from API
+                    const errorMessage = data.message || data.error || 'Failed to send reset code. Please try again.';
+                    showErrorModal(errorMessage, 'Reset Code Failed');
+                }
+            } catch (error) {
+                console.error('Forgot password error:', error);
+                showErrorModal('Network error. Please check your connection and try again.', 'Reset Code Failed');
+            } finally {
+                // Reset button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        async function verifyResetCode(event) {
+            event.preventDefault();
+            
+            const code = document.getElementById('resetCode').value;
+            
+            if (!resetPhoneNumber) {
+                showErrorModal('Phone number not found. Please start the reset process again.', 'Verification Failed');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Verifying...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/verify-reset-code`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone_number: resetPhoneNumber,
+                        code: code
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Show success message and move to reset password modal
+                    showAlert('Code Verified', data.message || 'Reset code verified successfully', 'success');
+                    closeModal('verifyCodeModal');
+                    showModal('resetPasswordModal');
+                } else {
+                    // Show error modal with specific error message from API
+                    const errorMessage = data.message || data.error || 'Invalid reset code. Please try again.';
+                    showErrorModal(errorMessage, 'Verification Failed');
+                }
+            } catch (error) {
+                console.error('Verify reset code error:', error);
+                showErrorModal('Network error. Please check your connection and try again.', 'Verification Failed');
+            } finally {
+                // Reset button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        async function resetPassword(event) {
+            event.preventDefault();
+            
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmNewPassword').value;
+            
+            if (!resetPhoneNumber) {
+                showErrorModal('Phone number not found. Please start the reset process again.', 'Password Reset Failed');
+                return;
+            }
+            
+            // Validate password confirmation
+            if (newPassword !== confirmPassword) {
+                showErrorModal('Passwords do not match. Please try again.', 'Password Reset Failed');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Resetting...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/reset-password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone_number: resetPhoneNumber,
+                        code: document.getElementById('resetCode').value,
+                        password: newPassword,
+                        password_confirmation: confirmPassword
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Show success message and redirect to login
+                    showAlert('Password Reset', data.message || 'Password reset successfully. Please login with your new password.', 'success');
+                    closeModal('resetPasswordModal');
+                    
+                    // Clear reset data
+                    resetPhoneNumber = null;
+                    document.getElementById('forgotPhone').value = '';
+                    document.getElementById('resetCode').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmNewPassword').value = '';
+                    
+                    // Show login modal after a short delay
+                    setTimeout(() => {
+                        showModal('loginModal');
+                    }, 2000);
+                } else {
+                    // Show error modal with specific error message from API
+                    const errorMessage = data.message || data.error || 'Failed to reset password. Please try again.';
+                    showErrorModal(errorMessage, 'Password Reset Failed');
+                }
+            } catch (error) {
+                console.error('Reset password error:', error);
+                showErrorModal('Network error. Please check your connection and try again.', 'Password Reset Failed');
+            } finally {
+                // Reset button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        async function resendResetCode() {
+            if (!resetPhoneNumber) {
+                showErrorModal('Phone number not found. Please start the reset process again.', 'Resend Failed');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/forgot-password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone_number: resetPhoneNumber
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('Code Resent', data.message || 'Reset code resent successfully to your phone', 'success');
+                } else {
+                    const errorMessage = data.message || data.error || 'Failed to resend reset code. Please try again.';
+                    showErrorModal(errorMessage, 'Resend Failed');
+                }
+            } catch (error) {
+                console.error('Resend reset code error:', error);
+                showErrorModal('Network error. Please check your connection and try again.', 'Resend Failed');
+            }
+        }
+
         // Initialize buy tokens modal with user's phone number
         function initializeBuyTokensModal() {
             if (currentUser && currentUser.mpesa_phone) {
                 document.getElementById('buyTokensMpesaPhone').value = currentUser.mpesa_phone;
             }
             calculateTokens(); // Initialize the display
+        }
+
+        // Auto-format reset code input (numbers only)
+        function formatResetCode(input) {
+            // Remove any non-numeric characters
+            let value = input.value.replace(/\D/g, '');
+            
+            // Limit to 6 digits
+            if (value.length > 6) {
+                value = value.substring(0, 6);
+            }
+            
+            input.value = value;
+            
+            // Auto-submit when 6 digits are entered
+            if (value.length === 6) {
+                const form = input.closest('form');
+                if (form) {
+                    form.dispatchEvent(new Event('submit'));
+                }
+            }
+        }
+
+        // Clear reset data when modals are closed
+        function clearResetData() {
+            resetPhoneNumber = null;
+            const forgotPhone = document.getElementById('forgotPhone');
+            const resetCode = document.getElementById('resetCode');
+            const newPassword = document.getElementById('newPassword');
+            const confirmNewPassword = document.getElementById('confirmNewPassword');
+            
+            if (forgotPhone) forgotPhone.value = '';
+            if (resetCode) resetCode.value = '';
+            if (newPassword) newPassword.value = '';
+            if (confirmNewPassword) confirmNewPassword.value = '';
         }
 
         // Custom alert function

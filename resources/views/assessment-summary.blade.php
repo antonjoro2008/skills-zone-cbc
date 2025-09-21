@@ -161,7 +161,7 @@
             <!-- Action Buttons -->
             <div class="text-center mt-8 space-x-4">
                 <button onclick="window.location.href='/assessments'" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
-                    <i class="fas fa-list mr-2"></i>Back to Assessments
+                    <i class="fas fa-list mr-2"></i>Back to Subjects
                 </button>
                 <button onclick="window.location.href='/dashboard'" class="bg-gray-100 text-gray-700 px-8 py-4 rounded-xl font-semibold hover:bg-gray-200 transition-all">
                     <i class="fas fa-home mr-2"></i>Dashboard

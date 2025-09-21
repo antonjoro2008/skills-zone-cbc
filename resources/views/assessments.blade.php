@@ -6,8 +6,16 @@
     <!-- Hero Section -->
     <div class="gradient-bg text-white py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl font-bold mb-4">Choose Your Assessment</h1>
-            <p class="text-xl text-gray-100">Quality assessments designed for African students - pay with tokens</p>
+            <h1 class="text-4xl font-bold mb-4" id="pageTitle">Choose Your Assessment</h1>
+            <p class="text-xl text-gray-100" id="pageSubtitle">Quality assessments designed for African students - pay with tokens</p>
+            
+            <!-- Back to Subjects Button -->
+            <div class="mt-6">
+                <a href="/assessments" class="inline-flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full px-6 py-3 transition-all">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    <span>Back to Subjects</span>
+                </a>
+            </div>
             
             <!-- Token Balance Display -->
             <div class="mt-8 inline-flex items-center bg-white bg-opacity-20 rounded-full px-6 py-3">
@@ -237,8 +245,16 @@
         // Load token balance from localStorage
         updateTokenBalance();
         
-        // Load assessments from API
-        loadAssessments();
+        // Get subject ID from URL or PHP variable
+        const subjectId = @json($subjectId ?? null);
+        
+        if (subjectId) {
+            // Load assessments for specific subject
+            loadAssessmentsForSubject(subjectId);
+        } else {
+            // Fallback to loading all assessments (for backward compatibility)
+            loadAssessments();
+        }
     });
     
     function updateTokenBalance() {
@@ -264,6 +280,59 @@
         }
     }
     
+    async function loadAssessmentsForSubject(subjectId) {
+        const loadingElement = document.getElementById('assessmentsLoading');
+        const gridElement = document.getElementById('assessmentsGrid');
+        const errorElement = document.getElementById('assessmentsError');
+        const emptyElement = document.getElementById('assessmentsEmpty');
+        
+        // Show loading state
+        if (loadingElement) loadingElement.style.display = 'grid';
+        if (gridElement) gridElement.style.display = 'none';
+        if (errorElement) errorElement.style.display = 'none';
+        if (emptyElement) emptyElement.style.display = 'none';
+        
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('No authentication token found');
+            }
+            
+            const response = await fetch(`${API_BASE_URL}/api/subjects/${subjectId}/assessments`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success && data.data && data.data.assessments && data.data.assessments.data && data.data.assessments.data.length > 0) {
+                // Update page title with subject name if available
+                if (data.data.subject) {
+                    const pageTitle = document.getElementById('pageTitle');
+                    const pageSubtitle = document.getElementById('pageSubtitle');
+                    if (pageTitle) pageTitle.textContent = `${data.data.subject.name} Assessments`;
+                    if (pageSubtitle) pageSubtitle.textContent = `Available assessments in ${data.data.subject.name}`;
+                }
+                
+                renderAssessments(data.data.assessments.data);
+                if (loadingElement) loadingElement.style.display = 'none';
+                if (gridElement) gridElement.style.display = 'grid';
+            } else {
+                // No assessments available for this subject
+                if (loadingElement) loadingElement.style.display = 'none';
+                if (emptyElement) emptyElement.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Error loading assessments for subject:', error);
+            if (loadingElement) loadingElement.style.display = 'none';
+            if (errorElement) errorElement.style.display = 'block';
+        }
+    }
+
     async function loadAssessments() {
         const loadingElement = document.getElementById('assessmentsLoading');
         const gridElement = document.getElementById('assessmentsGrid');
@@ -436,17 +505,30 @@
                             </div>
                         </div>
                     ` : ''}
-                    <button class="${buttonClass}" 
-                            onclick="${isInProgress && remainingTime > 0 ? `startAssessment(${assessment.id}, ${tokens})` : hasEnoughTokens ? `startAssessment(${assessment.id}, ${tokens})` : `purchaseAssessment('${assessment.title || 'Assessment'}', ${assessment.id}, ${tokens})`}"
-                            ontouchstart=""
-                            style="min-height: 48px; touch-action: manipulation;">
-                        <i class="${buttonIcon} mr-2"></i>${buttonText}
-                    </button>
+                    <div class="space-y-3">
+                        <button class="${buttonClass}" 
+                                onclick="${isInProgress && remainingTime > 0 ? `startAssessment(${assessment.id}, ${tokens})` : hasEnoughTokens ? `startAssessment(${assessment.id}, ${tokens})` : `purchaseAssessment('${assessment.title || 'Assessment'}', ${assessment.id}, ${tokens})`}"
+                                ontouchstart=""
+                                style="min-height: 48px; touch-action: manipulation;">
+                            <i class="${buttonIcon} mr-2"></i>${buttonText}
+                        </button>
+                        <button class="w-full bg-gradient-to-r from-gray-500 to-gray-600 text-white py-3 rounded-xl font-semibold hover:from-gray-600 hover:to-gray-700 transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse border border-gray-400" 
+                                onclick="viewQuestions(${assessment.id})"
+                                ontouchstart=""
+                                style="min-height: 48px; touch-action: manipulation;">
+                            <i class="fas fa-book-open mr-2"></i>View Questions
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
     }
     
+    function viewQuestions(assessmentId) {
+        // Navigate to question viewer page
+        window.location.href = `/questions/${assessmentId}`;
+    }
+
     async function purchaseAssessment(title, assessmentId, tokenCost) {
         try {
             // Check if user has enough tokens

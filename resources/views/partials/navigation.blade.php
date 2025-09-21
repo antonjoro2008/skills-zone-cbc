@@ -15,7 +15,7 @@
             <div class="hidden md:block">
                 <div class="ml-10 flex items-baseline space-x-6">
                     <a href="{{ route('home') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('home') ? 'text-blue-600 font-semibold' : '' }}">Home</a>
-                    <a href="{{ route('assessments') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('assessments') ? 'text-blue-600 font-semibold' : '' }}">Assessments</a>
+                    <a href="{{ route('subjects') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('subjects') || request()->routeIs('assessments') ? 'text-blue-600 font-semibold' : '' }}">Assessments</a>
                     {{-- <a href="{{ route('pricing') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('pricing') ? 'text-blue-600 font-semibold' : '' }}">Tokens</a> --}}
                     <a href="{{ route('blog') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('blog') ? 'text-blue-600 font-semibold' : '' }}">Blog</a>
                     <a href="{{ route('dashboard') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('dashboard') ? 'text-blue-600 font-semibold' : '' }}" id="dashboardLink" style="display:none;">Dashboard</a>
@@ -49,7 +49,7 @@
     <div id="mobileMenu" class="mobile-menu md:hidden fixed top-16 left-0 w-full h-screen bg-white z-40">
         <div class="p-6 space-y-4">
             <a href="{{ route('home') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-2 {{ request()->routeIs('home') ? 'text-[#8FC340] font-semibold' : '' }}">Home</a>
-            <a href="{{ route('assessments') }}" class="block text-lg font-medium text-gray-700 hover:text-[#E368A7] py-2 {{ request()->routeIs('assessments') ? 'text-[#E368A7] font-semibold' : '' }}">Assessments</a>
+            <a href="{{ route('subjects') }}" class="block text-lg font-medium text-gray-700 hover:text-[#E368A7] py-2 {{ request()->routeIs('subjects') || request()->routeIs('assessments') ? 'text-[#E368A7] font-semibold' : '' }}">Assessments</a>
             {{-- <a href="{{ route('pricing') }}" class="block text-lg font-medium text-gray-700 hover:text-blue-600 py-2 {{ request()->routeIs('pricing') ? 'text-blue-600 font-semibold' : '' }}">Tokens</a> --}}
             <a href="{{ route('blog') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-2 {{ request()->routeIs('blog') ? 'text-[#8FC340] font-semibold' : '' }}">Blog</a>
             <a href="{{ route('dashboard') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-2 {{ request()->routeIs('dashboard') ? 'text-[#8FC340] font-semibold' : '' }}" id="dashboardLinkMobile" style="display:none;">Dashboard</a>

@@ -7,7 +7,9 @@ use App\Http\Controllers\InstitutionController;
 
 // Public routes
 Route::get('/', [GuestController::class, 'index'])->name('home');
-Route::get('/assessments', [GuestController::class, 'assessments'])->name('assessments');
+Route::get('/assessments', [GuestController::class, 'subjects'])->name('subjects');
+Route::get('/assessments/subject/{subjectId}', [GuestController::class, 'assessments'])->name('assessments');
+Route::get('/questions/{assessmentId}', [GuestController::class, 'viewQuestions'])->name('view-questions');
 Route::get('/blog', [GuestController::class, 'blog'])->name('blog');
 Route::get('/pricing', [GuestController::class, 'pricing'])->name('pricing');
 Route::get('/faq', [GuestController::class, 'faq'])->name('faq');

@@ -15,11 +15,27 @@ class GuestController extends Controller
     }
 
     /**
-     * Display the assessments page
+     * Display the subjects page
      */
-    public function assessments()
+    public function subjects()
     {
-        return view('assessments');
+        return view('subjects');
+    }
+
+    /**
+     * Display the assessments page for a specific subject
+     */
+    public function assessments($subjectId)
+    {
+        return view('assessments', compact('subjectId'));
+    }
+
+    /**
+     * Display the question viewer page
+     */
+    public function viewQuestions($assessmentId)
+    {
+        return view('question-viewer', compact('assessmentId'));
     }
 
     /**

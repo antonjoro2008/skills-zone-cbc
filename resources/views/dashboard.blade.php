@@ -96,7 +96,7 @@
             <div class="bg-white rounded-3xl shadow-lg p-8">
                 <h3 class="text-xl font-bold text-gray-900 mb-6">Quick Actions</h3>
                 <div class="space-y-4">
-                    <a href="{{ route('assessments') }}" class="block w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-xl text-center font-semibold hover:from-blue-700 hover:to-purple-700 transition-all">
+                    <a href="{{ route('subjects') }}" class="block w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-xl text-center font-semibold hover:from-blue-700 hover:to-purple-700 transition-all">
                         <i class="fas fa-plus mr-2"></i>
                         Start New Assessment
                     </a>

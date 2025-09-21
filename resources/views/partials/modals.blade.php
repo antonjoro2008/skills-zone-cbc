@@ -4,17 +4,17 @@
             <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full relative transform scale-95 opacity-0 transition-all duration-300 modal-content flex flex-col max-h-[90vh]" id="loginModalContent">
                 <!-- Sticky Header -->
                 <div class="sticky top-0 bg-white rounded-t-3xl p-6 pb-4 border-b border-gray-100 z-10">
-                    <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('loginModal')">
-                        <i class="fas fa-times text-lg"></i>
-                    </button>
-                    
+                <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('loginModal')">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+                
                     <div class="text-center">
                         <div class="w-16 h-16 bg-gradient-to-r from-[#8FC340] to-[#E368A7] rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-user text-white text-2xl"></i>
-                        </div>
-                        <h2 class="text-2xl font-bold text-gray-900">Welcome Back</h2>
-                        <p class="text-gray-600">Sign in to your account</p>
+                        <i class="fas fa-user text-white text-2xl"></i>
                     </div>
+                    <h2 class="text-2xl font-bold text-gray-900">Welcome Back</h2>
+                    <p class="text-gray-600">Sign in to your account</p>
+                </div>
                 </div>
                 
                 <!-- Scrollable Content -->
@@ -22,8 +22,9 @@
                 
                 <form class="space-y-6" onsubmit="login(event)">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                        <input type="email" id="loginEmail" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter your email" required>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                        <input type="tel" id="loginPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456 or 0700123456 or 700123456" required>
+                        <p class="text-xs text-gray-500 mt-1">Enter your registered phone number</p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
@@ -46,10 +47,10 @@
                     </button>
                 </form>
                 
-                    <p class="text-center text-gray-600 mt-6">
-                        Don't have an account? 
-                        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-all" onclick="showModal('registerModal')">Sign up</a>
-                    </p>
+                <p class="text-center text-gray-600 mt-6">
+                    Don't have an account? 
+                    <a href="#" class="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-all" onclick="showModal('registerModal')">Sign up</a>
+                </p>
                 </div>
             </div>
         </div>
@@ -61,16 +62,16 @@
             <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full relative transform scale-95 opacity-0 transition-all duration-300 modal-content flex flex-col max-h-[90vh]" id="registerModalContent">
                 <!-- Sticky Header -->
                 <div class="sticky top-0 bg-white rounded-t-3xl p-6 pb-4 border-b border-gray-100 z-10">
-                    <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('registerModal')">
-                        <i class="fas fa-times text-lg"></i>
-                    </button>
-                    
+                <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('registerModal')">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+                
                     <div class="text-center">
                         <div class="w-16 h-16 bg-gradient-to-r from-[#8FC340] to-[#EC2834] rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-user-plus text-white text-2xl"></i>
-                        </div>
-                        <h2 class="text-2xl font-bold text-gray-900">Create Account</h2>
-                        <p class="text-gray-600">Join thousands of successful learners</p>
+                        <i class="fas fa-user-plus text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900">Create Account</h2>
+                    <p class="text-gray-600">Join thousands of successful learners</p>
                     </div>
                 </div>
                 
@@ -96,8 +97,24 @@
                         <input type="text" id="registerName" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter your full name" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                        <input type="email" id="registerEmail" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter your email" required>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                        <input type="tel" id="registerPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456 or 0700123456 or 700123456" required>
+                        <p class="text-xs text-gray-500 mt-1">Enter your phone number (this will be your login identifier)</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email <span class="text-gray-400">(Optional)</span></label>
+                        <input type="email" id="registerEmail" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter your email (optional)">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Institution</label>
+                        <select id="registerInstitutionId" class="form-input w-full px-4 py-3 rounded-xl" required>
+                            <option value="">Select your institution</option>
+                            <option value="1">General Public</option>
+                            <option value="2">ABC School</option>
+                            <option value="3">XYZ Academy</option>
+                            <!-- More institutions will be loaded dynamically -->
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">Select your school or institution</p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
@@ -139,8 +156,8 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">M-PESA Phone Number</label>
-                        <input type="tel" id="registerMpesaPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456 or 0700123456 or 700123456" required>
-                        <p class="text-xs text-gray-500 mt-1">Enter your M-PESA registered phone number (e.g., 254700123456, 0700123456, or 700123456)</p>
+                        <input type="tel" id="registerMpesaPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Same as above or different M-PESA number" required>
+                        <p class="text-xs text-gray-500 mt-1">Enter your M-PESA registered phone number (can be same as login number or different)</p>
                     </div>
                     <div>
                         <label class="flex items-center group cursor-pointer">
@@ -160,38 +177,53 @@
                         <input type="text" id="institutionName" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter institution name" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Institution Email</label>
                         <input type="email" id="institutionEmail" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter institution email" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                        <input type="tel" id="institutionPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456" required>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Institution Phone</label>
+                        <input type="tel" id="institutionPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456 or 0700123456 or 700123456" required>
+                        <p class="text-xs text-gray-500 mt-1">Enter institution phone number</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Institution Address</label>
                         <input type="text" id="institutionAddress" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter institution address" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Motto</label>
-                        <input type="text" id="institutionMotto" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter institution motto (optional)">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Theme Color</label>
-                        <input type="color" id="institutionThemeColor" class="form-input w-full px-4 py-3 rounded-xl h-12" value="#3b82f6">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <div class="relative">
-                            <input type="password" id="institutionPassword" class="form-input w-full px-4 py-3 pr-12 rounded-xl" placeholder="Create a strong password" required>
-                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('institutionPassword', 'institutionPasswordToggle')">
-                                <i id="institutionPasswordToggle" class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
-                            </button>
-                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">M-PESA Phone Number</label>
                         <input type="tel" id="institutionMpesaPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456 or 0726498974 or 726498974" required>
-                        <p class="text-xs text-gray-500 mt-1">Enter your M-PESA registered phone number (e.g., 254700123456, 0726498974, or 726498974)</p>
+                        <p class="text-xs text-gray-500 mt-1">Enter your M-PESA registered phone number</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Admin Name</label>
+                        <input type="text" id="adminName" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter admin full name" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Admin Phone Number</label>
+                        <input type="tel" id="adminPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456 or 0700123456 or 700123456" required>
+                        <p class="text-xs text-gray-500 mt-1">Enter admin phone number (this will be your login identifier)</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Admin Email</label>
+                        <input type="email" id="adminEmail" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter admin email" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Admin Password</label>
+                        <div class="relative">
+                            <input type="password" id="adminPassword" class="form-input w-full px-4 py-3 pr-12 rounded-xl" placeholder="Create a strong password" required>
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('adminPassword', 'adminPasswordToggle')">
+                                <i id="adminPasswordToggle" class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Admin Password</label>
+                        <div class="relative">
+                            <input type="password" id="adminPasswordConfirmation" class="form-input w-full px-4 py-3 pr-12 rounded-xl" placeholder="Confirm admin password" required>
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('adminPasswordConfirmation', 'adminPasswordConfirmationToggle')">
+                                <i id="adminPasswordConfirmationToggle" class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <label class="flex items-center group cursor-pointer">
@@ -204,10 +236,10 @@
                     </button>
                 </form>
                 
-                    <p class="text-center text-gray-600 mt-6">
-                        Already have an account? 
-                        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-all" onclick="showModal('loginModal')">Sign in</a>
-                    </p>
+                <p class="text-center text-gray-600 mt-6">
+                    Already have an account? 
+                    <a href="#" class="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-all" onclick="showModal('loginModal')">Sign in</a>
+                </p>
                 </div>
             </div>
         </div>
@@ -222,23 +254,115 @@
                 </button>
                 
                 <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-key text-white text-2xl"></i>
+                    </div>
                     <h2 class="text-2xl font-bold text-gray-900">Reset Password</h2>
-                    <p class="text-gray-600">Enter your email to receive reset instructions</p>
+                    <p class="text-gray-600">Enter your phone number to receive a reset code</p>
                 </div>
                 
                 <form class="space-y-6" onsubmit="forgotPassword(event)">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                        <input type="email" id="forgotEmail" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter your email" required>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                        <input type="tel" id="forgotPhone" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="254700123456 or 0700123456 or 700123456" required>
+                        <p class="text-xs text-gray-500 mt-1">Enter your registered phone number</p>
                     </div>
                     <button type="submit" class="w-full bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all shadow-lg">
-                        Send Reset Link
+                        <i class="fas fa-paper-plane mr-2"></i>Send Reset Code
                     </button>
                 </form>
                 
                 <p class="text-center text-gray-600 mt-6">
                     Remember your password? 
                     <a href="#" class="text-blue-600 hover:text-blue-800 font-medium" onclick="showModal('loginModal')">Sign in</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verify Reset Code Modal -->
+    <div id="verifyCodeModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4 modal-container">
+            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative modal-content">
+                <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600" onclick="closeModal('verifyCodeModal')">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-shield-alt text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900">Verify Reset Code</h2>
+                    <p class="text-gray-600">Enter the 6-digit code sent to your phone</p>
+                </div>
+                
+                <form class="space-y-6" onsubmit="verifyResetCode(event)">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Reset Code</label>
+                        <input type="text" id="resetCode" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center text-2xl font-mono tracking-widest" placeholder="123456" maxlength="6" oninput="formatResetCode(this)" required>
+                        <p class="text-xs text-gray-500 mt-1">Enter the 6-digit code you received</p>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all shadow-lg">
+                        <i class="fas fa-check mr-2"></i>Verify Code
+                    </button>
+                </form>
+                
+                <div class="text-center mt-6">
+                    <p class="text-sm text-gray-600">
+                        Didn't receive the code? 
+                        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium" onclick="resendResetCode()">Resend</a>
+                    </p>
+                </div>
+                
+                <p class="text-center text-gray-600 mt-4">
+                    <a href="#" class="text-blue-600 hover:text-blue-800 font-medium" onclick="showModal('forgotModal')">Back to Phone Number</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Password Modal -->
+    <div id="resetPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4 modal-container">
+            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative modal-content">
+                <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600" onclick="closeModal('resetPasswordModal')">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-lock text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900">Set New Password</h2>
+                    <p class="text-gray-600">Create a new password for your account</p>
+                </div>
+                
+                <form class="space-y-6" onsubmit="resetPassword(event)">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                        <div class="relative">
+                            <input type="password" id="newPassword" class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter new password" required>
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('newPassword', 'newPasswordToggle')">
+                                <i id="newPasswordToggle" class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+                        <div class="relative">
+                            <input type="password" id="confirmNewPassword" class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Confirm new password" required>
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('confirmNewPassword', 'confirmNewPasswordToggle')">
+                                <i id="confirmNewPasswordToggle" class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all shadow-lg">
+                        <i class="fas fa-save mr-2"></i>Reset Password
+                    </button>
+                </form>
+                
+                <p class="text-center text-gray-600 mt-6">
+                    <a href="#" class="text-blue-600 hover:text-blue-800 font-medium" onclick="showModal('verifyCodeModal')">Back to Verify Code</a>
                 </p>
             </div>
         </div>
@@ -328,7 +452,7 @@
                 <div class="text-red-500 text-6xl mb-6">
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">Registration Failed</h2>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4" id="errorTitle">Error</h2>
                 <p class="text-gray-600 mb-6" id="errorMessage">An error occurred during registration. Please try again.</p>
                 <button class="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-3 rounded-xl font-semibold hover:from-red-700 hover:to-red-800 transition-all" onclick="closeModal('errorModal')">
                     Try Again
@@ -451,17 +575,17 @@
             <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full relative modal-content flex flex-col max-h-[90vh]">
                 <!-- Sticky Header -->
                 <div class="sticky top-0 bg-white rounded-t-3xl p-6 pb-4 border-b border-gray-100 z-10">
-                    <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('bulkUploadModal')">
-                        <i class="fas fa-times text-lg"></i>
-                    </button>
-                    
+                <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('bulkUploadModal')">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+                
                     <div class="text-center">
-                        <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-upload text-white text-2xl"></i>
-                        </div>
-                        <h2 class="text-2xl font-bold text-gray-900">Bulk Upload Learners</h2>
-                        <p class="text-gray-600">Upload multiple learners at once</p>
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-upload text-white text-2xl"></i>
                     </div>
+                    <h2 class="text-2xl font-bold text-gray-900">Bulk Upload Learners</h2>
+                    <p class="text-gray-600">Upload multiple learners at once</p>
+                </div>
                 </div>
                 
                 <!-- Scrollable Content -->
@@ -512,17 +636,17 @@
             <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full relative modal-content flex flex-col max-h-[90vh]">
                 <!-- Sticky Header -->
                 <div class="sticky top-0 bg-white rounded-t-3xl p-6 pb-4 border-b border-gray-100 z-10">
-                    <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('buyTokensModal')">
-                        <i class="fas fa-times text-lg"></i>
-                    </button>
-                    
+                <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('buyTokensModal')">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+                
                     <div class="text-center">
-                        <div class="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-coins text-white text-2xl"></i>
-                        </div>
-                        <h2 class="text-2xl font-bold text-gray-900">Buy Tokens</h2>
-                        <p class="text-gray-600">Purchase tokens using M-PESA</p>
+                    <div class="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-coins text-white text-2xl"></i>
                     </div>
+                    <h2 class="text-2xl font-bold text-gray-900">Buy Tokens</h2>
+                    <p class="text-gray-600">Purchase tokens using M-PESA</p>
+                </div>
                 </div>
                 
                 <!-- Scrollable Content -->

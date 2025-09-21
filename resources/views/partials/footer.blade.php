@@ -24,7 +24,7 @@
                 <div>
                     <h3 class="text-lg font-semibold mb-4 text-yellow-400">Quick Links</h3>
                     <ul class="space-y-2">
-                        <li><a href="{{ route('assessments') }}" class="text-gray-300 hover:text-yellow-400 transition-colors">Browse Assessments</a></li>
+                        <li><a href="{{ route('subjects') }}" class="text-gray-300 hover:text-yellow-400 transition-colors">Browse Assessments</a></li>
                         <li><a href="{{ route('dashboard') }}" class="text-gray-300 hover:text-yellow-400 transition-colors">Dashboard</a></li>
                         <li><a href="{{ route('pricing') }}" class="text-gray-300 hover:text-yellow-400 transition-colors">Token Packages</a></li>
                         <li><a href="{{ route('blog') }}" class="text-gray-300 hover:text-yellow-400 transition-colors">Educational Blog</a></li>

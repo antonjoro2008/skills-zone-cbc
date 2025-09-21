@@ -129,8 +129,8 @@
         </div>
     </div>
 
-    <!-- Navigation Controls -->
-    <div class="relative z-10 pb-8">
+    <!-- Navigation Controls - Desktop Only -->
+    <div class="relative z-10 pb-8 hidden sm:block">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-center space-x-6">
                 <!-- Previous Button -->
@@ -170,8 +170,11 @@
 /* Remove fixed height on mobile */
 @media (max-width: 768px) {
     .book-container {
-        height: 100vh;
-        min-height: 100vh;
+        height: auto;
+        min-height: auto;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
     }
 }
 
@@ -464,23 +467,29 @@
 .mobile-flip-container {
     position: relative;
     width: 100%;
-    height: 100%;
+    height: auto;
+    min-height: auto;
     perspective: 1200px;
     perspective-origin: center center;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .mobile-page {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
     width: 100%;
-    height: 100%;
+    height: auto;
+    min-height: auto;
     background: white;
     backface-visibility: hidden;
     transform-style: preserve-3d;
     transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     box-shadow: -8px 0 20px rgba(0, 0, 0, 0.15);
     border-radius: 0 8px 8px 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .mobile-page.flipping {
@@ -669,10 +678,12 @@
     }
     
     .mobile-flip-container {
-        display: block;
+        display: flex;
+        flex-direction: column;
         width: 100%;
-        height: 100vh;
-        min-height: 100vh;
+        height: auto;
+        min-height: auto;
+        flex: 1;
     }
     
     .page-content {
@@ -683,7 +694,26 @@
     .mobile-page-content,
     .mobile-page-back {
         padding: 15px;
-        padding-bottom: 60px; /* Reduced space for navigation on mobile */
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        min-height: auto;
+        flex: 1;
+        background: white;
+    }
+    
+    /* Mobile question content wrapper */
+    .mobile-question-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* Mobile end content wrapper */
+    .mobile-end-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
     }
     
     .mobile-question-header {
@@ -703,6 +733,52 @@
     
     .mobile-option {
         padding: 10px;
+    }
+    
+    /* Mobile navigation buttons */
+    .mobile-nav-buttons {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: auto;
+        padding-top: 15px;
+        flex-shrink: 0;
+    }
+    
+    .mobile-nav-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 16px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .mobile-nav-btn:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    .mobile-nav-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #9ca3af;
+    }
+    
+    .mobile-prev-btn {
+        background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    }
+    
+    .mobile-prev-btn:hover:not(:disabled) {
+        box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4);
     }
     
     /* Mobile end of assessment adjustments */
@@ -884,13 +960,27 @@ function updateMobilePageContent(side, question, questionNumber) {
     if (!question) {
         // End of assessment - mobile optimized
         contentEl.innerHTML = `
-            <div class="mobile-end-container">
-                <div class="mobile-end-icon">
-                    <i class="fas fa-flag-checkered"></i>
+            <div class="mobile-end-content">
+                <div class="mobile-end-container">
+                    <div class="mobile-end-icon">
+                        <i class="fas fa-flag-checkered"></i>
+                    </div>
+                    <h3 class="mobile-end-title">Assessment Complete!</h3>
+                    <p class="mobile-end-message">You've reached the end of this assessment.</p>
+                    <p class="mobile-end-subtitle">Thank you for viewing all the questions.</p>
                 </div>
-                <h3 class="mobile-end-title">Assessment Complete!</h3>
-                <p class="mobile-end-message">You've reached the end of this assessment.</p>
-                <p class="mobile-end-subtitle">Thank you for viewing all the questions.</p>
+                
+                <!-- Mobile Navigation Buttons for End Page -->
+                <div class="mobile-nav-buttons">
+                    <button class="mobile-nav-btn mobile-prev-btn" onclick="flipPrevious()">
+                        <i class="fas fa-chevron-left"></i>
+                        <span>Previous</span>
+                    </button>
+                    <button class="mobile-nav-btn mobile-next-btn" disabled>
+                        <span>End</span>
+                        <i class="fas fa-flag-checkered"></i>
+                    </button>
+                </div>
             </div>
         `;
         return;
@@ -956,15 +1046,29 @@ function updateMobilePageContent(side, question, questionNumber) {
     }
     
     contentEl.innerHTML = `
-        <div class="mobile-question-header">
-            <div class="mobile-question-number">${questionNumber}</div>
-            <div class="mobile-question-meta">
-                <span class="mobile-subject-badge">${subjectName}</span>
-                <span class="mobile-difficulty-badge">${difficultyText}</span>
+        <div class="mobile-question-content">
+            <div class="mobile-question-header">
+                <div class="mobile-question-number">${questionNumber}</div>
+                <div class="mobile-question-meta">
+                    <span class="mobile-subject-badge">${subjectName}</span>
+                    <span class="mobile-difficulty-badge">${difficultyText}</span>
+                </div>
             </div>
+            <div class="mobile-question-text">${question.question_text || 'No question text available'}</div>
+            <div class="mobile-question-options">${optionsHtml}</div>
         </div>
-        <div class="mobile-question-text">${question.question_text || 'No question text available'}</div>
-        <div class="mobile-question-options">${optionsHtml}</div>
+        
+        <!-- Mobile Navigation Buttons -->
+        <div class="mobile-nav-buttons">
+            <button class="mobile-nav-btn mobile-prev-btn" onclick="flipPrevious()" ${currentPage === 0 ? 'disabled' : ''}>
+                <i class="fas fa-chevron-left"></i>
+                <span>Previous</span>
+            </button>
+            <button class="mobile-nav-btn mobile-next-btn" onclick="flipNext()" ${currentPage >= questions.length - 1 ? 'disabled' : ''}>
+                <span>Next</span>
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
     `;
 }
 
@@ -1017,8 +1121,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const deltaX = touchEndX - touchStartX;
                 const deltaY = touchEndY - touchStartY;
                 
-                // Only trigger if horizontal swipe is more significant than vertical
-                if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+                // More sensitive swipe detection - reduce threshold and improve horizontal detection
+                if (Math.abs(deltaX) > 30 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
                     if (deltaX > 0) {
                         // Swipe right - go to previous
                         flipPrevious();
@@ -1250,6 +1354,9 @@ function flipNext() {
         // Desktop: Flip animation
         const rightPage = document.getElementById('rightPage');
         
+        // Play flip sound for desktop
+        playPageFlipSound();
+        
         // Flip the right page
         rightPage.classList.add('flipped');
         
@@ -1297,6 +1404,9 @@ function flipPrevious() {
         } else {
             // Desktop: Flip animation
             const rightPage = document.getElementById('rightPage');
+            
+            // Play flip sound for desktop
+            playPageFlipSound();
             
             currentPage--;
             
@@ -1472,15 +1582,24 @@ function updatePageDots() {
 function updateNavigation() {
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
+    const questionCounter = document.getElementById('questionCounter');
     
-    prevBtn.disabled = currentPage === 0;
-    nextBtn.disabled = currentPage >= questions.length - 1;
+    // Update question counter in header (works for both desktop and mobile)
+    if (questionCounter) {
+        questionCounter.textContent = `Question ${currentPage + 1} of ${questions.length}`;
+    }
     
-    // Update button text when at the end
-    if (currentPage >= questions.length - 1) {
-        nextBtn.innerHTML = '<span>End Reached</span><i class="fas fa-flag-checkered ml-2"></i>';
-    } else {
-        nextBtn.innerHTML = '<span>Next</span><i class="fas fa-chevron-right ml-2"></i>';
+    // Update desktop navigation buttons
+    if (prevBtn && nextBtn) {
+        prevBtn.disabled = currentPage === 0;
+        nextBtn.disabled = currentPage >= questions.length - 1;
+        
+        // Update button text when at the end
+        if (currentPage >= questions.length - 1) {
+            nextBtn.innerHTML = '<span>End Reached</span><i class="fas fa-flag-checkered ml-2"></i>';
+        } else {
+            nextBtn.innerHTML = '<span>Next</span><i class="fas fa-chevron-right ml-2"></i>';
+        }
     }
 }
 

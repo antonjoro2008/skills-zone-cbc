@@ -24,7 +24,10 @@
                 <div class="flex items-center space-x-4">
                     <!-- Sound Toggle Button -->
                     <button id="soundToggle" class="inline-flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full p-3 transition-all backdrop-blur-sm" title="Toggle Sound">
-                        <i id="soundIcon" class="fas fa-volume-up text-white"></i>
+                        <div class="w-5 h-5 flex items-center justify-center">
+                            <i id="soundIconOn" class="fas fa-volume-up text-white"></i>
+                            <i id="soundIconOff" class="fas fa-volume-off text-white" style="display: none;"></i>
+                        </div>
                     </button>
                 </div>
             </div>
@@ -170,6 +173,20 @@
         height: 100vh;
         min-height: 100vh;
     }
+}
+
+/* Sound toggle button styling */
+#soundToggle {
+    transition: all 0.2s ease;
+}
+
+#soundToggle:hover {
+    transform: scale(1.05);
+}
+
+#soundIcon {
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
 }
 
 .book-spine {
@@ -805,14 +822,17 @@ function playPageFlipSound() {
 // Sound toggle functionality
 function toggleSound() {
     soundEnabled = !soundEnabled;
-    const soundIcon = document.getElementById('soundIcon');
+    const soundIconOn = document.getElementById('soundIconOn');
+    const soundIconOff = document.getElementById('soundIconOff');
     const soundToggle = document.getElementById('soundToggle');
     
     if (soundEnabled) {
-        soundIcon.className = 'fas fa-volume-up text-white';
+        soundIconOn.style.display = 'inline';
+        soundIconOff.style.display = 'none';
         soundToggle.title = 'Mute Sound';
     } else {
-        soundIcon.className = 'fas fa-volume-mute text-white';
+        soundIconOn.style.display = 'none';
+        soundIconOff.style.display = 'inline';
         soundToggle.title = 'Enable Sound';
     }
 }
@@ -1041,8 +1061,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const soundToggle = document.getElementById('soundToggle');
     if (soundToggle) {
         soundToggle.addEventListener('click', toggleSound);
+        // Initialize sound button state
+        initializeSoundButton();
     }
 });
+
+// Initialize sound button state
+function initializeSoundButton() {
+    const soundIconOn = document.getElementById('soundIconOn');
+    const soundIconOff = document.getElementById('soundIconOff');
+    const soundToggle = document.getElementById('soundToggle');
+    
+    if (soundEnabled) {
+        soundIconOn.style.display = 'inline';
+        soundIconOff.style.display = 'none';
+        soundToggle.title = 'Mute Sound';
+    } else {
+        soundIconOn.style.display = 'none';
+        soundIconOff.style.display = 'inline';
+        soundToggle.title = 'Enable Sound';
+    }
+}
 
 async function loadAssessmentQuestions(assessmentId) {
     try {

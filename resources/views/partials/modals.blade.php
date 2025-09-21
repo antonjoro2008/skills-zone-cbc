@@ -118,7 +118,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
-                        <select id="registerGradeLevel" class="form-input w-full px-4 py-3 rounded-xl" required>
+                        <select id="registerGradeLevel" class="form-input w-full px-4 py-3 rounded-xl">
                             <option value="">Select your grade level</option>
                             <option value="Grade 1">Grade 1</option>
                             <option value="Grade 2">Grade 2</option>
@@ -534,7 +534,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
-                        <select id="learnerGradeLevel" class="form-input w-full px-4 py-3 rounded-xl" required>
+                        <select id="learnerGradeLevel" class="form-input w-full px-4 py-3 rounded-xl">
                             <option value="">Select grade level</option>
                             <option value="Grade 1">Grade 1</option>
                             <option value="Grade 2">Grade 2</option>

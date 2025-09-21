@@ -12,7 +12,7 @@
             <div class="absolute top-40 right-20 w-16 h-16 bg-white bg-opacity-10 rounded-full animate-float" style="animation-delay: 1s;"></div>
             <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-white bg-opacity-10 rounded-full animate-float" style="animation-delay: 2s;"></div>
             
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 py-24 lg:py-32 relative z-10">
                 <div class="grid lg:grid-cols-2 gap-12 items-center">
                     <div class="text-center lg:text-left animate-fade-in-left">
                         <div class="inline-flex items-center bg-yellow-400 bg-opacity-90 text-gray-900 rounded-full px-4 py-2 mb-6 shadow-lg">
@@ -80,7 +80,7 @@
             <!-- Background decoration -->
             <div class="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-blue-50 to-transparent opacity-50"></div>
             
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 relative z-10">
                 <div class="text-center mb-20">
                     <div class="inline-flex items-center bg-blue-100 rounded-full px-4 py-2 mb-4">
                         <i class="fas fa-magic text-blue-600 mr-2"></i>
@@ -169,7 +169,7 @@
             <div class="absolute top-0 left-1/4 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl"></div>
             <div class="absolute bottom-0 right-1/4 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl"></div>
             
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 relative z-10">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Trusted by professionals worldwide</h2>
                     <p class="text-blue-200 text-lg">Join thousands who have advanced their careers with Gravity CBC</p>

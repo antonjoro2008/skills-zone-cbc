@@ -1,6 +1,6 @@
 <!-- Navigation -->
 <nav class="fixed top-0 w-full z-50 glass-effect">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
         <div class="flex justify-between items-center h-16">
             <div class="flex items-center">
                 <!-- <a href="{{ route('home') }}" class="text-2xl font-bold bg-gradient-to-r from-[#EC2834] via-[#E368A7] to-[#8FC340] bg-clip-text text-transparent animate-pulse-glow"> -->

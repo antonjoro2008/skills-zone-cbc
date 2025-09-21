@@ -341,7 +341,7 @@
                         password_confirmation: passwordConfirmation,
                         mpesa_phone: standardizePhoneNumber(mpesaPhone),
                         institution_id: parseInt(institutionId),
-                        grade_level: gradeLevel
+                        grade_level: gradeLevel || null
                     })
                 });
                 

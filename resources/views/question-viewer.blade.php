@@ -8,8 +8,8 @@
     </div>
 
     <!-- Header -->
-    <div class="relative z-10 pt-8 pb-4">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="relative z-10 pt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4">
                     <a href="javascript:history.back()" class="inline-flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full px-6 py-3 transition-all backdrop-blur-sm">
@@ -131,7 +131,7 @@
 
     <!-- Navigation Controls - Desktop Only -->
     <div class="relative z-10 pb-8 hidden sm:block">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
             <div class="flex items-center justify-center space-x-6">
                 <!-- Previous Button -->
                 <button id="prevBtn" class="nav-btn prev-btn" onclick="previousQuestion()" disabled>

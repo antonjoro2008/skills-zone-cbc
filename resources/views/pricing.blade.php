@@ -70,13 +70,13 @@
 @section('content')
     <!-- Hero Section -->
     <div class="gradient-bg text-white py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 text-center">
             <h1 class="text-4xl font-bold mb-4">School Pricing Plans</h1>
             <p class="text-xl text-gray-100">Affordable assessment solutions for primary and secondary schools</p>
         </div>
     </div>
     
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 py-16">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- Basic Plan -->
             <div class="bg-white rounded-3xl shadow-lg p-8 border border-gray-200 hover:shadow-xl transition-all">

@@ -5,7 +5,7 @@
 @section('content')
     <!-- Hero Section -->
     <div class="gradient-bg text-white py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 text-center">
             <h1 class="text-4xl font-bold mb-4">Institution Dashboard</h1>
             <p class="text-xl text-gray-100">Manage your learners and track their progress</p>
             <div class="mt-4 text-sm text-gray-200">
@@ -15,7 +15,7 @@
     </div>
     
     <!-- Dashboard Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 py-16">
         <!-- Stats Overview -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="bg-white rounded-2xl shadow-lg p-6">

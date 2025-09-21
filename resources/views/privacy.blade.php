@@ -5,7 +5,7 @@
 @section('content')
     <!-- Hero Section -->
     <div class="gradient-bg text-white py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 text-center">
             <h1 class="text-4xl font-bold mb-4">Privacy Policy</h1>
             <p class="text-xl text-gray-100">How we protect and handle your personal information</p>
         </div>

@@ -5,14 +5,14 @@
 @section('content')
     <!-- Hero Section -->
     <div class="gradient-bg text-white py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 text-center">
             <h1 class="text-4xl font-bold mb-4">Educational Blog</h1>
             <p class="text-xl text-gray-100">Latest insights and tips for effective student assessment</p>
         </div>
     </div>
     
     <!-- Blog Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 py-16">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <!-- Featured Article -->
             <div class="md:col-span-2 lg:col-span-3 bg-white rounded-3xl shadow-lg overflow-hidden mb-8">

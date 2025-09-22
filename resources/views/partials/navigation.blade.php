@@ -25,10 +25,16 @@
                 </div>
             </div>
             
-            <!-- Mobile menu button and Buy Tokens -->
-            <div class="md:hidden flex items-center space-x-2">
-                <button class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 px-3 py-2 rounded-full text-xs font-medium transition-all shadow-lg hover:shadow-xl hover:scale-105" onclick="showBuyTokensModal()" id="buyTokensBtnMobile" style="display:none;">
+            <!-- Mobile menu button and auth buttons -->
+            <div class="md:hidden flex items-center space-x-1">
+                <button class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 px-2 py-1.5 rounded-full text-xs font-medium transition-all shadow-lg hover:shadow-xl hover:scale-105" onclick="showBuyTokensModal()" id="buyTokensBtnMobile" style="display:none;">
                     <i class="fas fa-coins mr-1"></i>Buy Tokens
+                </button>
+                <button class="bg-white text-[#8FC340] border border-[#8FC340] hover:bg-[#8FC340]/10 px-2 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105" onclick="showModal('loginModal')" id="loginBtnMobile">
+                    <i class="fas fa-sign-in-alt mr-1"></i>Login
+                </button>
+                <button class="bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white hover:from-[#7bb02d] hover:to-[#d15a8a] px-2 py-1.5 rounded-full text-xs font-medium transition-all shadow-lg hover:scale-105" onclick="showModal('registerModal')" id="registerBtnMobile">
+                    <i class="fas fa-rocket mr-1"></i>Get Started
                 </button>
                 <button class="text-gray-700 hover:text-blue-600 p-2" onclick="toggleMobileMenu()">
                     <i class="fas fa-bars text-xl"></i>
@@ -63,13 +69,7 @@
             <a href="{{ route('institution-dashboard') }}" class="block text-lg font-medium text-gray-700 hover:text-[#E368A7] py-2 {{ request()->routeIs('institution-dashboard') ? 'text-[#E368A7] font-semibold' : '' }}" id="institutionDashboardLinkMobile" style="display:none;">Manage Learners</a>
             <a href="{{ route('parent-dashboard') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-2 {{ request()->routeIs('parent-dashboard') ? 'text-[#8FC340] font-semibold' : '' }}" id="parentDashboardLinkMobile" style="display:none;">My Learners</a>
             <a href="{{ route('transactions') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-2 {{ request()->routeIs('transactions') ? 'text-[#8FC340] font-semibold' : '' }}" id="transactionsLinkMobile" style="display:none;">Purchases</a>
-            <div class="pt-4 border-t border-gray-200 space-y-3">
-                <button class="w-full bg-white text-[#8FC340] border-2 border-[#8FC340] hover:bg-[#8FC340]/10 px-6 py-3 rounded-full font-medium transition-all" onclick="showModal('loginModal'); toggleMobileMenu()" id="loginBtnMobile">
-                    <i class="fas fa-sign-in-alt mr-2"></i>Login
-                </button>
-                <button class="w-full bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white hover:from-[#7bb02d] hover:to-[#d15a8a] px-6 py-3 rounded-full font-medium transition-all shadow-lg" onclick="showModal('registerModal'); toggleMobileMenu()" id="registerBtnMobile">
-                    <i class="fas fa-rocket mr-2"></i>Get Started
-                </button>
+            <div class="pt-4 border-t border-gray-200">
                 <button class="w-full bg-gray-500 text-white hover:bg-gray-600 px-6 py-3 rounded-full font-medium transition-all" onclick="logout(); toggleMobileMenu()" id="logoutBtnMobile" style="display:none;">
                     <i class="fas fa-sign-out-alt mr-2"></i>Logout
                 </button>

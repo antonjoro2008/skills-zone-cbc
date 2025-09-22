@@ -21,6 +21,11 @@ Route::get('/privacy', [GuestController::class, 'privacy'])->name('privacy');
 Route::get('/contact', [GuestController::class, 'contact'])->name('contact');
 Route::get('/system-status', [GuestController::class, 'systemStatus'])->name('system-status');
 
+// Auth routes (for Laravel's built-in authentication system)
+Route::get('/login', function () {
+    return redirect('/');
+})->name('login');
+
 // API routes
 Route::prefix('api')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
@@ -41,6 +46,7 @@ Route::prefix('api')->group(function () {
 // User routes (will need authentication middleware later)
 Route::get('/dashboard', [GuestController::class, 'dashboard'])->name('dashboard');
 Route::get('/institution-dashboard', [GuestController::class, 'institutionDashboard'])->name('institution-dashboard');
+Route::get('/parent-dashboard', [GuestController::class, 'parentDashboard'])->name('parent-dashboard');
 Route::get('/transactions', [GuestController::class, 'transactions'])->name('transactions');
 
 // Protected assessment routes - redirect to home if not authenticated

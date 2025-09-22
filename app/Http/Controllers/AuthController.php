@@ -48,17 +48,18 @@ class AuthController extends Controller
     public function register(Request $request): JsonResponse
     {
         // Standardize phone number before validation
-        $standardizedPhone = $this->standardizePhoneNumber($request->mpesa_phone);
-        $request->merge(['mpesa_phone' => $standardizedPhone]);
+        $standardizedPhone = $this->standardizePhoneNumber($request->phone_number);
+        $request->merge(['phone_number' => $standardizedPhone]);
 
         // Validate the request
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'phone_number' => 'required|string|regex:/^254[0-9]{9}$/',
+            'email' => 'nullable|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required|string|min:8',
-            'grade_level' => 'required|string|max:255',
-            'mpesa_phone' => 'required|string|regex:/^254[0-9]{9}$/',
+            'user_type' => 'required|string|in:student,parent',
+            'grade_level' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -73,11 +74,12 @@ class AuthController extends Controller
             // Create the user
             $user = User::create([
                 'name' => $request->name,
+                'phone_number' => $request->phone_number,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
+                'user_type' => $request->user_type,
+                'institution_id' => null, // Individual users are not associated with any institution
                 'grade_level' => $request->grade_level,
-                'user_type' => 'student',
-                'mpesa_phone' => $request->mpesa_phone,
             ]);
 
             // Generate a simple token (in a real app, you'd use Laravel Sanctum or Passport)
@@ -85,7 +87,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Student registered successfully',
+                'message' => ucfirst($request->user_type) . ' registered successfully',
                 'data' => [
                     'user' => [
                         'id' => $user->id,
@@ -137,8 +139,15 @@ class AuthController extends Controller
      */
     public function login(Request $request): JsonResponse
     {
+        // Standardize login identifier if it's a phone number
+        $loginIdentifier = $request->login_identifier;
+        if (preg_match('/^[0-9]+$/', $loginIdentifier)) {
+            $standardizedPhone = $this->standardizePhoneNumber($loginIdentifier);
+            $request->merge(['login_identifier' => $standardizedPhone]);
+        }
+
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
+            'login_identifier' => 'required|string',
             'password' => 'required|string',
         ]);
 
@@ -150,10 +159,15 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('login_identifier', 'password');
 
-        // For now, we'll do a simple check (in a real app, use Laravel's Auth)
-        $user = User::where('email', $credentials['email'])->first();
+        // Try to find user by phone_number first, then by admission_number (if it exists)
+        $user = User::where('phone_number', $credentials['login_identifier'])->first();
+        
+        // If not found by phone, try by admission_number (for institution students)
+        if (!$user) {
+            $user = User::where('admission_number', $credentials['login_identifier'])->first();
+        }
 
         if ($user && password_verify($credentials['password'], $user->password)) {
             $token = base64_encode($user->id . '|' . time());
@@ -234,20 +248,20 @@ class AuthController extends Controller
     public function registerInstitution(Request $request): JsonResponse
     {
         // Standardize phone number before validation
-        $standardizedPhone = $this->standardizePhoneNumber($request->mpesa_phone);
-        $request->merge(['mpesa_phone' => $standardizedPhone]);
+        $standardizedPhone = $this->standardizePhoneNumber($request->institution_phone);
+        $request->merge(['institution_phone' => $standardizedPhone]);
 
         // Validate the request
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'phone' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'motto' => 'nullable|string|max:255',
-            'theme_color' => 'nullable|string|max:7',
-            'password' => 'required|string|min:8|confirmed',
-            'password_confirmation' => 'required|string|min:8',
-            'mpesa_phone' => 'required|string|regex:/^254[0-9]{9}$/',
+            'institution_name' => 'required|string|max:255',
+            'institution_email' => 'required|string|email|max:255',
+            'institution_phone' => 'required|string|regex:/^254[0-9]{9}$/',
+            'institution_address' => 'required|string|max:255',
+            'admin_name' => 'required|string|max:255',
+            'admin_phone_number' => 'required|string|regex:/^254[0-9]{9}$/',
+            'admin_email' => 'required|string|email|max:255|unique:users',
+            'admin_password' => 'required|string|min:8|confirmed',
+            'admin_password_confirmation' => 'required|string|min:8',
         ]);
 
         if ($validator->fails()) {
@@ -261,22 +275,22 @@ class AuthController extends Controller
         try {
             // Create the institution
             $institution = Institution::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'address' => $request->address,
-                'motto' => $request->motto,
-                'theme_color' => $request->theme_color ?? '#3b82f6',
+                'name' => $request->institution_name,
+                'email' => $request->institution_email,
+                'phone' => $request->institution_phone,
+                'address' => $request->institution_address,
+                'motto' => null,
+                'theme_color' => '#3b82f6',
             ]);
 
             // Create the institution admin user
             $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => bcrypt($request->password),
+                'name' => $request->admin_name,
+                'phone_number' => $request->admin_phone_number,
+                'email' => $request->admin_email,
+                'password' => bcrypt($request->admin_password),
                 'user_type' => 'institution',
                 'institution_id' => $institution->id,
-                'mpesa_phone' => $request->mpesa_phone,
             ]);
 
             // Generate a simple token

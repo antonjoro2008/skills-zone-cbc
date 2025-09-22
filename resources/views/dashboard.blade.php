@@ -479,8 +479,8 @@
         if (storedUser) {
             try {
                 const user = JSON.parse(storedUser);
-                if (user.mpesa_phone) {
-                    document.getElementById('buyTokensMpesaPhone').value = user.mpesa_phone;
+                if (user.phone_number) {
+                    document.getElementById('buyTokensMpesaPhone').value = user.phone_number;
                 }
             } catch (e) {
                 console.error('Error parsing user data:', e);
@@ -496,7 +496,10 @@
         const mpesaPhone = document.getElementById('buyTokensMpesaPhone').value;
         const amount = parseFloat(document.getElementById('buyTokensAmount').value);
         
-        if (!mpesaPhone || !amount) {
+        // Always format phone number to 2547... or 2541... format
+        const formattedPhone = standardizePhoneNumber(mpesaPhone);
+        
+        if (!formattedPhone || !amount) {
             showAlert('Validation Error', 'Please fill in all required fields', 'error');
             return;
         }
@@ -507,8 +510,8 @@
         }
         
         // Validate phone number format
-        if (!mpesaPhone.match(/^254[0-9]{9}$/)) {
-            showAlert('Invalid Phone Number', 'Please enter a valid M-PESA phone number in format 254XXXXXXXXX', 'error');
+        if (!formattedPhone.match(/^254[0-9]{9}$/)) {
+            showAlert('Invalid Phone Number', 'Please enter a valid M-PESA phone number', 'error');
             return;
         }
         
@@ -538,7 +541,7 @@
                     channel: 'mpesa',
                     currency: 'KES',
                     tokens: tokens,
-                    phone_number: mpesaPhone,
+                    phone_number: formattedPhone,
                     user_id: currentUser.id
                 })
             });

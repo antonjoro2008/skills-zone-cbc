@@ -146,6 +146,15 @@ class GuestController extends Controller
     }
 
     /**
+     * Display the parent dashboard page (requires authentication)
+     */
+    public function parentDashboard()
+    {
+        // For now, return the view - in a real app, you'd add auth middleware
+        return view('parent-dashboard');
+    }
+
+    /**
      * Display the assessment page (requires authentication)
      */
     public function assessment($id)

@@ -253,39 +253,6 @@
             console.log('Stopped assessment progress tracking');
         }
 
-        // Load institutions for registration form
-        async function loadInstitutions() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/institutions`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    }
-                });
-                
-                const data = await response.json();
-                
-                if (data.success && data.data) {
-                    const institutionSelect = document.getElementById('registerInstitutionId');
-                    if (institutionSelect) {
-                        // Clear existing options except the first one
-                        institutionSelect.innerHTML = '<option value="">Select your institution</option>';
-                        
-                        // Add institutions from API
-                        data.data.forEach(institution => {
-                            const option = document.createElement('option');
-                            option.value = institution.id;
-                            option.textContent = institution.name;
-                            institutionSelect.appendChild(option);
-                        });
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading institutions:', error);
-                // Keep the default options if API fails
-            }
-        }
 
         // Phone number standardization function
         function standardizePhoneNumber(phone) {
@@ -499,8 +466,14 @@
         async function login(event) {
             event.preventDefault();
             
-            const phone = document.getElementById('loginPhone').value;
+            const loginIdentifier = document.getElementById('loginPhone').value;
             const password = document.getElementById('loginPassword').value;
+            
+            // Format phone number if it's a phone number (numeric)
+            let formattedIdentifier = loginIdentifier;
+            if (/^[0-9]+$/.test(loginIdentifier)) {
+                formattedIdentifier = standardizePhoneNumber(loginIdentifier);
+            }
             
             // Show loading state
             const submitBtn = event.target.querySelector('button[type="submit"]');
@@ -516,7 +489,7 @@
                         'Accept': 'application/json',
                     },
                     body: JSON.stringify({
-                        phone_number: standardizePhoneNumber(phone),
+                        login_identifier: formattedIdentifier,
                         password: password
                     })
                 });
@@ -539,8 +512,12 @@
                     updateAuthState();
                     closeModal('loginModal');
                     
-                    // Redirect to dashboard
-                    window.location.href = '/dashboard';
+                    // Redirect based on user type
+                    if (currentUser.user_type === 'institution') {
+                        window.location.href = '/institution-dashboard';
+                    } else {
+                        window.location.href = '/dashboard';
+                    }
                 } else {
                     // Show error modal with specific error message from API
                     const errorMessage = data.message || data.error || 'Login failed. Please try again.';
@@ -562,11 +539,13 @@
             const name = document.getElementById('registerName').value;
             const phone = document.getElementById('registerPhone').value;
             const email = document.getElementById('registerEmail').value;
-            const institutionId = document.getElementById('registerInstitutionId').value;
+            const userType = document.getElementById('registerUserType').value;
             const gradeLevel = document.getElementById('registerGradeLevel').value;
             const password = document.getElementById('registerPassword').value;
             const passwordConfirmation = document.getElementById('registerPasswordConfirmation').value;
-            const mpesaPhone = document.getElementById('registerMpesaPhone').value;
+            
+            // Always format phone number to 2547... or 2541... format
+            const formattedPhone = standardizePhoneNumber(phone);
             
             // Validate password confirmation
             if (password !== passwordConfirmation) {
@@ -589,12 +568,11 @@
                     },
                     body: JSON.stringify({
                         name: name,
-                        phone_number: standardizePhoneNumber(phone),
+                        phone_number: formattedPhone,
                         email: email || null,
                         password: password,
                         password_confirmation: passwordConfirmation,
-                        mpesa_phone: standardizePhoneNumber(mpesaPhone),
-                        institution_id: parseInt(institutionId),
+                        user_type: userType,
                         grade_level: gradeLevel || null
                     })
                 });
@@ -617,8 +595,15 @@
                     updateAuthState();
                     closeModal('registerModal');
                     
-                    // Redirect to dashboard
-                    window.location.href = '/dashboard';
+                    // Small delay to ensure UI updates before redirect
+                    setTimeout(() => {
+                        // Redirect based on user type
+                        if (currentUser.user_type === 'institution') {
+                            window.location.href = '/institution-dashboard';
+                        } else {
+                            window.location.href = '/dashboard';
+                        }
+                    }, 100);
                 } else {
                     // Show error modal with specific error message from API
                     const errorMessage = data.message || data.error || 'Registration failed. Please try again.';
@@ -641,12 +626,15 @@
             const institutionEmail = document.getElementById('institutionEmail').value;
             const institutionPhone = document.getElementById('institutionPhone').value;
             const institutionAddress = document.getElementById('institutionAddress').value;
-            const mpesaPhone = document.getElementById('institutionMpesaPhone').value;
             const adminName = document.getElementById('adminName').value;
             const adminPhone = document.getElementById('adminPhone').value;
             const adminEmail = document.getElementById('adminEmail').value;
             const adminPassword = document.getElementById('adminPassword').value;
             const adminPasswordConfirmation = document.getElementById('adminPasswordConfirmation').value;
+            
+            // Always format phone numbers to 2547... or 2541... format
+            const formattedInstitutionPhone = standardizePhoneNumber(institutionPhone);
+            const formattedAdminPhone = standardizePhoneNumber(adminPhone);
             
             // Validate password confirmation
             if (adminPassword !== adminPasswordConfirmation) {
@@ -670,11 +658,10 @@
                     body: JSON.stringify({
                         institution_name: institutionName,
                         institution_email: institutionEmail,
-                        institution_phone: standardizePhoneNumber(institutionPhone),
+                        institution_phone: formattedInstitutionPhone,
                         institution_address: institutionAddress,
-                        mpesa_phone: standardizePhoneNumber(mpesaPhone),
                         admin_name: adminName,
-                        admin_phone_number: standardizePhoneNumber(adminPhone),
+                        admin_phone_number: formattedAdminPhone,
                         admin_email: adminEmail,
                         admin_password: adminPassword,
                         admin_password_confirmation: adminPasswordConfirmation
@@ -699,8 +686,10 @@
                     updateAuthState();
                     closeModal('registerModal');
                     
-                    // Redirect to institution dashboard
-                    window.location.href = '/institution-dashboard';
+                    // Small delay to ensure UI updates before redirect
+                    setTimeout(() => {
+                        window.location.href = '/institution-dashboard';
+                    }, 100);
                 } else {
                     // Show error modal with specific error message from API
                     const errorMessage = data.message || data.error || 'Institution registration failed. Please try again.';
@@ -765,9 +754,11 @@
             stopTokenBalanceUpdates();
             stopAssessmentTracking();
             
-            console.log('User data cleared, updating auth state...');
+            console.log('User data cleared, redirecting to home page...');
             updateAuthState();
-            showModal('logoutSuccessModal');
+            
+            // Always redirect to home page after logout
+            window.location.href = '/';
         }
         
         function updateAuthState() {
@@ -776,6 +767,7 @@
             const logoutBtn = document.getElementById('logoutBtn');
             const dashboardLink = document.getElementById('dashboardLink');
             const institutionDashboardLink = document.getElementById('institutionDashboardLink');
+            const parentDashboardLink = document.getElementById('parentDashboardLink');
             const transactionsLink = document.getElementById('transactionsLink');
             
             const loginBtnMobile = document.getElementById('loginBtnMobile');
@@ -783,10 +775,11 @@
             const logoutBtnMobile = document.getElementById('logoutBtnMobile');
             const dashboardLinkMobile = document.getElementById('dashboardLinkMobile');
             const institutionDashboardLinkMobile = document.getElementById('institutionDashboardLinkMobile');
+            const parentDashboardLinkMobile = document.getElementById('parentDashboardLinkMobile');
             const transactionsLinkMobile = document.getElementById('transactionsLinkMobile');
             
             // Ensure currentUser is properly set and not just an empty object
-            const isLoggedIn = currentUser && currentUser.id && currentUser.email;
+            const isLoggedIn = currentUser && currentUser.id && (currentUser.email || currentUser.phone_number);
             console.log('updateAuthState called - currentUser:', currentUser, 'isLoggedIn:', isLoggedIn);
             
             if (isLoggedIn) {
@@ -807,6 +800,14 @@
                     if (institutionDashboardLinkMobile) institutionDashboardLinkMobile.style.display = 'block';
                     if (dashboardLink) dashboardLink.style.display = 'none';
                     if (dashboardLinkMobile) dashboardLinkMobile.style.display = 'none';
+                } else if (currentUser.user_type === 'parent') {
+                    // For parents, show parent dashboard link
+                    if (parentDashboardLink) parentDashboardLink.style.display = 'block';
+                    if (parentDashboardLinkMobile) parentDashboardLinkMobile.style.display = 'block';
+                    if (dashboardLink) dashboardLink.style.display = 'none';
+                    if (dashboardLinkMobile) dashboardLinkMobile.style.display = 'none';
+                    if (institutionDashboardLink) institutionDashboardLink.style.display = 'none';
+                    if (institutionDashboardLinkMobile) institutionDashboardLinkMobile.style.display = 'none';
                 } else {
                     if (dashboardLink) dashboardLink.style.display = 'block';
                     if (dashboardLinkMobile) dashboardLinkMobile.style.display = 'block';
@@ -823,6 +824,7 @@
                 if (logoutBtn) logoutBtn.style.display = 'none';
                 if (dashboardLink) dashboardLink.style.display = 'none';
                 if (institutionDashboardLink) institutionDashboardLink.style.display = 'none';
+                if (parentDashboardLink) parentDashboardLink.style.display = 'none';
                 if (transactionsLink) transactionsLink.style.display = 'none';
                 
                 if (loginBtnMobile) loginBtnMobile.style.display = 'block';
@@ -830,6 +832,7 @@
                 if (logoutBtnMobile) logoutBtnMobile.style.display = 'none';
                 if (dashboardLinkMobile) dashboardLinkMobile.style.display = 'none';
                 if (institutionDashboardLinkMobile) institutionDashboardLinkMobile.style.display = 'none';
+                if (parentDashboardLinkMobile) parentDashboardLinkMobile.style.display = 'none';
                 if (transactionsLinkMobile) transactionsLinkMobile.style.display = 'none';
 
                 // Stop token balance updates for logged-out users
@@ -870,9 +873,6 @@
         
         // Initialize auth state
         document.addEventListener('DOMContentLoaded', function() {
-            // Load institutions for registration form
-            loadInstitutions();
-            
             // Load user from localStorage if available
             const storedUser = localStorage.getItem('user');
             if (storedUser) {
@@ -891,6 +891,23 @@
                 currentUser = null;
             }
             updateAuthState();
+            
+            // Handle user type selection for grade level visibility
+            const userTypeSelect = document.getElementById('registerUserType');
+            const gradeLevelDiv = document.getElementById('gradeLevelDiv');
+            
+            if (userTypeSelect && gradeLevelDiv) {
+                userTypeSelect.addEventListener('change', function() {
+                    if (this.value === 'student') {
+                        gradeLevelDiv.style.display = 'block';
+                        document.getElementById('registerGradeLevel').required = true;
+                    } else {
+                        gradeLevelDiv.style.display = 'none';
+                        document.getElementById('registerGradeLevel').required = false;
+                        document.getElementById('registerGradeLevel').value = '';
+                    }
+                });
+            }
         });
 
         // Token calculation function
@@ -914,14 +931,17 @@
             const amount = parseFloat(document.getElementById('buyTokensAmount').value);
             const phoneNumber = document.getElementById('buyTokensMpesaPhone').value;
             
+            // Always format phone number to 2547... or 2541... format
+            const formattedPhoneNumber = standardizePhoneNumber(phoneNumber);
+            
             // Validate inputs
             if (!amount || amount < 1) {
                 showAlert('Invalid Amount', 'Please enter an amount of at least KES 1.', 'error');
                 return;
             }
             
-            if (!phoneNumber || !phoneNumber.match(/^254[0-9]{9}$/)) {
-                showAlert('Invalid Phone Number', 'Please enter a valid M-PESA phone number in format 254XXXXXXXXX.', 'error');
+            if (!formattedPhoneNumber || !formattedPhoneNumber.match(/^254[0-9]{9}$/)) {
+                showAlert('Invalid Phone Number', 'Please enter a valid M-PESA phone number.', 'error');
                 return;
             }
             
@@ -946,7 +966,7 @@
                         channel: 'mpesa',
                         currency: 'KES',
                         tokens: tokens,
-                        phone_number: phoneNumber,
+                        phone_number: formattedPhoneNumber,
                         user_id: currentUser.id
                     })
                 });
@@ -1183,8 +1203,8 @@
 
         // Initialize buy tokens modal with user's phone number
         function initializeBuyTokensModal() {
-            if (currentUser && currentUser.mpesa_phone) {
-                document.getElementById('buyTokensMpesaPhone').value = currentUser.mpesa_phone;
+            if (currentUser && currentUser.phone_number) {
+                document.getElementById('buyTokensMpesaPhone').value = currentUser.phone_number;
             }
             calculateTokens(); // Initialize the display
         }

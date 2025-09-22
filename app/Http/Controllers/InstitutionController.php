@@ -114,7 +114,7 @@ class InstitutionController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'grade_level' => 'required|string|max:255',
             'initial_tokens' => 'integer|min:0|max:1000',
-            'mpesa_phone' => 'required|string|max:255',
+            'phone_number' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -134,7 +134,7 @@ class InstitutionController extends Controller
                 'grade_level' => $request->grade_level,
                 'user_type' => 'student',
                 'institution_id' => $user->institution_id,
-                'mpesa_phone' => $request->mpesa_phone,
+                'phone_number' => $request->phone_number,
             ]);
 
             // Create wallet with initial tokens
@@ -302,7 +302,7 @@ class InstitutionController extends Controller
             'learners.*.email' => 'required|string|email|max:255',
             'learners.*.grade_level' => 'required|string|max:255',
             'learners.*.initial_tokens' => 'integer|min:0|max:1000',
-            'learners.*.mpesa_phone' => 'required|string|max:255',
+            'learners.*.phone_number' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -333,7 +333,7 @@ class InstitutionController extends Controller
                         'grade_level' => $learnerData['grade_level'],
                         'user_type' => 'student',
                         'institution_id' => $user->institution_id,
-                        'mpesa_phone' => $learnerData['mpesa_phone'],
+                        'phone_number' => $learnerData['phone_number'],
                     ]);
 
                     // Create wallet

@@ -22,9 +22,9 @@
                 
                 <form class="space-y-6" onsubmit="login(event)">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                        <input type="tel" id="loginPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456 or 0700123456 or 700123456" required>
-                        <p class="text-xs text-gray-500 mt-1">Enter your registered phone number</p>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Login ID</label>
+                        <input type="text" id="loginPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Phone number or admission number" required>
+                        <p class="text-xs text-gray-500 mt-1">Enter your phone number or admission number</p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
@@ -98,7 +98,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                        <input type="tel" id="registerPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456 or 0700123456 or 700123456" required>
+                        <input type="tel" id="registerPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Safaricom mobile numbers currently supported" required>
                         <p class="text-xs text-gray-500 mt-1">Enter your phone number (this will be your login identifier)</p>
                     </div>
                     <div>
@@ -106,17 +106,15 @@
                         <input type="email" id="registerEmail" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter your email (optional)">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Institution</label>
-                        <select id="registerInstitutionId" class="form-input w-full px-4 py-3 rounded-xl" required>
-                            <option value="">Select your institution</option>
-                            <option value="1">General Public</option>
-                            <option value="2">ABC School</option>
-                            <option value="3">XYZ Academy</option>
-                            <!-- More institutions will be loaded dynamically -->
+                        <label class="block text-sm font-medium text-gray-700 mb-2">User Type</label>
+                        <select id="registerUserType" class="form-input w-full px-4 py-3 rounded-xl" required>
+                            <option value="">Select your user type</option>
+                            <option value="student">Learner</option>
+                            <option value="parent">Parent/Guardian</option>
                         </select>
-                        <p class="text-xs text-gray-500 mt-1">Select your school or institution</p>
+                        <p class="text-xs text-gray-500 mt-1">Choose whether you are a learner or parent/guardian</p>
                     </div>
-                    <div>
+                    <div id="gradeLevelDiv" style="display: none;">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
                         <select id="registerGradeLevel" class="form-input w-full px-4 py-3 rounded-xl">
                             <option value="">Select your grade level</option>
@@ -155,11 +153,6 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">M-PESA Phone Number</label>
-                        <input type="tel" id="registerMpesaPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Same as above or different M-PESA number" required>
-                        <p class="text-xs text-gray-500 mt-1">Enter your M-PESA registered phone number (can be same as login number or different)</p>
-                    </div>
-                    <div>
                         <label class="flex items-center group cursor-pointer">
                             <input type="checkbox" class="rounded text-blue-600 group-hover:scale-110 transition-transform" required>
                             <span class="ml-2 text-sm text-gray-600 group-hover:text-blue-600 transition-colors">I agree to the <a href="{{ route('terms') }}" class="text-blue-600 hover:text-blue-800 underline">Terms & Conditions</a></span>
@@ -182,7 +175,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Institution Phone</label>
-                        <input type="tel" id="institutionPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456 or 0700123456 or 700123456" required>
+                        <input type="tel" id="institutionPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Safaricom mobile numbers currently supported" required>
                         <p class="text-xs text-gray-500 mt-1">Enter institution phone number</p>
                     </div>
                     <div>
@@ -190,17 +183,12 @@
                         <input type="text" id="institutionAddress" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter institution address" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">M-PESA Phone Number</label>
-                        <input type="tel" id="institutionMpesaPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456 or 0726498974 or 726498974" required>
-                        <p class="text-xs text-gray-500 mt-1">Enter your M-PESA registered phone number</p>
-                    </div>
-                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Admin Name</label>
                         <input type="text" id="adminName" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter admin full name" required>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Admin Phone Number</label>
-                        <input type="tel" id="adminPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456 or 0700123456 or 700123456" required>
+                        <input type="tel" id="adminPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Safaricom mobile numbers currently supported" required>
                         <p class="text-xs text-gray-500 mt-1">Enter admin phone number (this will be your login identifier)</p>
                     </div>
                     <div>
@@ -529,12 +517,16 @@
                         <input type="text" id="learnerName" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter learner's full name" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                        <input type="email" id="learnerEmail" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter learner's email" required>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Admission Number</label>
+                        <input type="text" id="learnerAdmissionNumber" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter admission number (e.g., STU001)" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email (Optional)</label>
+                        <input type="email" id="learnerEmail" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter learner's email (optional)">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
-                        <select id="learnerGradeLevel" class="form-input w-full px-4 py-3 rounded-xl">
+                        <select id="learnerGradeLevel" class="form-input w-full px-4 py-3 rounded-xl" required>
                             <option value="">Select grade level</option>
                             <option value="Grade 1">Grade 1</option>
                             <option value="Grade 2">Grade 2</option>
@@ -553,13 +545,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Initial Tokens</label>
-                        <input type="number" id="learnerInitialTokens" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter initial token amount" min="0" max="1000" value="0">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">M-PESA Phone Number</label>
-                        <input type="tel" id="learnerMpesaPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="254700123456" required>
-                        <p class="text-xs text-gray-500 mt-1">Enter learner's M-PESA registered phone number</p>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" id="learnerPassword" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter password (min 6 characters)" required>
                     </div>
                     <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-green-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
                         <i class="fas fa-user-plus mr-2"></i>Add Learner
@@ -598,10 +585,12 @@
                             <div class="text-sm text-blue-800">
                                 <p class="font-semibold mb-2">Upload Instructions:</p>
                                 <ul class="list-disc list-inside space-y-1">
-                                    <li>Upload a CSV file with columns: Name, Email, Grade Level, Initial Tokens, M-PESA Phone</li>
+                                    <li>Upload a CSV file with columns: name, admission_number, email, grade_level, password</li>
                                     <li>First row should contain headers</li>
                                     <li>Maximum 100 learners per upload</li>
-                                    <li>Default password will be "password123" for all learners</li>
+                                    <li>Each learner must have a unique admission number</li>
+                                    <li>Email is optional (can be left empty)</li>
+                                    <li>Passwords must be at least 6 characters long</li>
                                 </ul>
                             </div>
                         </div>

@@ -8,8 +8,49 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 text-center">
             <h1 class="text-4xl font-bold mb-4">Institution Dashboard</h1>
             <p class="text-xl text-gray-100">Manage your learners and track their progress</p>
-            <div class="mt-4 text-sm text-gray-200">
-                <span id="institutionName">Loading...</span>
+            
+            <!-- Institution Information -->
+            <div class="mt-6 bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-6 max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2 text-white">Institution Details</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-center">
+                                <i class="fas fa-school w-5 mr-3 text-blue-300"></i>
+                                <span id="institutionName" class="text-white font-medium">Loading...</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-envelope w-5 mr-3 text-blue-300"></i>
+                                <span id="institutionEmail" class="text-white font-medium">Loading...</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-phone w-5 mr-3 text-blue-300"></i>
+                                <span id="institutionPhone" class="text-white font-medium">Loading...</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-map-marker-alt w-5 mr-3 text-blue-300"></i>
+                                <span id="institutionAddress" class="text-white font-medium">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2 text-white">Admin Information</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-center">
+                                <i class="fas fa-user w-5 mr-3 text-blue-300"></i>
+                                <span id="adminName" class="text-white font-medium">Loading...</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-envelope w-5 mr-3 text-blue-300"></i>
+                                <span id="adminEmail" class="text-white font-medium">Loading...</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-coins w-5 mr-3 text-yellow-300"></i>
+                                <span id="tokenBalance" class="text-yellow-200 font-semibold">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -86,6 +127,10 @@
                     <i class="fas fa-upload mr-2"></i>
                     Bulk Upload
                 </button>
+                <button onclick="showBuyTokensModal()" class="bg-gradient-to-r from-yellow-600 to-orange-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-yellow-700 hover:to-orange-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                    <i class="fas fa-coins mr-2"></i>
+                    Buy Tokens
+                </button>
                 <button onclick="refreshLearners()" class="bg-white border-2 border-blue-600 text-blue-600 px-6 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-all">
                     <i class="fas fa-sync-alt mr-2"></i>
                     Refresh
@@ -112,14 +157,13 @@
                             <th class="text-left py-3 px-4 font-semibold text-gray-700">Name</th>
                             <th class="text-left py-3 px-4 font-semibold text-gray-700">Email</th>
                             <th class="text-left py-3 px-4 font-semibold text-gray-700">Grade Level</th>
-                            <th class="text-left py-3 px-4 font-semibold text-gray-700">Tokens</th>
                             <th class="text-left py-3 px-4 font-semibold text-gray-700">Status</th>
                             <th class="text-left py-3 px-4 font-semibold text-gray-700">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="learnersTableBody">
                         <tr>
-                            <td colspan="6" class="text-center py-8 text-gray-500">
+                            <td colspan="5" class="text-center py-8 text-gray-500">
                                 <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
                                 <p>Loading learners...</p>
                             </td>
@@ -134,9 +178,10 @@
 @section('scripts')
 <script>
     let learnersData = [];
-    const API_BASE_URL = 'https://admin.skillszone.africa';
     
     document.addEventListener('DOMContentLoaded', function() {
+        // Load current user data
+        loadCurrentUser();
         loadDashboardData();
         loadLearners();
         
@@ -146,34 +191,127 @@
         });
     });
     
+    function loadCurrentUser() {
+        try {
+            const userData = localStorage.getItem('user');
+            if (userData) {
+                // currentUser is already declared globally in scripts.blade.php
+                window.currentUser = JSON.parse(userData);
+                console.log('Current user loaded:', window.currentUser);
+                
+                // Display institution and admin information
+                displayInstitutionInfo();
+            } else {
+                console.warn('No user data found in localStorage');
+            }
+        } catch (error) {
+            console.error('Error loading current user:', error);
+        }
+    }
+    
+    function displayInstitutionInfo() {
+        if (!window.currentUser) return;
+        
+        // Display institution information
+        const institution = window.currentUser.institution;
+        if (institution) {
+            document.getElementById('institutionName').textContent = institution.name || 'N/A';
+            document.getElementById('institutionEmail').textContent = institution.email || 'N/A';
+            document.getElementById('institutionPhone').textContent = institution.phone || 'N/A';
+            document.getElementById('institutionAddress').textContent = institution.address || 'N/A';
+        }
+        
+        // Display admin information
+        document.getElementById('adminName').textContent = window.currentUser.name || 'N/A';
+        document.getElementById('adminEmail').textContent = window.currentUser.email || 'N/A';
+        
+        // Display token balance from dashboard data
+        const dashboardData = localStorage.getItem('dashboard');
+        if (dashboardData) {
+            try {
+                const dashboard = JSON.parse(dashboardData);
+                document.getElementById('tokenBalance').textContent = `${dashboard.token_balance || 0} Tokens`;
+            } catch (error) {
+                console.error('Error parsing dashboard data:', error);
+                document.getElementById('tokenBalance').textContent = '0 Tokens';
+            }
+        } else {
+            document.getElementById('tokenBalance').textContent = '0 Tokens';
+        }
+    }
+    
+    function standardizePhoneNumber(phone) {
+        if (!phone) return '';
+        
+        // Remove all non-numeric characters
+        let cleanPhone = phone.replace(/\D/g, '');
+        
+        // Handle different formats
+        if (cleanPhone.startsWith('254')) {
+            return cleanPhone; // Already in correct format
+        } else if (cleanPhone.startsWith('07') && cleanPhone.length === 10) {
+            return '254' + cleanPhone.substring(1); // 07XXXXXXXX -> 254XXXXXXXX
+        } else if (cleanPhone.startsWith('7') && cleanPhone.length === 9) {
+            return '254' + cleanPhone; // 7XXXXXXXX -> 2547XXXXXXXX
+        } else if (cleanPhone.startsWith('01') && cleanPhone.length === 10) {
+            return '254' + cleanPhone.substring(1); // 01XXXXXXXX -> 254XXXXXXXX
+        } else if (cleanPhone.startsWith('1') && cleanPhone.length === 9) {
+            return '254' + cleanPhone; // 1XXXXXXXX -> 2541XXXXXXXX
+        }
+        
+        return cleanPhone; // Return as-is if no pattern matches
+    }
+    
+    function showAlert(title, message, type = 'info') {
+        // Create custom alert modal directly
+        const alertModal = document.createElement('div');
+        alertModal.className = 'fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+        alertModal.innerHTML = `
+            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative">
+                <div class="text-center">
+                    <div class="w-16 h-16 ${type === 'success' ? 'bg-green-100' : type === 'error' ? 'bg-red-100' : 'bg-blue-100'} rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas ${type === 'success' ? 'fa-check text-green-600' : type === 'error' ? 'fa-times text-red-600' : 'fa-info text-blue-600'} text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">${title}</h3>
+                    <p class="text-gray-600 mb-6">${message}</p>
+                    <button onclick="this.closest('.fixed').remove()" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all">
+                        OK
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(alertModal);
+    }
+    
     async function loadDashboardData() {
         try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${API_BASE_URL}/api/institution/dashboard`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                }
-            });
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                updateDashboardStats(data.data);
-                document.getElementById('institutionName').textContent = data.data.institution?.name || 'Institution';
+            // For now, we'll use the user data from localStorage to populate dashboard stats
+            // The dashboard data is already available from the login response
+            const dashboardData = localStorage.getItem('dashboard');
+            if (dashboardData) {
+                const dashboard = JSON.parse(dashboardData);
+                updateDashboardStats(dashboard);
             } else {
-                showError('Failed to load dashboard data');
+                // Set default values if no dashboard data is available
+                setDefaultDashboardStats();
             }
         } catch (error) {
             console.error('Error loading dashboard:', error);
-            showError('Error loading dashboard data');
+            setDefaultDashboardStats();
         }
+    }
+    
+    function setDefaultDashboardStats() {
+        document.getElementById('totalLearners').textContent = '0';
+        document.getElementById('activeLearners').textContent = '0';
+        document.getElementById('totalTokens').textContent = '0';
+        document.getElementById('averageTokens').textContent = '0';
     }
     
     async function loadLearners() {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API_BASE_URL}/api/institution/learners`, {
+            const response = await fetch(`${API_BASE_URL}/api/institution/students`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json',
@@ -183,8 +321,9 @@
             const data = await response.json();
             
             if (data.success) {
-                learnersData = data.data;
+                learnersData = data.data.data; // The students are in data.data.data due to pagination
                 renderLearnersTable(learnersData);
+                updateLearnerStats(learnersData);
             } else {
                 showError('Failed to load learners');
             }
@@ -194,11 +333,36 @@
         }
     }
     
+    function updateLearnerStats(learners) {
+        const totalLearners = learners.length;
+        const activeLearners = learners.filter(learner => learner.is_active !== false).length;
+        
+        document.getElementById('totalLearners').textContent = totalLearners;
+        document.getElementById('activeLearners').textContent = activeLearners;
+        
+        // Update token stats from dashboard data
+        const dashboardData = localStorage.getItem('dashboard');
+        if (dashboardData) {
+            const dashboard = JSON.parse(dashboardData);
+            document.getElementById('totalTokens').textContent = dashboard.token_balance || 0;
+            document.getElementById('averageTokens').textContent = totalLearners > 0 ? Math.round((dashboard.token_balance || 0) / totalLearners) : 0;
+        }
+    }
+    
     function updateDashboardStats(data) {
-        document.getElementById('totalLearners').textContent = data.stats.total_learners;
-        document.getElementById('activeLearners').textContent = data.stats.active_learners;
-        document.getElementById('totalTokens').textContent = data.stats.total_tokens;
-        document.getElementById('averageTokens').textContent = data.stats.average_tokens;
+        // Handle the actual dashboard data structure from login response
+        // The dashboard data contains token_balance and assessment_stats
+        const tokenBalance = data.token_balance || 0;
+        const assessmentStats = data.assessment_stats || {};
+        
+        // Set token balance
+        document.getElementById('totalTokens').textContent = tokenBalance;
+        
+        // For now, set default values for learner stats since they're not in the dashboard data
+        // These will be updated when learners are loaded
+        document.getElementById('totalLearners').textContent = '0';
+        document.getElementById('activeLearners').textContent = '0';
+        document.getElementById('averageTokens').textContent = '0';
     }
     
     function renderLearnersTable(learners) {
@@ -207,7 +371,7 @@
         if (learners.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="6" class="text-center py-8 text-gray-500">
+                    <td colspan="5" class="text-center py-8 text-gray-500">
                         <i class="fas fa-users text-4xl mb-4"></i>
                         <p>No learners found. Add your first learner to get started!</p>
                     </td>
@@ -223,33 +387,27 @@
                         <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
                             <i class="fas fa-user text-blue-600"></i>
                         </div>
-                        <span class="font-medium text-gray-900">${learner.name}</span>
+                        <div>
+                            <span class="font-medium text-gray-900">${learner.name}</span>
+                            <div class="text-xs text-gray-500">${learner.admission_number || 'N/A'}</div>
+                        </div>
                     </div>
                 </td>
-                <td class="py-4 px-4 text-gray-600">${learner.email}</td>
+                <td class="py-4 px-4 text-gray-600">${learner.email || 'N/A'}</td>
                 <td class="py-4 px-4">
                     <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
-                        ${learner.grade_level}
+                        ${learner.grade_level || 'N/A'}
                     </span>
                 </td>
                 <td class="py-4 px-4">
-                    <div class="flex items-center">
-                        <i class="fas fa-coins text-yellow-500 mr-2"></i>
-                        <span class="font-semibold text-gray-900">${learner.tokens}</span>
-                    </div>
-                </td>
-                <td class="py-4 px-4">
-                    <span class="px-3 py-1 rounded-full text-sm font-semibold ${learner.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                        ${learner.is_active ? 'Active' : 'Inactive'}
+                    <span class="px-3 py-1 rounded-full text-sm font-semibold ${learner.is_active !== false ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                        ${learner.is_active !== false ? 'Active' : 'Inactive'}
                     </span>
                 </td>
                 <td class="py-4 px-4">
                     <div class="flex items-center space-x-2">
-                        <button onclick="editLearnerTokens(${learner.id}, '${learner.name}', ${learner.tokens})" class="text-blue-600 hover:text-blue-800 p-2 hover:bg-blue-50 rounded-lg transition-all" title="Edit Tokens">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button onclick="toggleLearnerStatus(${learner.id}, ${learner.is_active})" class="text-${learner.is_active ? 'red' : 'green'}-600 hover:text-${learner.is_active ? 'red' : 'green'}-800 p-2 hover:bg-${learner.is_active ? 'red' : 'green'}-50 rounded-lg transition-all" title="${learner.is_active ? 'Deactivate' : 'Activate'}">
-                            <i class="fas fa-${learner.is_active ? 'ban' : 'check'}"></i>
+                        <button onclick="toggleLearnerStatus(${learner.id}, ${learner.is_active !== false})" class="text-${learner.is_active !== false ? 'red' : 'green'}-600 hover:text-${learner.is_active !== false ? 'red' : 'green'}-800 p-2 hover:bg-${learner.is_active !== false ? 'red' : 'green'}-50 rounded-lg transition-all" title="${learner.is_active !== false ? 'Deactivate' : 'Activate'}">
+                            <i class="fas fa-${learner.is_active !== false ? 'ban' : 'check'}"></i>
                         </button>
                     </div>
                 </td>
@@ -260,8 +418,9 @@
     function filterLearners(searchTerm) {
         const filtered = learnersData.filter(learner => 
             learner.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            learner.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            learner.grade_level.toLowerCase().includes(searchTerm.toLowerCase())
+            (learner.email && learner.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (learner.admission_number && learner.admission_number.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (learner.grade_level && learner.grade_level.toLowerCase().includes(searchTerm.toLowerCase()))
         );
         renderLearnersTable(filtered);
     }
@@ -284,18 +443,150 @@
         showModal('bulkUploadModal');
     }
     
+    function showBuyTokensModal() {
+        const modal = document.getElementById('buyTokensModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            // Initialize the modal with user data
+            if (window.currentUser && window.currentUser.phone_number) {
+                const phoneInput = document.getElementById('buyTokensMpesaPhone');
+                if (phoneInput) {
+                    phoneInput.value = window.currentUser.phone_number;
+                }
+            }
+            // Initialize token calculation
+            calculateTokens();
+        } else {
+            console.error('Buy tokens modal not found');
+        }
+    }
+    
+    function calculateTokens() {
+        const amount = parseFloat(document.getElementById('buyTokensAmount').value) || 0;
+        const tokens = Math.floor(amount / 1); // 1 KES = 1 token
+        
+        const displayAmount = document.getElementById('displayAmount');
+        const displayTokens = document.getElementById('displayTokens');
+        
+        if (displayAmount) {
+            displayAmount.textContent = `KES ${amount.toLocaleString()}`;
+        }
+        if (displayTokens) {
+            displayTokens.textContent = `${tokens} token${tokens !== 1 ? 's' : ''}`;
+        }
+    }
+    
+    function closeBuyTokensModal() {
+        const modal = document.getElementById('buyTokensModal');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    }
+    
+    async function buyTokens(event) {
+        event.preventDefault();
+        
+        if (!window.currentUser) {
+            showAlert('Authentication Required', 'Please log in to purchase tokens.', 'warning');
+            return;
+        }
+        
+        const amount = parseFloat(document.getElementById('buyTokensAmount').value);
+        const phoneNumber = document.getElementById('buyTokensMpesaPhone').value;
+        
+        // Always format phone number to 2547... or 2541... format
+        const formattedPhoneNumber = standardizePhoneNumber(phoneNumber);
+        
+        // Validate inputs
+        if (!amount || amount < 1) {
+            showAlert('Invalid Amount', 'Please enter an amount of at least KES 1.', 'error');
+            return;
+        }
+        
+        if (!formattedPhoneNumber || !formattedPhoneNumber.match(/^254[0-9]{9}$/)) {
+            showAlert('Invalid Phone Number', 'Please enter a valid M-PESA phone number.', 'error');
+            return;
+        }
+        
+        const tokens = Math.floor(amount / 1);
+        
+        // Show loading state
+        const submitBtn = event.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+        submitBtn.disabled = true;
+        
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/payments`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({
+                    amount: amount,
+                    channel: 'mpesa',
+                    currency: 'KES',
+                    tokens: tokens,
+                    phone_number: formattedPhoneNumber,
+                    user_id: window.currentUser.id
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showAlert('Payment Initiated', data.message || 'Payment request sent to your phone. Please complete the payment to receive your tokens.', 'success');
+                closeBuyTokensModal();
+                
+                // Clear form
+                document.getElementById('buyTokensAmount').value = '';
+                document.getElementById('buyTokensMpesaPhone').value = '';
+                calculateTokens();
+            } else {
+                showAlert('Payment Failed', data.message || 'Failed to initiate payment. Please try again.', 'error');
+            }
+        } catch (error) {
+            console.error('Payment error:', error);
+            showAlert('Network Error', 'Unable to process payment. Please check your connection and try again.', 'error');
+        } finally {
+            // Restore button state
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    }
+    
     async function addLearner(event) {
         event.preventDefault();
         
         const name = document.getElementById('learnerName').value;
+        const admissionNumber = document.getElementById('learnerAdmissionNumber').value;
         const email = document.getElementById('learnerEmail').value;
         const gradeLevel = document.getElementById('learnerGradeLevel').value;
-        const initialTokens = parseInt(document.getElementById('learnerInitialTokens').value) || 0;
-        const mpesaPhone = document.getElementById('learnerMpesaPhone').value;
+        const password = document.getElementById('learnerPassword').value;
+        
+        // Validate required fields (email is optional)
+        if (!name || !admissionNumber || !gradeLevel || !password) {
+            showAlert('Validation Error', 'Please fill in all required fields.', 'error');
+            return;
+        }
+        
+        // Validate password length
+        if (password.length < 6) {
+            showAlert('Validation Error', 'Password must be at least 6 characters long.', 'error');
+            return;
+        }
+        
+        // Show loading state
+        const submitBtn = event.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creating Student...';
+        submitBtn.disabled = true;
         
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API_BASE_URL}/api/institution/learners`, {
+            const response = await fetch(`${API_BASE_URL}/api/institution/students`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -303,33 +594,38 @@
                     'Accept': 'application/json',
                 },
                 body: JSON.stringify({
-                    name,
-                    email,
-                    grade_level: gradeLevel,
-                    initial_tokens: initialTokens,
-                    mpesa_phone: mpesaPhone
+                    name: name,
+                    admission_number: admissionNumber,
+                    email: email || null,
+                    password: password,
+                    password_confirmation: password,
+                    grade_level: gradeLevel
                 })
             });
             
             const data = await response.json();
             
             if (data.success) {
-                showSuccess('Learner added successfully');
+                showAlert('Success', data.message || 'Student created successfully!', 'success');
                 closeModal('addLearnerModal');
                 refreshLearners();
                 
                 // Clear form
                 document.getElementById('learnerName').value = '';
+                document.getElementById('learnerAdmissionNumber').value = '';
                 document.getElementById('learnerEmail').value = '';
                 document.getElementById('learnerGradeLevel').value = '';
-                document.getElementById('learnerInitialTokens').value = '0';
-                document.getElementById('learnerMpesaPhone').value = '';
+                document.getElementById('learnerPassword').value = '';
             } else {
-                showError(data.message || 'Failed to add learner');
+                showAlert('Error', data.message || 'Failed to create student. Please try again.', 'error');
             }
         } catch (error) {
-            console.error('Error adding learner:', error);
-            showError('Error adding learner');
+            console.error('Error creating student:', error);
+            showAlert('Network Error', 'Unable to create student. Please check your connection and try again.', 'error');
+        } finally {
+            // Restore button state
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
         }
     }
     
@@ -338,141 +634,93 @@
         const file = fileInput.files[0];
         
         if (!file) {
-            showError('Please select a CSV file');
+            showAlert('Validation Error', 'Please select a CSV file', 'error');
             return;
         }
+        
+        // Show loading state
+        const submitBtn = document.querySelector('#bulkUploadModal button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+        submitBtn.disabled = true;
         
         try {
             const text = await file.text();
             const lines = text.split('\n');
             const headers = lines[0].split(',').map(h => h.trim());
             
-            // Validate headers
-            const expectedHeaders = ['Name', 'Email', 'Grade Level', 'Initial Tokens', 'M-PESA Phone'];
+            // Validate headers - updated for new API format
+            const expectedHeaders = ['name', 'admission_number', 'email', 'grade_level', 'password'];
             if (!expectedHeaders.every(header => headers.includes(header))) {
-                showError('Invalid CSV format. Please check the headers.');
+                showAlert('Validation Error', 'Invalid CSV format. Required headers: name, admission_number, email, grade_level, password', 'error');
                 return;
             }
             
-            const learners = [];
+            const students = [];
             for (let i = 1; i < lines.length; i++) {
                 const line = lines[i].trim();
                 if (!line) continue;
                 
                 const values = line.split(',').map(v => v.trim());
                 if (values.length >= 5) {
-                    learners.push({
+                    students.push({
                         name: values[0],
-                        email: values[1],
-                        grade_level: values[2],
-                        initial_tokens: parseInt(values[3]) || 0,
-                        mpesa_phone: values[4]
+                        admission_number: values[1],
+                        email: values[2] || null, // Email is optional
+                        grade_level: values[3],
+                        password: values[4]
                     });
                 }
             }
             
-            if (learners.length === 0) {
-                showError('No valid learners found in the CSV file');
+            if (students.length === 0) {
+                showAlert('Validation Error', 'No valid students found in the CSV file', 'error');
                 return;
             }
             
-            if (learners.length > 100) {
-                showError('Maximum 100 learners allowed per upload');
+            if (students.length > 100) {
+                showAlert('Validation Error', 'Maximum 100 students allowed per upload', 'error');
                 return;
             }
             
-            // Upload learners
+            // Upload students using the multiple students API
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API_BASE_URL}/api/institution/learners/bulk-upload`, {
+            const response = await fetch(`${API_BASE_URL}/api/institution/students/multiple`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                 },
-                body: JSON.stringify({ learners })
+                body: JSON.stringify({ students })
             });
             
             const data = await response.json();
             
             if (data.success) {
-                showSuccess(`Bulk upload completed! ${data.data.created_count} learners added successfully.`);
-                if (data.data.error_count > 0) {
-                    showError(`${data.data.error_count} learners failed to upload. Check console for details.`);
-                    console.log('Upload errors:', data.data.errors);
-                }
+                showAlert('Success', data.message || `${students.length} students created successfully!`, 'success');
                 closeModal('bulkUploadModal');
                 refreshLearners();
                 
                 // Clear file input
                 fileInput.value = '';
             } else {
-                showError(data.message || 'Failed to process bulk upload');
+                showAlert('Error', data.message || 'Failed to process bulk upload', 'error');
             }
         } catch (error) {
             console.error('Error processing bulk upload:', error);
-            showError('Error processing CSV file');
+            showAlert('Network Error', 'Error processing CSV file. Please check the format and try again.', 'error');
+        } finally {
+            // Restore button state
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
         }
     }
     
-    function editLearnerTokens(learnerId, learnerName, currentTokens) {
-        const newTokens = prompt(`Edit tokens for ${learnerName}:\n\nCurrent tokens: ${currentTokens}\n\nEnter new token amount:`, currentTokens);
-        
-        if (newTokens !== null && newTokens !== '' && !isNaN(newTokens)) {
-            updateLearnerTokens(learnerId, parseInt(newTokens));
-        }
-    }
-    
-    async function updateLearnerTokens(learnerId, tokens) {
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${API_BASE_URL}/api/institution/learners/${learnerId}/tokens`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({ tokens })
-            });
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                showSuccess('Learner tokens updated successfully');
-                refreshLearners();
-            } else {
-                showError(data.message || 'Failed to update tokens');
-            }
-        } catch (error) {
-            console.error('Error updating tokens:', error);
-            showError('Error updating tokens');
-        }
-    }
     
     async function toggleLearnerStatus(learnerId, currentStatus) {
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${API_BASE_URL}/api/institution/learners/${learnerId}/toggle-status`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                }
-            });
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                showSuccess(`Learner ${data.data.is_active ? 'activated' : 'deactivated'} successfully`);
-                refreshLearners();
-            } else {
-                showError(data.message || 'Failed to update status');
-            }
-        } catch (error) {
-            console.error('Error updating status:', error);
-            showError('Error updating status');
-        }
+        // TODO: Implement toggle learner status functionality when API endpoint is available
+        showAlert('Feature Coming Soon', 'Toggle learner status functionality will be available soon.', 'info');
     }
     
     function showSuccess(message) {
@@ -481,3 +729,4 @@
     }
 </script>
 @endsection
+

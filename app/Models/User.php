@@ -21,10 +21,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone_number',
+        'admission_number',
         'grade_level',
         'user_type',
         'institution_id',
-        'mpesa_phone',
     ];
 
     /**

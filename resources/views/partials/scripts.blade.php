@@ -860,6 +860,7 @@
             const institutionDashboardLink = document.getElementById('institutionDashboardLink');
             const parentDashboardLink = document.getElementById('parentDashboardLink');
             const transactionsLink = document.getElementById('transactionsLink');
+            const assessmentsLink = document.getElementById('assessmentsLink');
             
             const loginBtnMobile = document.getElementById('loginBtnMobile');
             const registerBtnMobile = document.getElementById('registerBtnMobile');
@@ -869,6 +870,7 @@
             const institutionDashboardLinkMobile = document.getElementById('institutionDashboardLinkMobile');
             const parentDashboardLinkMobile = document.getElementById('parentDashboardLinkMobile');
             const transactionsLinkMobile = document.getElementById('transactionsLinkMobile');
+            const assessmentsLinkMobile = document.getElementById('assessmentsLinkMobile');
             
             // Ensure currentUser is properly set and not just an empty object
             const isLoggedIn = currentUser && currentUser.id && (currentUser.email || currentUser.phone_number);
@@ -881,12 +883,14 @@
                 if (logoutBtn) logoutBtn.style.display = 'block';
                 if (buyTokensBtn) buyTokensBtn.style.display = 'block';
                 if (transactionsLink) transactionsLink.style.display = 'block';
+                if (assessmentsLink) assessmentsLink.style.display = 'block';
                 
                 if (loginBtnMobile) loginBtnMobile.style.display = 'none';
                 if (registerBtnMobile) registerBtnMobile.style.display = 'none';
                 if (logoutBtnMobile) logoutBtnMobile.style.display = 'block';
                 if (buyTokensBtnMobile) buyTokensBtnMobile.style.display = 'block';
                 if (transactionsLinkMobile) transactionsLinkMobile.style.display = 'block';
+                if (assessmentsLinkMobile) assessmentsLinkMobile.style.display = 'block';
                 
                 // Show appropriate dashboard link based on user type
                 if (currentUser.user_type === 'institution') {
@@ -921,6 +925,7 @@
                 if (institutionDashboardLink) institutionDashboardLink.style.display = 'none';
                 if (parentDashboardLink) parentDashboardLink.style.display = 'none';
                 if (transactionsLink) transactionsLink.style.display = 'none';
+                if (assessmentsLink) assessmentsLink.style.display = 'none';
                 
                 if (loginBtnMobile) loginBtnMobile.style.display = 'block';
                 if (registerBtnMobile) registerBtnMobile.style.display = 'block';
@@ -930,6 +935,7 @@
                 if (institutionDashboardLinkMobile) institutionDashboardLinkMobile.style.display = 'none';
                 if (parentDashboardLinkMobile) parentDashboardLinkMobile.style.display = 'none';
                 if (transactionsLinkMobile) transactionsLinkMobile.style.display = 'none';
+                if (assessmentsLinkMobile) assessmentsLinkMobile.style.display = 'none';
 
                 // Stop token balance updates for logged-out users
                 stopTokenBalanceUpdates();

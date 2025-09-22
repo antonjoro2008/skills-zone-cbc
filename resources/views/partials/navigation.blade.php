@@ -14,14 +14,26 @@
             
             <div class="hidden md:block">
                 <div class="ml-10 flex items-baseline space-x-6">
-                    <a href="{{ route('home') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('home') ? 'text-blue-600 font-semibold' : '' }}">Home</a>
-                    <a href="{{ route('subjects') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('subjects') || request()->routeIs('assessments') ? 'text-blue-600 font-semibold' : '' }}">Assessments</a>
+                    <a href="{{ route('home') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all flex items-center {{ request()->routeIs('home') ? 'text-blue-600 font-semibold' : '' }}">
+                        <i class="fas fa-home mr-2 text-sm"></i>Home
+                    </a>
+                    <a href="{{ route('subjects') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all flex items-center {{ request()->routeIs('subjects') || request()->routeIs('assessments') ? 'text-blue-600 font-semibold' : '' }}" id="assessmentsLink" style="display:none;">
+                        <i class="fas fa-clipboard-list mr-2 text-sm"></i>Assessments
+                    </a>
                     {{-- <a href="{{ route('pricing') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('pricing') ? 'text-blue-600 font-semibold' : '' }}">Tokens</a> --}}
                     {{-- <a href="{{ route('blog') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('blog') ? 'text-blue-600 font-semibold' : '' }}">Blog</a> --}}
-                    <a href="{{ route('dashboard') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('dashboard') ? 'text-blue-600 font-semibold' : '' }}" id="dashboardLink" style="display:none;">Dashboard</a>
-                    <a href="{{ route('institution-dashboard') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('institution-dashboard') ? 'text-blue-600 font-semibold' : '' }}" id="institutionDashboardLink" style="display:none;">Manage Learners</a>
-                    <a href="{{ route('parent-dashboard') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('parent-dashboard') ? 'text-blue-600 font-semibold' : '' }}" id="parentDashboardLink" style="display:none;">My Learners</a>
-                    <a href="{{ route('transactions') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all {{ request()->routeIs('transactions') ? 'text-blue-600 font-semibold' : '' }}" id="transactionsLink" style="display:none;">Purchases</a>
+                    <a href="{{ route('dashboard') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all flex items-center {{ request()->routeIs('dashboard') ? 'text-blue-600 font-semibold' : '' }}" id="dashboardLink" style="display:none;">
+                        <i class="fas fa-tachometer-alt mr-2 text-sm"></i>Dashboard
+                    </a>
+                    <a href="{{ route('institution-dashboard') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all flex items-center {{ request()->routeIs('institution-dashboard') ? 'text-blue-600 font-semibold' : '' }}" id="institutionDashboardLink" style="display:none;">
+                        <i class="fas fa-users-cog mr-2 text-sm"></i>Manage Learners
+                    </a>
+                    <a href="{{ route('parent-dashboard') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all flex items-center {{ request()->routeIs('parent-dashboard') ? 'text-blue-600 font-semibold' : '' }}" id="parentDashboardLink" style="display:none;">
+                        <i class="fas fa-child mr-2 text-sm"></i>My Learners
+                    </a>
+                    <a href="{{ route('transactions') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all flex items-center {{ request()->routeIs('transactions') ? 'text-blue-600 font-semibold' : '' }}" id="transactionsLink" style="display:none;">
+                        <i class="fas fa-receipt mr-2 text-sm"></i>Purchases
+                    </a>
                 </div>
             </div>
             
@@ -61,14 +73,26 @@
     <!-- Mobile Menu -->
     <div id="mobileMenu" class="mobile-menu md:hidden fixed top-16 left-0 w-full h-screen bg-white z-40">
         <div class="p-6 space-y-4">
-            <a href="{{ route('home') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-2 {{ request()->routeIs('home') ? 'text-[#8FC340] font-semibold' : '' }}">Home</a>
-            <a href="{{ route('subjects') }}" class="block text-lg font-medium text-gray-700 hover:text-[#E368A7] py-2 {{ request()->routeIs('subjects') || request()->routeIs('assessments') ? 'text-[#E368A7] font-semibold' : '' }}">Assessments</a>
+            <a href="{{ route('home') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-3 flex items-center transition-all duration-200 {{ request()->routeIs('home') ? 'text-[#8FC340] font-semibold' : '' }}">
+                <i class="fas fa-home mr-3 text-lg w-6"></i>Home
+            </a>
+            <a href="{{ route('subjects') }}" class="block text-lg font-medium text-gray-700 hover:text-[#E368A7] py-3 flex items-center transition-all duration-200 {{ request()->routeIs('subjects') || request()->routeIs('assessments') ? 'text-[#E368A7] font-semibold' : '' }}" id="assessmentsLinkMobile" style="display:none;">
+                <i class="fas fa-clipboard-list mr-3 text-lg w-6"></i>Assessments
+            </a>
             {{-- <a href="{{ route('pricing') }}" class="block text-lg font-medium text-gray-700 hover:text-blue-600 py-2 {{ request()->routeIs('pricing') ? 'text-blue-600 font-semibold' : '' }}">Tokens</a> --}}
             {{-- <a href="{{ route('blog') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-2 {{ request()->routeIs('blog') ? 'text-[#8FC340] font-semibold' : '' }}">Blog</a> --}}
-            <a href="{{ route('dashboard') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-2 {{ request()->routeIs('dashboard') ? 'text-[#8FC340] font-semibold' : '' }}" id="dashboardLinkMobile" style="display:none;">Dashboard</a>
-            <a href="{{ route('institution-dashboard') }}" class="block text-lg font-medium text-gray-700 hover:text-[#E368A7] py-2 {{ request()->routeIs('institution-dashboard') ? 'text-[#E368A7] font-semibold' : '' }}" id="institutionDashboardLinkMobile" style="display:none;">Manage Learners</a>
-            <a href="{{ route('parent-dashboard') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-2 {{ request()->routeIs('parent-dashboard') ? 'text-[#8FC340] font-semibold' : '' }}" id="parentDashboardLinkMobile" style="display:none;">My Learners</a>
-            <a href="{{ route('transactions') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-2 {{ request()->routeIs('transactions') ? 'text-[#8FC340] font-semibold' : '' }}" id="transactionsLinkMobile" style="display:none;">Purchases</a>
+            <a href="{{ route('dashboard') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-3 flex items-center transition-all duration-200 {{ request()->routeIs('dashboard') ? 'text-[#8FC340] font-semibold' : '' }}" id="dashboardLinkMobile" style="display:none;">
+                <i class="fas fa-tachometer-alt mr-3 text-lg w-6"></i>Dashboard
+            </a>
+            <a href="{{ route('institution-dashboard') }}" class="block text-lg font-medium text-gray-700 hover:text-[#E368A7] py-3 flex items-center transition-all duration-200 {{ request()->routeIs('institution-dashboard') ? 'text-[#E368A7] font-semibold' : '' }}" id="institutionDashboardLinkMobile" style="display:none;">
+                <i class="fas fa-users-cog mr-3 text-lg w-6"></i>Manage Learners
+            </a>
+            <a href="{{ route('parent-dashboard') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-3 flex items-center transition-all duration-200 {{ request()->routeIs('parent-dashboard') ? 'text-[#8FC340] font-semibold' : '' }}" id="parentDashboardLinkMobile" style="display:none;">
+                <i class="fas fa-child mr-3 text-lg w-6"></i>My Learners
+            </a>
+            <a href="{{ route('transactions') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-3 flex items-center transition-all duration-200 {{ request()->routeIs('transactions') ? 'text-[#8FC340] font-semibold' : '' }}" id="transactionsLinkMobile" style="display:none;">
+                <i class="fas fa-receipt mr-3 text-lg w-6"></i>Purchases
+            </a>
             <div class="pt-4 border-t border-gray-200">
                 <button class="w-full bg-gray-500 text-white hover:bg-gray-600 px-6 py-3 rounded-full font-medium transition-all" onclick="logout(); toggleMobileMenu()" id="logoutBtnMobile" style="display:none;">
                     <i class="fas fa-sign-out-alt mr-2"></i>Logout

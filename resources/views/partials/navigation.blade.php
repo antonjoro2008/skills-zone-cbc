@@ -25,8 +25,11 @@
                 </div>
             </div>
             
-            <!-- Mobile menu button -->
-            <div class="md:hidden">
+            <!-- Mobile menu button and Buy Tokens -->
+            <div class="md:hidden flex items-center space-x-2">
+                <button class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 px-3 py-2 rounded-full text-xs font-medium transition-all shadow-lg hover:shadow-xl hover:scale-105" onclick="showBuyTokensModal()" id="buyTokensBtnMobile" style="display:none;">
+                    <i class="fas fa-coins mr-1"></i>Buy Tokens
+                </button>
                 <button class="text-gray-700 hover:text-blue-600 p-2" onclick="toggleMobileMenu()">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
@@ -61,9 +64,6 @@
             <a href="{{ route('parent-dashboard') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-2 {{ request()->routeIs('parent-dashboard') ? 'text-[#8FC340] font-semibold' : '' }}" id="parentDashboardLinkMobile" style="display:none;">My Learners</a>
             <a href="{{ route('transactions') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-2 {{ request()->routeIs('transactions') ? 'text-[#8FC340] font-semibold' : '' }}" id="transactionsLinkMobile" style="display:none;">Purchases</a>
             <div class="pt-4 border-t border-gray-200 space-y-3">
-                <button class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 px-6 py-3 rounded-full font-medium transition-all shadow-lg" onclick="showBuyTokensModal(); toggleMobileMenu()" id="buyTokensBtnMobile" style="display:none;">
-                    <i class="fas fa-coins mr-2"></i>Buy Tokens
-                </button>
                 <button class="w-full bg-white text-[#8FC340] border-2 border-[#8FC340] hover:bg-[#8FC340]/10 px-6 py-3 rounded-full font-medium transition-all" onclick="showModal('loginModal'); toggleMobileMenu()" id="loginBtnMobile">
                     <i class="fas fa-sign-in-alt mr-2"></i>Login
                 </button>

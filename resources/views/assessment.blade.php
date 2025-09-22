@@ -256,6 +256,27 @@
             </div>
         </div>
     </div>
+
+    <!-- Assessment Confirmation Modal -->
+    <div id="assessmentConfirmModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-exclamation-triangle text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Confirm Action</h3>
+                <p class="text-gray-600 mb-6" id="assessmentConfirmMessage">Are you sure you want to go back? Your progress will be lost.</p>
+                <div class="flex space-x-4 justify-center">
+                    <button onclick="closeAssessmentConfirm()" class="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all">
+                        Cancel
+                    </button>
+                    <button onclick="confirmGoBack()" class="bg-gradient-to-r from-[#EC2834] to-[#d41e2a] text-white px-6 py-3 rounded-xl font-semibold hover:from-[#d41e2a] hover:to-[#b91c1c] transition-all">
+                        Go Back
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -479,7 +500,7 @@
                     }
                 }
                 
-                displayAssessmentStart();
+                await displayAssessmentStart();
             } else {
                 showAssessmentAlert('Error', data.message || 'Failed to load assessment details', 'error');
                 window.location.href = '/assessments';
@@ -491,7 +512,7 @@
         }
     }
 
-    function displayAssessmentStart() {
+    async function displayAssessmentStart() {
         if (!currentAssessment) return;
 
         // Calculate total questions from sections
@@ -1396,14 +1417,14 @@
     document.getElementById('nextQuestionBtnMobile').addEventListener('click', nextQuestion);
     document.getElementById('prevQuestionBtnMobile').addEventListener('click', previousQuestion);
     document.getElementById('backToStartBtn').addEventListener('click', () => {
-        if (confirm('Are you sure you want to go back? Your progress will be lost.')) {
+        showAssessmentConfirm('Are you sure you want to go back? Your progress will be lost.', () => {
             // Clean up all assessment data
             clearAllAssessmentData();
             
             document.getElementById('assessmentQuestionsPage').classList.add('hidden');
             document.getElementById('assessmentStartPage').classList.remove('hidden');
             clearInterval(timerInterval);
-        }
+        });
     });
 
     // Custom alert function for assessment page
@@ -1456,6 +1477,35 @@
         if (modal) {
             modal.classList.add('hidden');
         }
+    }
+
+    // Custom confirmation modal functions
+    function showAssessmentConfirm(message, onConfirm) {
+        const modal = document.getElementById('assessmentConfirmModal');
+        const messageElement = document.getElementById('assessmentConfirmMessage');
+        
+        if (modal && messageElement) {
+            messageElement.textContent = message;
+            modal.classList.remove('hidden');
+            
+            // Store the confirmation callback
+            window.assessmentConfirmCallback = onConfirm;
+        }
+    }
+
+    function closeAssessmentConfirm() {
+        const modal = document.getElementById('assessmentConfirmModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            window.assessmentConfirmCallback = null;
+        }
+    }
+
+    function confirmGoBack() {
+        if (window.assessmentConfirmCallback) {
+            window.assessmentConfirmCallback();
+        }
+        closeAssessmentConfirm();
     }
 </script>
 @endsection

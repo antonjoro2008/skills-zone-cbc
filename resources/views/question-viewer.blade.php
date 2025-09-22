@@ -1045,6 +1045,43 @@ function updateMobilePageContent(side, question, questionNumber) {
         `;
     }
     
+    // Generate media HTML for mobile
+    let mediaHtml = '';
+    if (question.media && question.media.length > 0) {
+        question.media.forEach(media => {
+            if (media.media_type === 'image') {
+                mediaHtml += `
+                    <div class="mb-4">
+                        <img src="https://admin.skillszone.africa/storage/${media.file_path}" 
+                             alt="Question media" 
+                             class="max-w-full h-auto rounded-lg shadow-md border border-gray-200">
+                        ${media.caption ? `<p class="text-sm text-gray-600 mt-2 italic">${media.caption}</p>` : ''}
+                    </div>
+                `;
+            } else if (media.media_type === 'video') {
+                mediaHtml += `
+                    <div class="mb-4">
+                        <video controls class="max-w-full h-auto rounded-lg shadow-md border border-gray-200">
+                            <source src="https://admin.skillszone.africa/storage/${media.file_path}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        ${media.caption ? `<p class="text-sm text-gray-600 mt-2 italic">${media.caption}</p>` : ''}
+                    </div>
+                `;
+            } else if (media.media_type === 'audio') {
+                mediaHtml += `
+                    <div class="mb-4">
+                        <audio controls class="w-full">
+                            <source src="https://admin.skillszone.africa/storage/${media.file_path}" type="audio/mpeg">
+                            Your browser does not support the audio tag.
+                        </audio>
+                        ${media.caption ? `<p class="text-sm text-gray-600 mt-2 italic">${media.caption}</p>` : ''}
+                    </div>
+                `;
+            }
+        });
+    }
+
     contentEl.innerHTML = `
         <div class="mobile-question-content">
             <div class="mobile-question-header">
@@ -1055,6 +1092,7 @@ function updateMobilePageContent(side, question, questionNumber) {
                 </div>
             </div>
             <div class="mobile-question-text">${question.question_text || 'No question text available'}</div>
+            ${mediaHtml ? `<div class="mobile-question-media">${mediaHtml}</div>` : ''}
             <div class="mobile-question-options">${optionsHtml}</div>
         </div>
         
@@ -1510,6 +1548,9 @@ function updatePageContent(pageType, question, questionNumber) {
     const questionTextEl = document.getElementById(`${pageType}QuestionText`);
     if (questionTextEl) questionTextEl.innerHTML = question.question_text || 'No question text available';
     
+    // Display media if available
+    displayQuestionMedia(pageType, question);
+    
     // Update options based on question type
     const questionOptionsEl = document.getElementById(`${pageType}QuestionOptions`);
     if (questionOptionsEl) {
@@ -1557,6 +1598,61 @@ function updatePageContent(pageType, question, questionNumber) {
         } else {
             questionOptionsEl.innerHTML = '<p class="text-gray-500 italic">No options available for this question type</p>';
         }
+    }
+}
+
+function displayQuestionMedia(pageType, question) {
+    let mediaContainer = document.getElementById(`${pageType}QuestionMedia`);
+    if (!mediaContainer) {
+        // Create media container if it doesn't exist
+        const questionTextElement = document.getElementById(`${pageType}QuestionText`);
+        const mediaDiv = document.createElement('div');
+        mediaDiv.id = `${pageType}QuestionMedia`;
+        mediaDiv.className = 'mt-3 mb-4';
+        questionTextElement.parentNode.insertBefore(mediaDiv, questionTextElement.nextSibling);
+        mediaContainer = document.getElementById(`${pageType}QuestionMedia`);
+    } else {
+        // Update existing container with proper spacing
+        mediaContainer.className = 'mt-3 mb-4';
+    }
+    
+    if (question.media && question.media.length > 0) {
+        let mediaHTML = '';
+        question.media.forEach(media => {
+            if (media.media_type === 'image') {
+                mediaHTML += `
+                    <div class="mb-4">
+                        <img src="https://admin.skillszone.africa/storage/${media.file_path}" 
+                             alt="Question media" 
+                             class="max-w-full h-auto rounded-lg shadow-md border border-gray-200">
+                        ${media.caption ? `<p class="text-sm text-gray-600 mt-2 italic">${media.caption}</p>` : ''}
+                    </div>
+                `;
+            } else if (media.media_type === 'video') {
+                mediaHTML += `
+                    <div class="mb-4">
+                        <video controls class="max-w-full h-auto rounded-lg shadow-md border border-gray-200">
+                            <source src="https://admin.skillszone.africa/storage/${media.file_path}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        ${media.caption ? `<p class="text-sm text-gray-600 mt-2 italic">${media.caption}</p>` : ''}
+                    </div>
+                `;
+            } else if (media.media_type === 'audio') {
+                mediaHTML += `
+                    <div class="mb-4">
+                        <audio controls class="w-full">
+                            <source src="https://admin.skillszone.africa/storage/${media.file_path}" type="audio/mpeg">
+                            Your browser does not support the audio tag.
+                        </audio>
+                        ${media.caption ? `<p class="text-sm text-gray-600 mt-2 italic">${media.caption}</p>` : ''}
+                    </div>
+                `;
+            }
+        });
+        mediaContainer.innerHTML = mediaHTML;
+    } else {
+        mediaContainer.innerHTML = '';
     }
 }
 

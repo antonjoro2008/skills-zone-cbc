@@ -623,6 +623,16 @@
                 }
             }
 
+            // Check minute balance before starting assessment
+            console.log('Checking minute balance before starting assessment...');
+            const balanceCheck = await checkMinuteBalance();
+            if (!balanceCheck.hasMinutes) {
+                console.log('Insufficient minutes balance:', balanceCheck);
+                showInsufficientMinutesPopup();
+                return;
+            }
+            console.log('Minute balance check passed:', balanceCheck);
+
             // Call the assessment endpoint to get assessment details
             const response = await fetch(`${API_BASE_URL}/api/assessments/${assessmentId}`, {
                 method: 'GET',
@@ -640,7 +650,8 @@
                 localStorage.setItem('currentAssessment', JSON.stringify(data.data));
                 window.location.href = `/assessment/${assessmentId}`;
             } else {
-                showAlert('Error', data.message || 'Failed to load assessment details', 'error');
+                const errorMessage = extractErrorMessage(data, 'Failed to load assessment details');
+                showAlert('Error', errorMessage, 'error');
             }
         } catch (error) {
             console.error('Error starting assessment:', error);

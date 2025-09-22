@@ -513,6 +513,16 @@
             remainingTime = calculateRemainingTime(timeData);
         }
 
+        // Check minute balance before allowing assessment to continue
+        console.log('Checking minute balance for assessment...');
+        const balanceCheck = await checkMinuteBalance();
+        if (!balanceCheck.hasMinutes) {
+            console.log('Insufficient minutes balance:', balanceCheck);
+            showInsufficientMinutesPopup();
+            return;
+        }
+        console.log('Minute balance check passed:', balanceCheck);
+
         // Update assessment details
         document.getElementById('assessmentTitle').textContent = currentAssessment.title || 'Assessment';
         document.getElementById('assessmentSubject').textContent = currentAssessment.subject ? currentAssessment.subject.name : 'General';
@@ -567,6 +577,19 @@
                 window.location.href = '/';
                 return;
             }
+
+            // Check minute balance before starting assessment
+            console.log('Checking minute balance before starting assessment...');
+            const balanceCheck = await checkMinuteBalance();
+            if (!balanceCheck.hasMinutes) {
+                console.log('Insufficient minutes balance:', balanceCheck);
+                // Reset button state before showing popup
+                startBtn.innerHTML = originalText;
+                startBtn.disabled = false;
+                showInsufficientMinutesPopup();
+                return;
+            }
+            console.log('Minute balance check passed:', balanceCheck);
 
             // Call the start assessment API endpoint
             const response = await fetch(`${API_BASE_URL}/api/assessments/${currentAssessment.id}/start`, {

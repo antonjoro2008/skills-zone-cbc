@@ -345,7 +345,8 @@
                 closeAddLearnerModal();
                 loadLearners(); // Reload the table
             } else {
-                showAlert('Error', result.message || 'Failed to add learner', 'error');
+                const errorMessage = extractErrorMessage(result, 'Failed to add learner');
+                showAlert('Error', errorMessage, 'error');
             }
         } catch (error) {
             console.error('Error adding learner:', error);
@@ -439,7 +440,8 @@
                 closeBulkUploadModal();
                 loadLearners(); // Reload the table
             } else {
-                showAlert('Error', result.message || 'Failed to upload learners', 'error');
+                const errorMessage = extractErrorMessage(result, 'Failed to upload learners');
+                showAlert('Error', errorMessage, 'error');
             }
         } catch (error) {
             console.error('Error processing bulk upload:', error);
@@ -532,7 +534,8 @@
                 showAlert('Payment Initiated', 'Please check your phone to complete the payment.', 'success');
                 closeBuyTokensModal();
             } else {
-                showAlert('Payment Error', result.message || 'Failed to initiate payment', 'error');
+                const errorMessage = extractErrorMessage(result, 'Failed to initiate payment');
+                showAlert('Payment Error', errorMessage, 'error');
             }
         } catch (error) {
             console.error('Error initiating payment:', error);

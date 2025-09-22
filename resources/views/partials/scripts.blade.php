@@ -11,6 +11,96 @@
         // Change this URL to match your API server
         const API_BASE_URL = 'https://admin.skillszone.africa';
         
+        // Balance Checking Functions
+        async function checkMinuteBalance() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    return { hasMinutes: false, minutes: 0, message: 'Authentication required' };
+                }
+
+                const response = await fetch(`${API_BASE_URL}/api/token-balance`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    const minutes = data.data.minutes_balance || 0;
+                    return { 
+                        hasMinutes: minutes > 0, 
+                        minutes: minutes, 
+                        message: minutes > 0 ? 'Sufficient minutes' : 'No minutes available' 
+                    };
+                } else {
+                    return { hasMinutes: false, minutes: 0, message: data.message || 'Failed to check balance' };
+                }
+            } catch (error) {
+                console.error('Error checking minute balance:', error);
+                return { hasMinutes: false, minutes: 0, message: 'Network error' };
+            }
+        }
+
+        function showInsufficientMinutesPopup() {
+            showAlert(
+                'Insufficient Minutes', 
+                'You need to top up your minutes to start or continue assessments. Click OK to buy minutes.', 
+                'warning',
+                () => {
+                    // Redirect to buy tokens page or show buy tokens modal
+                    if (typeof showBuyTokensModal === 'function') {
+                        showBuyTokensModal();
+                    } else {
+                        window.location.href = '/dashboard';
+                    }
+                }
+            );
+        }
+
+        function showBuyTokensModal() {
+            showModal('buyTokensModal');
+        }
+
+        // Error Message Extraction Helper
+        function extractErrorMessage(apiResponse, fallbackMessage = 'An error occurred. Please try again.') {
+            // Priority 1: Check for specific field errors in the errors object
+            if (apiResponse.errors && typeof apiResponse.errors === 'object') {
+                const errorMessages = [];
+                
+                // Collect all error messages from all fields
+                Object.keys(apiResponse.errors).forEach(field => {
+                    if (Array.isArray(apiResponse.errors[field])) {
+                        errorMessages.push(...apiResponse.errors[field]);
+                    } else if (typeof apiResponse.errors[field] === 'string') {
+                        errorMessages.push(apiResponse.errors[field]);
+                    }
+                });
+                
+                // Return the first error message if any exist
+                if (errorMessages.length > 0) {
+                    return errorMessages[0];
+                }
+            }
+            
+            // Priority 2: Use the general message from the API response
+            if (apiResponse.message && typeof apiResponse.message === 'string') {
+                return apiResponse.message;
+            }
+            
+            // Priority 3: Use the error field if it exists
+            if (apiResponse.error && typeof apiResponse.error === 'string') {
+                return apiResponse.error;
+            }
+            
+            // Priority 4: Fallback to provided default message
+            return fallbackMessage;
+        }
+
         // Token Balance Functions
         async function fetchTokenBalance() {
             try {
@@ -520,7 +610,7 @@
                     }
                 } else {
                     // Show error modal with specific error message from API
-                    const errorMessage = data.message || data.error || 'Login failed. Please try again.';
+                    const errorMessage = extractErrorMessage(data, 'Login failed. Please try again.');
                     showErrorModal(errorMessage, 'Login Failed');
                 }
             } catch (error) {
@@ -606,7 +696,7 @@
                     }, 100);
                 } else {
                     // Show error modal with specific error message from API
-                    const errorMessage = data.message || data.error || 'Registration failed. Please try again.';
+                    const errorMessage = extractErrorMessage(data, 'Registration failed. Please try again.');
                     showErrorModal(errorMessage, 'Registration Failed');
                 }
             } catch (error) {
@@ -692,7 +782,7 @@
                     }, 100);
                 } else {
                     // Show error modal with specific error message from API
-                    const errorMessage = data.message || data.error || 'Institution registration failed. Please try again.';
+                    const errorMessage = extractErrorMessage(data, 'Institution registration failed. Please try again.');
                     showErrorModal(errorMessage, 'Institution Registration Failed');
                 }
             } catch (error) {
@@ -765,6 +855,7 @@
             const loginBtn = document.getElementById('loginBtn');
             const registerBtn = document.getElementById('registerBtn');
             const logoutBtn = document.getElementById('logoutBtn');
+            const buyTokensBtn = document.getElementById('buyTokensBtn');
             const dashboardLink = document.getElementById('dashboardLink');
             const institutionDashboardLink = document.getElementById('institutionDashboardLink');
             const parentDashboardLink = document.getElementById('parentDashboardLink');
@@ -773,6 +864,7 @@
             const loginBtnMobile = document.getElementById('loginBtnMobile');
             const registerBtnMobile = document.getElementById('registerBtnMobile');
             const logoutBtnMobile = document.getElementById('logoutBtnMobile');
+            const buyTokensBtnMobile = document.getElementById('buyTokensBtnMobile');
             const dashboardLinkMobile = document.getElementById('dashboardLinkMobile');
             const institutionDashboardLinkMobile = document.getElementById('institutionDashboardLinkMobile');
             const parentDashboardLinkMobile = document.getElementById('parentDashboardLinkMobile');
@@ -787,11 +879,13 @@
                 if (loginBtn) loginBtn.style.display = 'none';
                 if (registerBtn) registerBtn.style.display = 'none';
                 if (logoutBtn) logoutBtn.style.display = 'block';
+                if (buyTokensBtn) buyTokensBtn.style.display = 'block';
                 if (transactionsLink) transactionsLink.style.display = 'block';
                 
                 if (loginBtnMobile) loginBtnMobile.style.display = 'none';
                 if (registerBtnMobile) registerBtnMobile.style.display = 'none';
                 if (logoutBtnMobile) logoutBtnMobile.style.display = 'block';
+                if (buyTokensBtnMobile) buyTokensBtnMobile.style.display = 'block';
                 if (transactionsLinkMobile) transactionsLinkMobile.style.display = 'block';
                 
                 // Show appropriate dashboard link based on user type
@@ -822,6 +916,7 @@
                 if (loginBtn) loginBtn.style.display = 'block';
                 if (registerBtn) registerBtn.style.display = 'block';
                 if (logoutBtn) logoutBtn.style.display = 'none';
+                if (buyTokensBtn) buyTokensBtn.style.display = 'none';
                 if (dashboardLink) dashboardLink.style.display = 'none';
                 if (institutionDashboardLink) institutionDashboardLink.style.display = 'none';
                 if (parentDashboardLink) parentDashboardLink.style.display = 'none';
@@ -830,6 +925,7 @@
                 if (loginBtnMobile) loginBtnMobile.style.display = 'block';
                 if (registerBtnMobile) registerBtnMobile.style.display = 'block';
                 if (logoutBtnMobile) logoutBtnMobile.style.display = 'none';
+                if (buyTokensBtnMobile) buyTokensBtnMobile.style.display = 'none';
                 if (dashboardLinkMobile) dashboardLinkMobile.style.display = 'none';
                 if (institutionDashboardLinkMobile) institutionDashboardLinkMobile.style.display = 'none';
                 if (parentDashboardLinkMobile) parentDashboardLinkMobile.style.display = 'none';
@@ -986,7 +1082,8 @@
                     }
                 } else {
                     // Show error message
-                    showAlert('Payment Failed', data.message || 'Payment could not be processed. Please try again.', 'error');
+                    const errorMessage = extractErrorMessage(data, 'Payment could not be processed. Please try again.');
+                    showAlert('Payment Failed', errorMessage, 'error');
                 }
             } catch (error) {
                 console.error('Buy tokens error:', error);
@@ -1034,7 +1131,7 @@
                     showModal('verifyCodeModal');
                 } else {
                     // Show error modal with specific error message from API
-                    const errorMessage = data.message || data.error || 'Failed to send reset code. Please try again.';
+                    const errorMessage = extractErrorMessage(data, 'Failed to send reset code. Please try again.');
                     showErrorModal(errorMessage, 'Reset Code Failed');
                 }
             } catch (error) {
@@ -1085,7 +1182,7 @@
                     showModal('resetPasswordModal');
                 } else {
                     // Show error modal with specific error message from API
-                    const errorMessage = data.message || data.error || 'Invalid reset code. Please try again.';
+                    const errorMessage = extractErrorMessage(data, 'Invalid reset code. Please try again.');
                     showErrorModal(errorMessage, 'Verification Failed');
                 }
             } catch (error) {
@@ -1156,7 +1253,7 @@
                     }, 2000);
                 } else {
                     // Show error modal with specific error message from API
-                    const errorMessage = data.message || data.error || 'Failed to reset password. Please try again.';
+                    const errorMessage = extractErrorMessage(data, 'Failed to reset password. Please try again.');
                     showErrorModal(errorMessage, 'Password Reset Failed');
                 }
             } catch (error) {
@@ -1192,7 +1289,7 @@
                 if (data.success) {
                     showAlert('Code Resent', data.message || 'Reset code resent successfully to your phone', 'success');
                 } else {
-                    const errorMessage = data.message || data.error || 'Failed to resend reset code. Please try again.';
+                    const errorMessage = extractErrorMessage(data, 'Failed to resend reset code. Please try again.');
                     showErrorModal(errorMessage, 'Resend Failed');
                 }
             } catch (error) {

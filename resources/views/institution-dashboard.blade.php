@@ -545,7 +545,8 @@
                 document.getElementById('buyTokensMpesaPhone').value = '';
                 calculateTokens();
             } else {
-                showAlert('Payment Failed', data.message || 'Failed to initiate payment. Please try again.', 'error');
+                const errorMessage = extractErrorMessage(data, 'Failed to initiate payment. Please try again.');
+                showAlert('Payment Failed', errorMessage, 'error');
             }
         } catch (error) {
             console.error('Payment error:', error);
@@ -617,7 +618,8 @@
                 document.getElementById('learnerGradeLevel').value = '';
                 document.getElementById('learnerPassword').value = '';
             } else {
-                showAlert('Error', data.message || 'Failed to create student. Please try again.', 'error');
+                const errorMessage = extractErrorMessage(data, 'Failed to create student. Please try again.');
+                showAlert('Error', errorMessage, 'error');
             }
         } catch (error) {
             console.error('Error creating student:', error);
@@ -705,7 +707,8 @@
                 // Clear file input
                 fileInput.value = '';
             } else {
-                showAlert('Error', data.message || 'Failed to process bulk upload', 'error');
+                const errorMessage = extractErrorMessage(data, 'Failed to process bulk upload');
+                showAlert('Error', errorMessage, 'error');
             }
         } catch (error) {
             console.error('Error processing bulk upload:', error);

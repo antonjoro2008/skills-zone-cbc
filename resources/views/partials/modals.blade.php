@@ -21,19 +21,21 @@
                 <div class="flex-1 overflow-y-auto p-6 pt-4">
                 
                 <form class="space-y-6" onsubmit="login(event)">
+                    <p class="text-xs text-gray-500 mb-4">Fields marked with <span class="text-red-500">*</span> are required</p>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Login ID</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Login ID <span class="text-red-500">*</span></label>
                         <input type="text" id="loginPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Phone number or admission number" required>
-                        <p class="text-xs text-gray-500 mt-1">Enter your phone number or admission number</p>
+                        <p class="text-xs text-gray-500 mt-1">Your phone number or admission number for learners registered by institutions</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <input type="password" id="loginPassword" class="form-input w-full px-4 py-3 pr-12 rounded-xl" placeholder="Enter your password" required>
                             <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('loginPassword', 'loginPasswordToggle')">
                                 <i id="loginPasswordToggle" class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
                             </button>
                         </div>
+                        <p class="text-xs text-gray-500 mt-1">Your account password</p>
                     </div>
                     <div class="flex items-center justify-between">
                         <label class="flex items-center group cursor-pointer">
@@ -92,30 +94,33 @@
                 
                 <!-- Individual Registration Form -->
                 <form id="individualForm" class="space-y-5" onsubmit="registerIndividual(event)">
+                    <p class="text-xs text-gray-500 mb-4">Fields marked with <span class="text-red-500">*</span> are required</p>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Full Name <span class="text-red-500">*</span></label>
                         <input type="text" id="registerName" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter your full name" required>
+                        <p class="text-xs text-gray-500 mt-1">Your full name</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number <span class="text-red-500">*</span></label>
                         <input type="tel" id="registerPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Safaricom mobile numbers currently supported" required>
-                        <p class="text-xs text-gray-500 mt-1">Enter your phone number (this will be your login identifier)</p>
+                        <p class="text-xs text-gray-500 mt-1">This will be your login identifier</p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Email <span class="text-gray-400">(Optional)</span></label>
                         <input type="email" id="registerEmail" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter your email (optional)">
+                        <p class="text-xs text-gray-500 mt-1">Email is optional</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">User Type</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">User Type <span class="text-red-500">*</span></label>
                         <select id="registerUserType" class="form-input w-full px-4 py-3 rounded-xl" required>
                             <option value="">Select your user type</option>
                             <option value="student">Learner</option>
                             <option value="parent">Parent/Guardian</option>
                         </select>
-                        <p class="text-xs text-gray-500 mt-1">Choose whether you are a learner or parent/guardian</p>
+                        <p class="text-xs text-gray-500 mt-1">Are you a learner or parent/guardian?</p>
                     </div>
                     <div id="gradeLevelDiv" style="display: none;">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Grade Level <span class="text-red-500">*</span></label>
                         <select id="registerGradeLevel" class="form-input w-full px-4 py-3 rounded-xl">
                             <option value="">Select your grade level</option>
                             <option value="Grade 1">Grade 1</option>
@@ -133,24 +138,27 @@
                             <option value="University">University</option>
                             <option value="Professional">Professional</option>
                         </select>
+                        <p class="text-xs text-gray-500 mt-1">Your current grade level</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <input type="password" id="registerPassword" class="form-input w-full px-4 py-3 pr-12 rounded-xl" placeholder="Create a strong password" required>
                             <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('registerPassword', 'registerPasswordToggle')">
                                 <i id="registerPasswordToggle" class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
                             </button>
                         </div>
+                        <p class="text-xs text-gray-500 mt-1">At least 8 characters</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <input type="password" id="registerPasswordConfirmation" class="form-input w-full px-4 py-3 pr-12 rounded-xl" placeholder="Confirm your password" required>
                             <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('registerPasswordConfirmation', 'registerPasswordConfirmationToggle')">
                                 <i id="registerPasswordConfirmationToggle" class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
                             </button>
                         </div>
+                        <p class="text-xs text-gray-500 mt-1">Re-enter your password</p>
                     </div>
                     <div>
                         <label class="flex items-center group cursor-pointer">
@@ -165,53 +173,61 @@
 
                 <!-- Institution Registration Form -->
                 <form id="institutionForm" class="space-y-5 hidden" onsubmit="registerInstitution(event)">
+                    <p class="text-xs text-gray-500 mb-4">Fields marked with <span class="text-red-500">*</span> are required</p>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Institution Name</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Institution Name <span class="text-red-500">*</span></label>
                         <input type="text" id="institutionName" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter institution name" required>
+                        <p class="text-xs text-gray-500 mt-1">Your institution's name</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Institution Email</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Institution Email <span class="text-red-500">*</span></label>
                         <input type="email" id="institutionEmail" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter institution email" required>
+                        <p class="text-xs text-gray-500 mt-1">Institution email address</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Institution Phone</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Institution Phone <span class="text-red-500">*</span></label>
                         <input type="tel" id="institutionPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Safaricom mobile numbers currently supported" required>
-                        <p class="text-xs text-gray-500 mt-1">Enter institution phone number</p>
+                        <p class="text-xs text-gray-500 mt-1">Institution phone number</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Institution Address</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Institution Address <span class="text-red-500">*</span></label>
                         <input type="text" id="institutionAddress" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter institution address" required>
+                        <p class="text-xs text-gray-500 mt-1">Institution address</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Admin Name</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Admin Name <span class="text-red-500">*</span></label>
                         <input type="text" id="adminName" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter admin full name" required>
+                        <p class="text-xs text-gray-500 mt-1">Administrator's full name</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Admin Phone Number</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Admin Phone Number <span class="text-red-500">*</span></label>
                         <input type="tel" id="adminPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Safaricom mobile numbers currently supported" required>
-                        <p class="text-xs text-gray-500 mt-1">Enter admin phone number (this will be your login identifier)</p>
+                        <p class="text-xs text-gray-500 mt-1">This will be your login identifier</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Admin Email</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Admin Email <span class="text-red-500">*</span></label>
                         <input type="email" id="adminEmail" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter admin email" required>
+                        <p class="text-xs text-gray-500 mt-1">Administrator's email address</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Admin Password</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Admin Password <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <input type="password" id="adminPassword" class="form-input w-full px-4 py-3 pr-12 rounded-xl" placeholder="Create a strong password" required>
                             <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('adminPassword', 'adminPasswordToggle')">
                                 <i id="adminPasswordToggle" class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
                             </button>
                         </div>
+                        <p class="text-xs text-gray-500 mt-1">At least 8 characters</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Admin Password</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Admin Password <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <input type="password" id="adminPasswordConfirmation" class="form-input w-full px-4 py-3 pr-12 rounded-xl" placeholder="Confirm admin password" required>
                             <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('adminPasswordConfirmation', 'adminPasswordConfirmationToggle')">
                                 <i id="adminPasswordConfirmationToggle" class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
                             </button>
                         </div>
+                        <p class="text-xs text-gray-500 mt-1">Re-enter your password</p>
                     </div>
                     <div>
                         <label class="flex items-center group cursor-pointer">
@@ -327,22 +343,24 @@
                 
                 <form class="space-y-6" onsubmit="resetPassword(event)">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">New Password <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <input type="password" id="newPassword" class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter new password" required>
                             <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('newPassword', 'newPasswordToggle')">
                                 <i id="newPasswordToggle" class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
                             </button>
                         </div>
+                        <p class="text-xs text-gray-500 mt-1">At least 8 characters</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <input type="password" id="confirmNewPassword" class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Confirm new password" required>
                             <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('confirmNewPassword', 'confirmNewPasswordToggle')">
                                 <i id="confirmNewPasswordToggle" class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
                             </button>
                         </div>
+                        <p class="text-xs text-gray-500 mt-1">Re-enter your new password</p>
                     </div>
                     <button type="submit" class="w-full bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all shadow-lg">
                         <i class="fas fa-save mr-2"></i>Reset Password
@@ -512,20 +530,24 @@
                 </div>
                 
                 <form class="space-y-6" onsubmit="addLearner(event)">
+                    <p class="text-xs text-gray-500 mb-4">Fields marked with <span class="text-red-500">*</span> are required</p>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Full Name <span class="text-red-500">*</span></label>
                         <input type="text" id="learnerName" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter learner's full name" required>
+                        <p class="text-xs text-gray-500 mt-1">Learner's full name</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Admission Number</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Admission Number <span class="text-red-500">*</span></label>
                         <input type="text" id="learnerAdmissionNumber" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter admission number (e.g., STU001)" required>
+                        <p class="text-xs text-gray-500 mt-1">Unique admission number for this learner</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Email (Optional)</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email <span class="text-gray-400">(Optional)</span></label>
                         <input type="email" id="learnerEmail" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter learner's email (optional)">
+                        <p class="text-xs text-gray-500 mt-1">Email is optional</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Grade Level <span class="text-red-500">*</span></label>
                         <select id="learnerGradeLevel" class="form-input w-full px-4 py-3 rounded-xl" required>
                             <option value="">Select grade level</option>
                             <option value="Grade 1">Grade 1</option>
@@ -543,10 +565,12 @@
                             <option value="University">University</option>
                             <option value="Professional">Professional</option>
                         </select>
+                        <p class="text-xs text-gray-500 mt-1">Current grade level</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password <span class="text-red-500">*</span></label>
                         <input type="password" id="learnerPassword" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter password (min 6 characters)" required>
+                        <p class="text-xs text-gray-500 mt-1">At least 6 characters</p>
                     </div>
                     <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-green-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
                         <i class="fas fa-user-plus mr-2"></i>Add Learner
@@ -604,10 +628,11 @@
                     <div class="bg-gray-50 rounded-xl p-4">
                         <h4 class="font-semibold text-gray-900 mb-2">Sample CSV Format:</h4>
                         <div class="bg-white rounded-lg p-3 font-mono text-sm">
-                            Name,Email,Grade Level,Initial Tokens,M-PESA Phone<br>
-                            John Doe,john@example.com,Grade 5,50,254700123456<br>
-                            Jane Smith,jane@example.com,Grade 6,75,254700789012
+                            name,admission_number,email,grade_level,password<br>
+                            John Doe,STU001,john@example.com,Grade 5,password123<br>
+                            Jane Smith,STU002,,Grade 6,password456
                         </div>
+                        <p class="text-xs text-gray-500 mt-2">Note: Email is optional and can be left empty</p>
                     </div>
                     
                     <button type="button" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl hover:scale-105" onclick="processBulkUpload()">

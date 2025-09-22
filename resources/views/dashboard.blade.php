@@ -562,7 +562,8 @@
                     location.reload();
                 }, 2000);
             } else {
-                showAlert('Payment Failed', data.message || 'Payment failed. Please try again.', 'error');
+                const errorMessage = extractErrorMessage(data, 'Payment failed. Please try again.');
+                showAlert('Payment Failed', errorMessage, 'error');
             }
         } catch (error) {
             console.error('Error processing payment:', error);

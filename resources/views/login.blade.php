@@ -363,14 +363,33 @@
             const data = await response.json();
             
             if (data.success) {
-                // Store authentication data
-                localStorage.setItem('token', data.data.token);
+                // Store complete user data, token, and dashboard data (matching popup login exactly)
                 localStorage.setItem('user', JSON.stringify(data.data.user));
+                localStorage.setItem('token', data.data.access_token);
+                localStorage.setItem('dashboard', JSON.stringify(data.data.dashboard));
                 
-                // Store dashboard data if available
-                if (data.data.dashboard) {
-                    localStorage.setItem('dashboard', JSON.stringify(data.data.dashboard));
+                // Also store in sessionStorage as backup for mobile devices
+                sessionStorage.setItem('user', JSON.stringify(data.data.user));
+                sessionStorage.setItem('token', data.data.access_token);
+                sessionStorage.setItem('dashboard', JSON.stringify(data.data.dashboard));
+                
+                // Update global currentUser variable if it exists (for consistency with popup login)
+                if (typeof window.currentUser !== 'undefined') {
+                    window.currentUser = data.data.user;
+                    console.log('Updated global currentUser:', window.currentUser);
                 }
+                
+                // Call updateAuthState if it exists (for consistency with popup login)
+                if (typeof updateAuthState === 'function') {
+                    updateAuthState();
+                    console.log('Called updateAuthState');
+                } else {
+                    console.log('updateAuthState function not available');
+                }
+                
+                // Debug: Log stored data
+                console.log('Stored token:', localStorage.getItem('token'));
+                console.log('Stored user:', localStorage.getItem('user'));
                 
                 showAlert('Success', 'Login successful! Redirecting...', 'success');
                 
@@ -384,12 +403,10 @@
                         // Redirect to the original page
                         window.location.href = returnUrl;
                     } else {
-                        // Default redirect based on user type
+                        // Default redirect based on user type (matching popup login logic)
                         const user = data.data.user;
                         if (user.user_type === 'institution') {
                             window.location.href = '/institution-dashboard';
-                        } else if (user.user_type === 'parent') {
-                            window.location.href = '/parent-dashboard';
                         } else {
                             window.location.href = '/dashboard';
                         }

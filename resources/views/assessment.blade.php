@@ -368,8 +368,27 @@
         const remainingTime = calculateRemainingTime(timeData);
         return remainingTime > 0;
     }
+    
+    function checkAuthentication() {
+        const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+        const user = localStorage.getItem('user');
+        
+        if (!token || !user) {
+            // Redirect to login page with return URL
+            const currentUrl = window.location.href;
+            window.location.href = `/login?return=${encodeURIComponent(currentUrl)}`;
+            return false;
+        }
+        
+        return true;
+    }
 
     document.addEventListener('DOMContentLoaded', function() {
+        // Check authentication first
+        if (!checkAuthentication()) {
+            return; // Stop execution if not authenticated
+        }
+        
         // Debug localStorage data - enhanced for mobile debugging
         console.log('=== ASSESSMENT PAGE LOAD DEBUG ===');
         console.log('User Agent:', navigator.userAgent);

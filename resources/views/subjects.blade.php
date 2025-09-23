@@ -346,6 +346,11 @@
     let isSearching = false;
     
     document.addEventListener('DOMContentLoaded', function() {
+        // Check authentication first
+        if (!checkAuthentication()) {
+            return; // Stop execution if not authenticated
+        }
+        
         // Load token balance from localStorage
         updateTokenBalance();
         
@@ -355,6 +360,20 @@
         // Setup search functionality
         setupSearch();
     });
+    
+    function checkAuthentication() {
+        const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+        const user = localStorage.getItem('user');
+        
+        if (!token || !user) {
+            // Redirect to login page with return URL
+            const currentUrl = window.location.href;
+            window.location.href = `/login?return=${encodeURIComponent(currentUrl)}`;
+            return false;
+        }
+        
+        return true;
+    }
     
     function setupSearch() {
         const searchInput = document.getElementById('subjectSearch');
@@ -508,9 +527,11 @@
         if (searchResultsCounter) searchResultsCounter.style.display = 'none';
         
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token') || localStorage.getItem('access_token');
             if (!token) {
-                throw new Error('No authentication token found');
+                const currentUrl = window.location.href;
+                window.location.href = `/login?return=${encodeURIComponent(currentUrl)}`;
+                return;
             }
             
             // Build API URL with search parameters
@@ -572,6 +593,14 @@
             }
         } catch (error) {
             console.error('Error loading subjects:', error);
+            
+            // Check if it's an authentication error
+            if (error.message && error.message.includes('authentication')) {
+                const currentUrl = window.location.href;
+                window.location.href = `/login?return=${encodeURIComponent(currentUrl)}`;
+                return;
+            }
+            
             if (loadingElement) loadingElement.style.display = 'none';
             if (errorElement) errorElement.style.display = 'block';
         } finally {

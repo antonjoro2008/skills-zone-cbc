@@ -69,7 +69,7 @@
                 </div>
 
                 <!-- Start Button -->
-                <div class="text-center">
+                <div class="text-center" id="startButtonContainer">
                     <button id="startAssessmentBtn" class="bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white px-12 py-4 rounded-2xl text-lg font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all shadow-lg hover:shadow-xl hover:scale-105">
                         <i class="fas fa-play mr-3"></i>Start Assessment
                     </button>
@@ -428,6 +428,19 @@
                 window.location.href = '/';
             }, 2000);
             return;
+        }
+        
+        // Check if user is institution/admin and hide start button
+        try {
+            const currentUser = JSON.parse(user);
+            if (currentUser && currentUser.user_type === 'institution') {
+                const startButtonContainer = document.getElementById('startButtonContainer');
+                if (startButtonContainer) {
+                    startButtonContainer.style.display = 'none';
+                }
+            }
+        } catch (error) {
+            console.error('Error parsing user data:', error);
         }
         
         loadAssessmentData();

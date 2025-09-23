@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Hero Section -->
-    <div class="gradient-bg text-white py-16">
+    <div class="gradient-bg text-white py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 text-center">
             <h1 class="text-4xl font-bold mb-4">Institution Dashboard</h1>
             <p class="text-xl text-gray-100">Manage your learners and track their progress</p>
@@ -126,10 +126,6 @@
                 <button onclick="showBulkUploadModal()" class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
                     <i class="fas fa-upload mr-2"></i>
                     Bulk Upload
-                </button>
-                <button onclick="showBuyTokensModal()" class="bg-gradient-to-r from-yellow-600 to-orange-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-yellow-700 hover:to-orange-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
-                    <i class="fas fa-coins mr-2"></i>
-                    Buy Tokens
                 </button>
                 <button onclick="refreshLearners()" class="bg-white border-2 border-blue-600 text-blue-600 px-6 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-all">
                     <i class="fas fa-sync-alt mr-2"></i>
@@ -406,8 +402,11 @@
                 </td>
                 <td class="py-4 px-4">
                     <div class="flex items-center space-x-2">
-                        <button onclick="toggleLearnerStatus(${learner.id}, ${learner.is_active !== false})" class="text-${learner.is_active !== false ? 'red' : 'green'}-600 hover:text-${learner.is_active !== false ? 'red' : 'green'}-800 p-2 hover:bg-${learner.is_active !== false ? 'red' : 'green'}-50 rounded-lg transition-all" title="${learner.is_active !== false ? 'Deactivate' : 'Activate'}">
-                            <i class="fas fa-${learner.is_active !== false ? 'ban' : 'check'}"></i>
+                        <button onclick="editLearner(${learner.id}, '${learner.name}', '${learner.admission_number || ''}', '${learner.email || ''}', '${learner.grade_level || ''}')" class="text-blue-600 hover:text-blue-800 p-2 hover:bg-blue-50 rounded-lg transition-all" title="Edit Learner">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteLearner(${learner.id}, '${learner.name}')" class="text-red-600 hover:text-red-800 p-2 hover:bg-red-50 rounded-lg transition-all" title="Delete Learner">
+                            <i class="fas fa-trash"></i>
                         </button>
                     </div>
                 </td>
@@ -641,15 +640,42 @@
         }
         
         // Show loading state
-        const submitBtn = document.querySelector('#bulkUploadModal button[type="submit"]');
+        const submitBtn = document.querySelector('#bulkUploadModal button[onclick="processBulkUpload()"]');
         const originalText = submitBtn.innerHTML;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
         submitBtn.disabled = true;
         
         try {
             const text = await file.text();
-            const lines = text.split('\n');
-            const headers = lines[0].split(',').map(h => h.trim());
+            const lines = text.split('\n').filter(line => line.trim()); // Remove empty lines
+            
+            if (lines.length < 2) {
+                showAlert('Validation Error', 'CSV file must have at least a header and one data row', 'error');
+                return;
+            }
+            
+            // Simple CSV parsing function
+            function parseCSVLine(line) {
+                const result = [];
+                let current = '';
+                let inQuotes = false;
+                
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        result.push(current.trim());
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                result.push(current.trim());
+                return result;
+            }
+            
+            const headers = parseCSVLine(lines[0]);
             
             // Validate headers - updated for new API format
             const expectedHeaders = ['name', 'admission_number', 'email', 'grade_level', 'password'];
@@ -663,8 +689,20 @@
                 const line = lines[i].trim();
                 if (!line) continue;
                 
-                const values = line.split(',').map(v => v.trim());
+                const values = parseCSVLine(line);
                 if (values.length >= 5) {
+                    // Validate required fields
+                    if (!values[0] || !values[1] || !values[3] || !values[4]) {
+                        showAlert('Validation Error', `Row ${i + 1}: All required fields (name, admission_number, grade_level, password) must be filled`, 'error');
+                        return;
+                    }
+                    
+                    // Validate password length
+                    if (values[4].length < 8) {
+                        showAlert('Validation Error', `Row ${i + 1}: Password must be at least 8 characters long`, 'error');
+                        return;
+                    }
+                    
                     students.push({
                         name: values[0],
                         admission_number: values[1],
@@ -719,11 +757,228 @@
             submitBtn.disabled = false;
         }
     }
-    
-    
-    async function toggleLearnerStatus(learnerId, currentStatus) {
-        // TODO: Implement toggle learner status functionality when API endpoint is available
-        showAlert('Feature Coming Soon', 'Toggle learner status functionality will be available soon.', 'info');
+
+    // Edit learner function
+    function editLearner(id, name, admissionNumber, email, gradeLevel) {
+        // Create edit modal
+        const editModal = document.createElement('div');
+        editModal.className = 'fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4';
+        editModal.id = 'editLearnerModal';
+        editModal.innerHTML = `
+            <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full relative modal-content flex flex-col max-h-[95vh] sm:max-h-[80vh]">
+                <!-- Sticky Header -->
+                <div class="sticky top-0 bg-white rounded-t-2xl p-4 sm:p-6 pb-3 sm:pb-4 border-b border-gray-100 z-10">
+                    <button class="absolute top-3 right-3 sm:top-4 sm:right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeEditModal(this.closest('.fixed'))">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                    
+                    <div class="text-center pr-8">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                            <i class="fas fa-edit text-white text-lg sm:text-xl"></i>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-1">Edit Learner</h3>
+                        <p class="text-gray-600 text-xs sm:text-sm">Update learner information</p>
+                    </div>
+                </div>
+                
+                <!-- Scrollable Content -->
+                <div class="flex-1 overflow-y-auto p-4 sm:p-6 pt-3 sm:pt-4">
+                    <form id="editLearnerForm" class="space-y-3 sm:space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Full Name <span class="text-red-500">*</span></label>
+                                <input type="text" id="editLearnerName" class="form-input w-full px-3 py-2.5 sm:py-2 rounded-lg text-sm" value="${name}" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Admission Number <span class="text-red-500">*</span></label>
+                                <input type="text" id="editLearnerAdmissionNumber" class="form-input w-full px-3 py-2.5 sm:py-2 rounded-lg text-sm" value="${admissionNumber}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Email</label>
+                                <input type="email" id="editLearnerEmail" class="form-input w-full px-3 py-2.5 sm:py-2 rounded-lg text-sm" value="${email}">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Grade Level <span class="text-red-500">*</span></label>
+                                <select id="editLearnerGradeLevel" class="form-input w-full px-3 py-2.5 sm:py-2 rounded-lg text-sm" required>
+                                    <option value="">Select grade level</option>
+                                    <option value="Grade 1" ${gradeLevel === 'Grade 1' ? 'selected' : ''}>Grade 1</option>
+                                    <option value="Grade 2" ${gradeLevel === 'Grade 2' ? 'selected' : ''}>Grade 2</option>
+                                    <option value="Grade 3" ${gradeLevel === 'Grade 3' ? 'selected' : ''}>Grade 3</option>
+                                    <option value="Grade 4" ${gradeLevel === 'Grade 4' ? 'selected' : ''}>Grade 4</option>
+                                    <option value="Grade 5" ${gradeLevel === 'Grade 5' ? 'selected' : ''}>Grade 5</option>
+                                    <option value="Grade 6" ${gradeLevel === 'Grade 6' ? 'selected' : ''}>Grade 6</option>
+                                    <option value="Grade 7" ${gradeLevel === 'Grade 7' ? 'selected' : ''}>Grade 7</option>
+                                    <option value="Grade 8" ${gradeLevel === 'Grade 8' ? 'selected' : ''}>Grade 8</option>
+                                    <option value="Grade 9" ${gradeLevel === 'Grade 9' ? 'selected' : ''}>Grade 9</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-3 sm:pt-4">
+                            <button type="button" onclick="closeEditModal(this.closest('.fixed'))" class="w-full sm:flex-1 px-4 py-2.5 sm:py-2 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all text-sm">
+                                Cancel
+                            </button>
+                            <button type="submit" class="w-full sm:flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2.5 sm:py-2 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all text-sm">
+                                Update Learner
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(editModal);
+
+        // Add form submission handler
+        document.getElementById('editLearnerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await updateLearner(id);
+        });
+    }
+
+    // Close edit modal with smooth animation
+    function closeEditModal(modal) {
+        if (!modal) return;
+        
+        modal.style.transition = 'opacity 0.3s ease-out';
+        modal.style.opacity = '0';
+        setTimeout(() => {
+            if (modal && modal.parentNode) {
+                modal.remove();
+            }
+        }, 300);
+    }
+
+    // Update learner function
+    async function updateLearner(learnerId) {
+        const name = document.getElementById('editLearnerName').value.trim();
+        const admissionNumber = document.getElementById('editLearnerAdmissionNumber').value.trim();
+        const email = document.getElementById('editLearnerEmail').value.trim();
+        const gradeLevel = document.getElementById('editLearnerGradeLevel').value;
+
+        if (!name || !admissionNumber || !gradeLevel) {
+            showAlert('Validation Error', 'Please fill in all required fields.', 'error');
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_BASE_URL}/api/institution/students/${learnerId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    admission_number: admissionNumber,
+                    email: email || null,
+                    grade_level: gradeLevel
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                showAlert('Success', data.message || 'Learner updated successfully!', 'success');
+                // Close modal with smooth animation after a short delay
+                setTimeout(() => {
+                    const editModal = document.getElementById('editLearnerModal');
+                    if (editModal) {
+                        closeEditModal(editModal);
+                    }
+                }, 100);
+                // Reload learners
+                loadLearners();
+            } else {
+                const errorMessage = extractErrorMessage(data, 'Failed to update learner');
+                showAlert('Error', errorMessage, 'error');
+            }
+        } catch (error) {
+            console.error('Error updating learner:', error);
+            showAlert('Network Error', 'Unable to update learner. Please check your connection and try again.', 'error');
+        }
+    }
+
+    // Delete learner function
+    async function deleteLearner(learnerId, learnerName) {
+        showConfirmDialog(
+            'Delete Learner',
+            `Are you sure you want to delete ${learnerName}? This action cannot be undone.`,
+            'warning',
+            async () => {
+                await performDeleteLearner(learnerId);
+            }
+        );
+    }
+
+    // Perform delete learner function
+    async function performDeleteLearner(learnerId) {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_BASE_URL}/api/institution/students/${learnerId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                showAlert('Success', data.message || 'Learner deleted successfully!', 'success');
+                // Reload learners
+                loadLearners();
+            } else {
+                const errorMessage = extractErrorMessage(data, 'Failed to delete learner');
+                showAlert('Error', errorMessage, 'error');
+            }
+        } catch (error) {
+            console.error('Error deleting learner:', error);
+            showAlert('Network Error', 'Unable to delete learner. Please check your connection and try again.', 'error');
+        }
+    }
+
+    // Custom confirmation dialog function
+    function showConfirmDialog(title, message, type = 'warning', onConfirm = null) {
+        const confirmModal = document.createElement('div');
+        confirmModal.className = 'fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+        confirmModal.innerHTML = `
+            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative">
+                <div class="text-center">
+                    <div class="w-16 h-16 ${type === 'warning' ? 'bg-yellow-100' : type === 'error' ? 'bg-red-100' : 'bg-blue-100'} rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas ${type === 'warning' ? 'fa-exclamation-triangle text-yellow-600' : type === 'error' ? 'fa-times text-red-600' : 'fa-info text-blue-600'} text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">${title}</h3>
+                    <p class="text-gray-600 mb-6">${message}</p>
+                    <div class="flex space-x-3">
+                        <button id="cancelBtn" class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all">
+                            Cancel
+                        </button>
+                        <button id="confirmBtn" class="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white py-3 rounded-xl font-semibold hover:from-red-700 hover:to-red-800 transition-all">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(confirmModal);
+
+        document.getElementById('cancelBtn').addEventListener('click', () => {
+            confirmModal.remove();
+        });
+
+        document.getElementById('confirmBtn').addEventListener('click', () => {
+            confirmModal.remove();
+            if (onConfirm) {
+                onConfirm();
+            }
+        });
     }
     
     function showSuccess(message) {

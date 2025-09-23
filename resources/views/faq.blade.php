@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Hero Section -->
-    <div class="gradient-bg text-white py-16">
+    <div class="gradient-bg text-white py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 text-center">
             <h1 class="text-4xl font-bold mb-4">Frequently Asked Questions</h1>
             <p class="text-xl text-gray-100">Find answers to common questions about Gravity CBC</p>

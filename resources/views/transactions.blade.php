@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Hero Section -->
-    <div class="gradient-bg text-white py-16">
+    <div class="gradient-bg text-white py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 text-center">
             <h1 class="text-4xl font-bold mb-4">Transaction History</h1>
             <p class="text-xl text-gray-100">View your payment history and token purchases</p>
@@ -201,6 +201,14 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Determine user type from localStorage
         const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+        
+        // Prevent institutional learners from accessing transactions page
+        if (currentUser && currentUser.user_type === 'student' && currentUser.institution_id) {
+            alert('Access denied. Institutional learners cannot access transaction history.');
+            window.location.href = '/dashboard';
+            return;
+        }
+        
         if (currentUser && currentUser.user_type === 'institution') {
             userType = 'institution';
             // Show institution-specific summary cards
@@ -276,12 +284,44 @@
         document.getElementById('loadMoreContainer').style.display = 'none';
     }
 
+    async function loadCurrentTokenBalance() {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                document.getElementById('currentBalance').textContent = '0 tokens';
+                return;
+            }
+
+            const response = await fetch(`${API_BASE_URL}/api/token-balance`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json();
+            
+            if (data.success && data.data) {
+                document.getElementById('currentBalance').textContent = `${data.data.token_balance || 0} tokens`;
+            } else {
+                document.getElementById('currentBalance').textContent = '0 tokens';
+            }
+        } catch (error) {
+            console.error('Error loading current token balance:', error);
+            document.getElementById('currentBalance').textContent = '0 tokens';
+        }
+    }
+
     function updateSummaryCards(summary) {
         // Update common summary cards
         document.getElementById('totalSpent').textContent = `KSH ${summary.total_spent || '0.00'}`;
         document.getElementById('totalPurchases').textContent = summary.total_purchases || '0';
         document.getElementById('thisMonthSpent').textContent = `KSH ${summary.this_month_spent || '0.00'}`;
-        document.getElementById('currentBalance').textContent = `${summary.current_balance || 0} tokens`;
+        
+        // Load current balance from the correct API endpoint
+        loadCurrentTokenBalance();
         
         // Update institution-specific cards if user is institution
         if (userType === 'institution') {

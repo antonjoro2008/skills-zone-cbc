@@ -144,6 +144,12 @@
                 element.textContent = `${balanceData.token_balance || 0} Tokens`;
             });
 
+            // Update institution dashboard total tokens
+            const totalTokens = document.getElementById('totalTokens');
+            if (totalTokens) {
+                totalTokens.textContent = balanceData.token_balance || 0;
+            }
+
             // Update available minutes elements
             const availableMinutesElements = document.querySelectorAll('#availableMinutes');
             availableMinutesElements.forEach(element => {
@@ -504,6 +510,14 @@
                 // Initialize specific modals
                 if (modalId === 'buyTokensModal') {
                     initializeBuyTokensModal();
+                } else if (modalId === 'successModal') {
+                    // Hide start assessment button for institution users
+                    const startBtn = document.getElementById('successModalStartBtn');
+                    if (startBtn && window.currentUser && window.currentUser.user_type === 'institution') {
+                        startBtn.style.display = 'none';
+                    } else if (startBtn) {
+                        startBtn.style.display = 'block';
+                    }
                 }
             }
         }
@@ -599,6 +613,10 @@
                     
                     // Update current user
                     currentUser = data.data.user;
+                    console.log('Login successful - currentUser set to:', currentUser);
+                    console.log('User has admission_number:', currentUser.admission_number);
+                    console.log('User has email:', currentUser.email);
+                    console.log('User has phone_number:', currentUser.phone_number);
                     updateAuthState();
                     closeModal('loginModal');
                     
@@ -861,6 +879,7 @@
             const parentDashboardLink = document.getElementById('parentDashboardLink');
             const transactionsLink = document.getElementById('transactionsLink');
             const assessmentsLink = document.getElementById('assessmentsLink');
+            const profileLink = document.getElementById('profileLink');
             
             const loginBtnMobile = document.getElementById('loginBtnMobile');
             const registerBtnMobile = document.getElementById('registerBtnMobile');
@@ -871,26 +890,42 @@
             const parentDashboardLinkMobile = document.getElementById('parentDashboardLinkMobile');
             const transactionsLinkMobile = document.getElementById('transactionsLinkMobile');
             const assessmentsLinkMobile = document.getElementById('assessmentsLinkMobile');
+            const profileLinkMobile = document.getElementById('profileLinkMobile');
             
             // Ensure currentUser is properly set and not just an empty object
-            const isLoggedIn = currentUser && currentUser.id && (currentUser.email || currentUser.phone_number);
-            console.log('updateAuthState called - currentUser:', currentUser, 'isLoggedIn:', isLoggedIn);
+            // Check for any valid identifier: email, phone_number, or admission_number
+            const isLoggedIn = currentUser && currentUser.id && (currentUser.email || currentUser.phone_number || currentUser.admission_number);
+            console.log('updateAuthState called - currentUser:', currentUser);
+            console.log('User ID:', currentUser?.id);
+            console.log('User email:', currentUser?.email);
+            console.log('User phone_number:', currentUser?.phone_number);
+            console.log('User admission_number:', currentUser?.admission_number);
+            console.log('isLoggedIn:', isLoggedIn);
             
             if (isLoggedIn) {
+                // Check if user is an institutional learner (student with institution_id)
+                const isInstitutionalLearner = currentUser.user_type === 'student' && currentUser.institution_id;
+                
                 // User is logged in
                 if (loginBtn) loginBtn.style.display = 'none';
                 if (registerBtn) registerBtn.style.display = 'none';
                 if (logoutBtn) logoutBtn.style.display = 'block';
-                if (buyTokensBtn) buyTokensBtn.style.display = 'block';
-                if (transactionsLink) transactionsLink.style.display = 'block';
+                
+                // Hide Buy Tokens for institutional learners
+                if (buyTokensBtn) buyTokensBtn.style.display = isInstitutionalLearner ? 'none' : 'block';
+                if (transactionsLink) transactionsLink.style.display = isInstitutionalLearner ? 'none' : 'block';
                 if (assessmentsLink) assessmentsLink.style.display = 'block';
+                if (profileLink) profileLink.style.display = 'block';
                 
                 if (loginBtnMobile) loginBtnMobile.style.display = 'none';
                 if (registerBtnMobile) registerBtnMobile.style.display = 'none';
                 if (logoutBtnMobile) logoutBtnMobile.style.display = 'block';
-                if (buyTokensBtnMobile) buyTokensBtnMobile.style.display = 'block';
-                if (transactionsLinkMobile) transactionsLinkMobile.style.display = 'block';
+                
+                // Hide Buy Tokens for institutional learners (mobile)
+                if (buyTokensBtnMobile) buyTokensBtnMobile.style.display = isInstitutionalLearner ? 'none' : 'block';
+                if (transactionsLinkMobile) transactionsLinkMobile.style.display = isInstitutionalLearner ? 'none' : 'block';
                 if (assessmentsLinkMobile) assessmentsLinkMobile.style.display = 'block';
+                if (profileLinkMobile) profileLinkMobile.style.display = 'block';
                 
                 // Show appropriate dashboard link based on user type
                 if (currentUser.user_type === 'institution') {
@@ -926,6 +961,7 @@
                 if (parentDashboardLink) parentDashboardLink.style.display = 'none';
                 if (transactionsLink) transactionsLink.style.display = 'none';
                 if (assessmentsLink) assessmentsLink.style.display = 'none';
+                if (profileLink) profileLink.style.display = 'none';
                 
                 if (loginBtnMobile) loginBtnMobile.style.display = 'block';
                 if (registerBtnMobile) registerBtnMobile.style.display = 'block';
@@ -936,6 +972,7 @@
                 if (parentDashboardLinkMobile) parentDashboardLinkMobile.style.display = 'none';
                 if (transactionsLinkMobile) transactionsLinkMobile.style.display = 'none';
                 if (assessmentsLinkMobile) assessmentsLinkMobile.style.display = 'none';
+                if (profileLinkMobile) profileLinkMobile.style.display = 'none';
 
                 // Stop token balance updates for logged-out users
                 stopTokenBalanceUpdates();

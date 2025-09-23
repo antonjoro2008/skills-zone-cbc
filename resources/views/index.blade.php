@@ -12,7 +12,7 @@
             <div class="absolute top-40 right-20 w-16 h-16 bg-white bg-opacity-10 rounded-full animate-float" style="animation-delay: 1s;"></div>
             <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-white bg-opacity-10 rounded-full animate-float" style="animation-delay: 2s;"></div>
             
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 py-24 lg:py-32 relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 py-12 relative z-10">
                 <div class="grid lg:grid-cols-2 gap-12 items-center">
                     <div class="text-center lg:text-left animate-fade-in-left">
                         <div class="inline-flex items-center bg-yellow-400 bg-opacity-90 text-gray-900 rounded-full px-4 py-2 mb-6 shadow-lg">

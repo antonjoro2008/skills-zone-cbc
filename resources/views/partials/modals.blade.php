@@ -132,11 +132,6 @@
                             <option value="Grade 7">Grade 7</option>
                             <option value="Grade 8">Grade 8</option>
                             <option value="Grade 9">Grade 9</option>
-                            <option value="Grade 10">Grade 10</option>
-                            <option value="Grade 11">Grade 11</option>
-                            <option value="Grade 12">Grade 12</option>
-                            <option value="University">University</option>
-                            <option value="Professional">Professional</option>
                         </select>
                         <p class="text-xs text-gray-500 mt-1">Your current grade level</p>
                     </div>
@@ -441,7 +436,7 @@
                 </div>
                 <h2 class="text-2xl font-bold text-gray-900 mb-4">Payment Successful!</h2>
                 <p class="text-gray-600 mb-6">You can now access your assessment. Good luck!</p>
-                <button class="w-full bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all" onclick="startAssessment()">
+                <button id="successModalStartBtn" class="w-full bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all" onclick="startAssessment()">
                     Start Assessment
                 </button>
             </div>
@@ -516,18 +511,24 @@
     <!-- Add Learner Modal -->
     <div id="addLearnerModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden">
         <div class="flex items-center justify-center min-h-screen p-4 modal-container">
-            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative modal-content">
-                <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('addLearnerModal')">
-                    <i class="fas fa-times text-lg"></i>
-                </button>
-                
-                <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-user-plus text-white text-2xl"></i>
+            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full relative modal-content flex flex-col max-h-[90vh]">
+                <!-- Sticky Header -->
+                <div class="sticky top-0 bg-white rounded-t-3xl p-6 pb-4 border-b border-gray-100 z-10">
+                    <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('addLearnerModal')">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-user-plus text-white text-2xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900">Add New Learner</h2>
+                        <p class="text-gray-600">Create a new learner account</p>
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-900">Add New Learner</h2>
-                    <p class="text-gray-600">Create a new learner account</p>
                 </div>
+                
+                <!-- Scrollable Content -->
+                <div class="flex-1 overflow-y-auto p-6 pt-4">
                 
                 <form class="space-y-6" onsubmit="addLearner(event)">
                     <p class="text-xs text-gray-500 mb-4">Fields marked with <span class="text-red-500">*</span> are required</p>
@@ -559,23 +560,19 @@
                             <option value="Grade 7">Grade 7</option>
                             <option value="Grade 8">Grade 8</option>
                             <option value="Grade 9">Grade 9</option>
-                            <option value="Grade 10">Grade 10</option>
-                            <option value="Grade 11">Grade 11</option>
-                            <option value="Grade 12">Grade 12</option>
-                            <option value="University">University</option>
-                            <option value="Professional">Professional</option>
                         </select>
                         <p class="text-xs text-gray-500 mt-1">Current grade level</p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Password <span class="text-red-500">*</span></label>
                         <input type="password" id="learnerPassword" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter password (min 6 characters)" required>
-                        <p class="text-xs text-gray-500 mt-1">At least 6 characters</p>
+                        <p class="text-xs text-gray-500 mt-1">At least 8 characters</p>
                     </div>
                     <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-green-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
                         <i class="fas fa-user-plus mr-2"></i>Add Learner
                     </button>
                 </form>
+                </div>
             </div>
         </div>
     </div>
@@ -614,7 +611,7 @@
                                     <li>Maximum 100 learners per upload</li>
                                     <li>Each learner must have a unique admission number</li>
                                     <li>Email is optional (can be left empty)</li>
-                                    <li>Passwords must be at least 6 characters long</li>
+                                    <li>Passwords must be at least 8 characters long</li>
                                 </ul>
                             </div>
                         </div>

@@ -173,4 +173,13 @@ class GuestController extends Controller
         // Server-side check removed to prevent false redirects
         return view('assessment-summary');
     }
+
+    /**
+     * Display the profile page (requires authentication)
+     */
+    public function profile()
+    {
+        // For now, return the view - in a real app, you'd add auth middleware
+        return view('profile');
+    }
 } 

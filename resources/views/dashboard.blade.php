@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Hero Section -->
-    <div class="gradient-bg text-white py-16">
+    <div class="gradient-bg text-white py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 text-center">
             <h1 class="text-4xl font-bold mb-4">Welcome, <span id="userName">User</span>!</h1>
             <p class="text-xl text-gray-100">Track your progress and manage your account</p>
@@ -104,7 +104,7 @@
                         Start New Assessment
                     </a>
                     
-                    <button onclick="showBuyTokensModal()" class="block w-full bg-white border-2 border-blue-600 text-blue-600 p-4 rounded-xl text-center font-semibold hover:bg-blue-50 transition-all">
+                    <button id="dashboardBuyTokensBtn" onclick="showBuyTokensModal()" class="block w-full bg-white border-2 border-blue-600 text-blue-600 p-4 rounded-xl text-center font-semibold hover:bg-blue-50 transition-all">
                         <i class="fas fa-coins mr-2"></i>
                         Buy More Tokens
                     </button>
@@ -236,6 +236,13 @@
                 
                 // Update user information
                 updateUserInfo(user);
+                
+                // Hide Buy Tokens button for institutional learners
+                const isInstitutionalLearner = user.user_type === 'student' && user.institution_id;
+                const buyTokensBtn = document.getElementById('dashboardBuyTokensBtn');
+                if (buyTokensBtn && isInstitutionalLearner) {
+                    buyTokensBtn.style.display = 'none';
+                }
                 
                 // Update dashboard statistics
                 if (dashboard) {

@@ -59,39 +59,50 @@ class InstitutionController extends Controller
     }
 
     /**
-     * Get all learners for the institution
+     * Get all learners for the institution or parent
      */
     public function getLearners(Request $request): JsonResponse
     {
         $user = $request->user();
         
-        if ($user->user_type !== 'institution') {
+        if (!in_array($user->user_type, ['institution', 'parent'])) {
             return response()->json([
                 'success' => false,
-                'message' => 'Access denied. Institution admin required.'
+                'message' => 'Access denied. Institution admin or parent required.'
             ], 403);
         }
 
-        $learners = $user->learners()
-            ->with('wallet')
-            ->orderBy('created_at', 'desc')
-            ->get()
-            ->map(function ($learner) {
-                return [
-                    'id' => $learner->id,
-                    'name' => $learner->name,
-                    'email' => $learner->email,
-                    'grade_level' => $learner->grade_level,
-                    'tokens' => $learner->wallet ? $learner->wallet->balance : 0,
-                    'is_active' => $learner->is_active ?? true,
-                    'created_at' => $learner->created_at,
-                    'updated_at' => $learner->updated_at,
-                ];
-            });
+        if ($user->user_type === 'institution') {
+            // For institution admins, get all students in their institution
+            $learners = $user->learners()
+                ->with('wallet')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } else {
+            // For parents, get their own children (students with same institution_id)
+            $learners = User::where('institution_id', $user->institution_id)
+                ->where('user_type', 'student')
+                ->with('wallet')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
+
+        $learnersData = $learners->map(function ($learner) {
+            return [
+                'id' => $learner->id,
+                'name' => $learner->name,
+                'email' => $learner->email,
+                'grade_level' => $learner->grade_level,
+                'tokens' => $learner->wallet ? $learner->wallet->balance : 0,
+                'is_active' => $learner->is_active ?? true,
+                'created_at' => $learner->created_at,
+                'updated_at' => $learner->updated_at,
+            ];
+        });
 
         return response()->json([
             'success' => true,
-            'data' => $learners
+            'data' => $learnersData
         ]);
     }
 
@@ -102,20 +113,30 @@ class InstitutionController extends Controller
     {
         $user = $request->user();
         
-        if ($user->user_type !== 'institution') {
+        if (!in_array($user->user_type, ['institution', 'parent'])) {
             return response()->json([
                 'success' => false,
-                'message' => 'Access denied. Institution admin required.'
+                'message' => 'Access denied. Institution admin or parent required.'
             ], 403);
         }
 
-        $validator = Validator::make($request->all(), [
+        $validationRules = [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
             'grade_level' => 'required|string|max:255',
             'initial_tokens' => 'integer|min:0|max:1000',
-            'phone_number' => 'required|string|max:255',
-        ]);
+        ];
+
+        // For institution admins, require email and phone_number
+        if ($user->user_type === 'institution') {
+            $validationRules['email'] = 'required|string|email|max:255|unique:users';
+            $validationRules['phone_number'] = 'required|string|max:255';
+        } else {
+            // For parents, make email and phone_number optional
+            $validationRules['email'] = 'nullable|string|email|max:255|unique:users';
+            $validationRules['phone_number'] = 'nullable|string|max:255';
+        }
+
+        $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
             return response()->json([
@@ -126,16 +147,25 @@ class InstitutionController extends Controller
         }
 
         try {
-            // Create the learner
-            $learner = User::create([
+            // Prepare learner data
+            $learnerData = [
                 'name' => $request->name,
-                'email' => $request->email,
                 'password' => Hash::make('password123'), // Default password
                 'grade_level' => $request->grade_level,
                 'user_type' => 'student',
                 'institution_id' => $user->institution_id,
-                'phone_number' => $request->phone_number,
-            ]);
+            ];
+
+            // Add optional fields if provided
+            if ($request->email) {
+                $learnerData['email'] = $request->email;
+            }
+            if ($request->phone_number) {
+                $learnerData['phone_number'] = $request->phone_number;
+            }
+
+            // Create the learner
+            $learner = User::create($learnerData);
 
             // Create wallet with initial tokens
             $initialTokens = $request->initial_tokens ?? 0;

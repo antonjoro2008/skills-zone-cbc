@@ -41,6 +41,13 @@ Route::prefix('api')->group(function () {
         Route::put('/learners/{learnerId}/toggle-status', [InstitutionController::class, 'toggleLearnerStatus']);
         Route::post('/learners/bulk-upload', [InstitutionController::class, 'bulkUploadLearners']);
     });
+    
+    // Parent routes
+    Route::prefix('parent')->group(function () {
+        Route::get('/learners', [InstitutionController::class, 'getLearners']);
+        Route::post('/learners', [InstitutionController::class, 'addLearner']);
+        Route::post('/learners/multiple', [InstitutionController::class, 'bulkUploadLearners']);
+    });
 });
 
 // User routes (will need authentication middleware later)
@@ -48,6 +55,7 @@ Route::get('/dashboard', [GuestController::class, 'dashboard'])->name('dashboard
 Route::get('/institution-dashboard', [GuestController::class, 'institutionDashboard'])->name('institution-dashboard');
 Route::get('/parent-dashboard', [GuestController::class, 'parentDashboard'])->name('parent-dashboard');
 Route::get('/transactions', [GuestController::class, 'transactions'])->name('transactions');
+Route::get('/profile', [GuestController::class, 'profile'])->name('profile');
 
 // Protected assessment routes - redirect to home if not authenticated
 Route::get('/assessment/{id}', [GuestController::class, 'assessment'])->name('assessment');

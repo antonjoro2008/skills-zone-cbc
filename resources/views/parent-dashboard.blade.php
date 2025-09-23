@@ -38,10 +38,6 @@
                 <i class="fas fa-plus"></i>
                 <span>Add Learner</span>
             </button>
-            <button onclick="showBulkUploadModal()" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-all flex items-center space-x-2">
-                <i class="fas fa-upload"></i>
-                <span>Bulk Upload</span>
-            </button>
             <button onclick="showBuyTokensModal()" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all flex items-center space-x-2">
                 <i class="fas fa-coins"></i>
                 <span>Buy Tokens</span>
@@ -116,10 +112,7 @@
                         <option value="Grade 6">Grade 6</option>
                         <option value="Grade 7">Grade 7</option>
                         <option value="Grade 8">Grade 8</option>
-                        <option value="Form 1">Form 1</option>
-                        <option value="Form 2">Form 2</option>
-                        <option value="Form 3">Form 3</option>
-                        <option value="Form 4">Form 4</option>
+                        <option value="Grade 9">Grade 9</option>
                     </select>
                 </div>
             </div>
@@ -135,48 +128,13 @@
     </div>
 </div>
 
-<!-- Bulk Upload Modal -->
-<div id="bulkUploadModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 relative">
-        <button onclick="closeBulkUploadModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-            <i class="fas fa-times text-xl"></i>
-        </button>
-        <div class="mb-6">
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">Bulk Upload Learners</h3>
-            <p class="text-gray-600">Upload multiple learners at once using CSV format</p>
-        </div>
-        <div class="space-y-6">
-            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                <h4 class="font-semibold text-blue-900 mb-2">CSV Format Instructions:</h4>
-                <ul class="text-sm text-blue-800 space-y-1">
-                    <li>• CSV should have headers: <code class="bg-blue-100 px-2 py-1 rounded">name, grade_level</code></li>
-                    <li>• Each learner must have a unique name</li>
-                    <li>• Grade levels should be: Grade 1-8 or Form 1-4</li>
-                    <li>• Maximum 50 learners per upload</li>
-                </ul>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Select CSV File</label>
-                <input type="file" id="csvFile" accept=".csv" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-            </div>
-            <div class="flex space-x-3">
-                <button type="button" onclick="closeBulkUploadModal()" class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all">
-                    Cancel
-                </button>
-                <button onclick="processBulkUpload()" class="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-all">
-                    Upload Learners
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
     let learnersData = [];
 
     // Load current user and display parent info
     function loadCurrentUser() {
-        const userData = localStorage.getItem('currentUser');
+        const userData = localStorage.getItem('user');
         if (userData) {
             window.currentUser = JSON.parse(userData);
             displayParentInfo();
@@ -196,7 +154,7 @@
             const response = await fetch(`${API_BASE_URL}/api/parent/learners`, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
                 }
             });
@@ -204,7 +162,7 @@
             if (!response.ok) {
                 if (response.status === 404) {
                     // API endpoint doesn't exist yet
-                    showAlert('Feature Coming Soon', 'Parent learner management is currently under development. This feature will be available soon!', 'info');
+                    showParentAlert('Feature Coming Soon', 'Parent learner management is currently under development. This feature will be available soon!', 'info');
                     renderLearnersTable([]);
                     return;
                 }
@@ -219,10 +177,10 @@
         } catch (error) {
             console.error('Error loading learners:', error);
             if (error.message.includes('Failed to fetch') || error.message.includes('500')) {
-                showAlert('Feature Coming Soon', 'Parent learner management is currently under development. This feature will be available soon!', 'info');
+                showParentAlert('Feature Coming Soon', 'Parent learner management is currently under development. This feature will be available soon!', 'info');
                 renderLearnersTable([]);
             } else {
-                showAlert('Error', 'Failed to load learners. Please try again.', 'error');
+                showParentAlert('Error', 'Failed to load learners. Please try again.', 'error');
             }
         }
     }
@@ -266,10 +224,10 @@
                     ${new Date(learner.created_at).toLocaleDateString()}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button onclick="showAlert('Feature Coming Soon', 'Learner management features will be available soon.', 'info')" class="text-blue-600 hover:text-blue-900 mr-3">
+                    <button onclick="showParentAlert('Feature Coming Soon', 'Learner management features will be available soon.', 'info')" class="text-blue-600 hover:text-blue-900 mr-3">
                         <i class="fas fa-edit"></i> Edit
                     </button>
-                    <button onclick="showAlert('Feature Coming Soon', 'Learner removal will be available soon.', 'info')" class="text-red-600 hover:text-red-900">
+                    <button onclick="deleteLearner(${learner.id}, '${learner.name}')" class="text-red-600 hover:text-red-900">
                         <i class="fas fa-trash"></i> Remove
                     </button>
                 </td>
@@ -313,7 +271,7 @@
         const gradeLevel = document.getElementById('learnerGradeLevel').value;
 
         if (!name || !gradeLevel) {
-            showAlert('Validation Error', 'Please fill in all required fields.', 'error');
+            showParentAlert('Validation Error', 'Please fill in all required fields.', 'error');
             return;
         }
 
@@ -321,7 +279,7 @@
             const response = await fetch(`${API_BASE_URL}/api/parent/learners`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -332,7 +290,7 @@
 
             if (!response.ok) {
                 if (response.status === 404 || response.status === 500) {
-                    showAlert('Feature Coming Soon', 'Parent learner management is currently under development. This feature will be available soon!', 'info');
+                    showParentAlert('Feature Coming Soon', 'Parent learner management is currently under development. This feature will be available soon!', 'info');
                     closeAddLearnerModal();
                     return;
                 }
@@ -341,20 +299,20 @@
             const result = await response.json();
 
             if (result.success) {
-                showAlert('Success', 'Learner added successfully!', 'success');
+                showParentAlert('Success', 'Learner added successfully!', 'success');
                 closeAddLearnerModal();
                 loadLearners(); // Reload the table
             } else {
                 const errorMessage = extractErrorMessage(result, 'Failed to add learner');
-                showAlert('Error', errorMessage, 'error');
+                showParentAlert('Error', errorMessage, 'error');
             }
         } catch (error) {
             console.error('Error adding learner:', error);
             if (error.message.includes('Failed to fetch') || error.message.includes('500')) {
-                showAlert('Feature Coming Soon', 'Parent learner management is currently under development. This feature will be available soon!', 'info');
+                showParentAlert('Feature Coming Soon', 'Parent learner management is currently under development. This feature will be available soon!', 'info');
                 closeAddLearnerModal();
             } else {
-                showAlert('Error', 'Failed to add learner. Please try again.', 'error');
+                showParentAlert('Error', 'Failed to add learner. Please try again.', 'error');
             }
         }
     }
@@ -365,12 +323,12 @@
         const file = fileInput.files[0];
 
         if (!file) {
-            showAlert('Validation Error', 'Please select a CSV file.', 'error');
+            showParentAlert('Validation Error', 'Please select a CSV file.', 'error');
             return;
         }
 
         if (!file.name.toLowerCase().endsWith('.csv')) {
-            showAlert('Validation Error', 'Please select a valid CSV file.', 'error');
+            showParentAlert('Validation Error', 'Please select a valid CSV file.', 'error');
             return;
         }
 
@@ -379,7 +337,7 @@
             const lines = text.split('\n').filter(line => line.trim());
             
             if (lines.length < 2) {
-                showAlert('Validation Error', 'CSV file must have at least a header and one data row.', 'error');
+                showParentAlert('Validation Error', 'CSV file must have at least a header and one data row.', 'error');
                 return;
             }
 
@@ -388,7 +346,7 @@
             const requiredHeaders = ['name', 'grade_level'];
             
             if (!requiredHeaders.every(header => headers.includes(header))) {
-                showAlert('Validation Error', 'CSV must have headers: name, grade_level', 'error');
+                showParentAlert('Validation Error', 'CSV must have headers: name, grade_level', 'error');
                 return;
             }
 
@@ -404,12 +362,12 @@
             }
 
             if (learners.length === 0) {
-                showAlert('Validation Error', 'No valid learner data found in CSV.', 'error');
+                showParentAlert('Validation Error', 'No valid learner data found in CSV.', 'error');
                 return;
             }
 
             if (learners.length > 50) {
-                showAlert('Validation Error', 'Maximum 50 learners allowed per upload.', 'error');
+                showParentAlert('Validation Error', 'Maximum 50 learners allowed per upload.', 'error');
                 return;
             }
 
@@ -417,7 +375,7 @@
             const response = await fetch(`${API_BASE_URL}/api/parent/learners/multiple`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -427,7 +385,7 @@
 
             if (!response.ok) {
                 if (response.status === 404 || response.status === 500) {
-                    showAlert('Feature Coming Soon', 'Parent learner management is currently under development. This feature will be available soon!', 'info');
+                    showParentAlert('Feature Coming Soon', 'Parent learner management is currently under development. This feature will be available soon!', 'info');
                     closeBulkUploadModal();
                     return;
                 }
@@ -436,47 +394,126 @@
             const result = await response.json();
 
             if (result.success) {
-                showAlert('Success', `${learners.length} learners added successfully!`, 'success');
+                showParentAlert('Success', `${learners.length} learners added successfully!`, 'success');
                 closeBulkUploadModal();
                 loadLearners(); // Reload the table
             } else {
                 const errorMessage = extractErrorMessage(result, 'Failed to upload learners');
-                showAlert('Error', errorMessage, 'error');
+                showParentAlert('Error', errorMessage, 'error');
             }
         } catch (error) {
             console.error('Error processing bulk upload:', error);
             if (error.message.includes('Failed to fetch') || error.message.includes('500')) {
-                showAlert('Feature Coming Soon', 'Parent learner management is currently under development. This feature will be available soon!', 'info');
+                showParentAlert('Feature Coming Soon', 'Parent learner management is currently under development. This feature will be available soon!', 'info');
                 closeBulkUploadModal();
             } else {
-                showAlert('Error', 'Failed to process CSV file. Please check the format and try again.', 'error');
+                showParentAlert('Error', 'Failed to process CSV file. Please check the format and try again.', 'error');
             }
         }
     }
 
-    // Use global showAlert function if available, otherwise create custom one
-    function showAlert(title, message, type = 'info') {
-        if (typeof window.showAlert === 'function') {
-            window.showAlert(title, message, type);
-        } else {
-            const alertModal = document.createElement('div');
-            alertModal.className = 'fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4';
-            alertModal.innerHTML = `
-                <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative">
-                    <div class="text-center">
-                        <div class="w-16 h-16 ${type === 'success' ? 'bg-green-100' : type === 'error' ? 'bg-red-100' : 'bg-blue-100'} rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas ${type === 'success' ? 'fa-check text-green-600' : type === 'error' ? 'fa-times text-red-600' : 'fa-info text-blue-600'} text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">${title}</h3>
-                        <p class="text-gray-600 mb-6">${message}</p>
-                        <button onclick="this.closest('.fixed').remove()" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all">
-                            OK
+    // Delete learner function
+    async function deleteLearner(learnerId, learnerName) {
+        // Show custom confirmation dialog
+        showConfirmDialog(
+            'Delete Learner',
+            `Are you sure you want to delete ${learnerName}? This action cannot be undone.`,
+            'warning',
+            async () => {
+                await performDeleteLearner(learnerId);
+            }
+        );
+    }
+
+    // Perform the actual delete operation
+    async function performDeleteLearner(learnerId) {
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/parent/learners/${learnerId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success) {
+                    showParentAlert('Success', 'Learner deleted successfully!', 'success');
+                    // Reload the learners list
+                    loadLearners();
+                } else {
+                    showParentAlert('Error', result.message || 'Failed to delete learner', 'error');
+                }
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                showParentAlert('Error', errorData.message || 'Failed to delete learner', 'error');
+            }
+        } catch (error) {
+            console.error('Error deleting learner:', error);
+            showParentAlert('Error', 'Failed to delete learner. Please try again.', 'error');
+        }
+    }
+
+    // Custom confirmation dialog function
+    function showConfirmDialog(title, message, type = 'warning', onConfirm = null) {
+        const confirmModal = document.createElement('div');
+        confirmModal.className = 'fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+        confirmModal.innerHTML = `
+            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative">
+                <div class="text-center">
+                    <div class="w-16 h-16 ${type === 'warning' ? 'bg-yellow-100' : type === 'error' ? 'bg-red-100' : 'bg-blue-100'} rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas ${type === 'warning' ? 'fa-exclamation-triangle text-yellow-600' : type === 'error' ? 'fa-times text-red-600' : 'fa-info text-blue-600'} text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">${title}</h3>
+                    <p class="text-gray-600 mb-6">${message}</p>
+                    <div class="flex space-x-3">
+                        <button id="cancelBtn" class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all">
+                            Cancel
+                        </button>
+                        <button id="confirmBtn" class="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white py-3 rounded-xl font-semibold hover:from-red-700 hover:to-red-800 transition-all">
+                            Delete
                         </button>
                     </div>
                 </div>
-            `;
-            document.body.appendChild(alertModal);
-        }
+            </div>
+        `;
+        document.body.appendChild(confirmModal);
+
+        // Add event listeners
+        document.getElementById('cancelBtn').addEventListener('click', () => {
+            confirmModal.remove();
+        });
+
+        document.getElementById('confirmBtn').addEventListener('click', () => {
+            confirmModal.remove();
+            if (onConfirm) {
+                onConfirm();
+            }
+        });
+    }
+
+    // Custom alert function for parent dashboard
+    function showParentAlert(title, message, type = 'info') {
+        // Create a custom alert modal
+        const alertModal = document.createElement('div');
+        alertModal.className = 'fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+        alertModal.innerHTML = `
+            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative">
+                <div class="text-center">
+                    <div class="w-16 h-16 ${type === 'success' ? 'bg-green-100' : type === 'error' ? 'bg-red-100' : 'bg-blue-100'} rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas ${type === 'success' ? 'fa-check text-green-600' : type === 'error' ? 'fa-times text-red-600' : 'fa-info text-blue-600'} text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">${title}</h3>
+                    <p class="text-gray-600 mb-6">${message}</p>
+                    <button onclick="this.closest('.fixed').remove()" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all">
+                        OK
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(alertModal);
     }
 
     // Buy tokens modal functions
@@ -504,12 +541,12 @@
         const phoneNumber = document.getElementById('phoneNumber').value.trim();
 
         if (!amount || amount < 10) {
-            showAlert('Validation Error', 'Minimum amount is KES 10', 'error');
+            showParentAlert('Validation Error', 'Minimum amount is KES 10', 'error');
             return;
         }
 
         if (!phoneNumber) {
-            showAlert('Validation Error', 'Please enter your phone number', 'error');
+            showParentAlert('Validation Error', 'Please enter your phone number', 'error');
             return;
         }
 
@@ -519,7 +556,7 @@
             const response = await fetch(`${API_BASE_URL}/api/payments`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -531,15 +568,15 @@
             const result = await response.json();
 
             if (result.success) {
-                showAlert('Payment Initiated', 'Please check your phone to complete the payment.', 'success');
+                showParentAlert('Payment Initiated', 'Please check your phone to complete the payment.', 'success');
                 closeBuyTokensModal();
             } else {
                 const errorMessage = extractErrorMessage(result, 'Failed to initiate payment');
-                showAlert('Payment Error', errorMessage, 'error');
+                showParentAlert('Payment Error', errorMessage, 'error');
             }
         } catch (error) {
             console.error('Error initiating payment:', error);
-            showAlert('Error', 'Failed to initiate payment. Please try again.', 'error');
+            showParentAlert('Error', 'Failed to initiate payment. Please try again.', 'error');
         }
     }
 

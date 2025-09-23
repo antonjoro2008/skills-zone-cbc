@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Hero Section -->
-    <div class="gradient-bg text-white py-16">
+    <div class="gradient-bg text-white py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 text-center">
             <h1 class="text-4xl font-bold mb-4" id="pageTitle">Choose Your Assessment</h1>
             <p class="text-xl text-gray-100" id="pageSubtitle">Quality assessments designed for African students - pay with tokens</p>
@@ -268,6 +268,9 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        // Load current user data
+        loadCurrentUser();
+        
         // Clean up any stale assessment data on page load
         cleanupStaleAssessmentData();
         
@@ -285,6 +288,21 @@
             loadAssessments();
         }
     });
+
+    function loadCurrentUser() {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            try {
+                window.currentUser = JSON.parse(userData);
+                console.log('Current user loaded:', window.currentUser);
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+                window.currentUser = null;
+            }
+        } else {
+            window.currentUser = null;
+        }
+    }
 
     function cleanupStaleAssessmentData() {
         // Check if assessment results exist (indicating completion)
@@ -551,12 +569,14 @@
                         </div>
                     ` : ''}
                     <div class="space-y-3">
+                        ${window.currentUser && window.currentUser.user_type === 'institution' ? '' : `
                         <button class="${buttonClass}" 
                                 onclick="${isInProgress && remainingTime > 0 ? `startAssessment(${assessment.id})` : `startAssessment(${assessment.id})`}"
                                 ontouchstart=""
                                 style="min-height: 48px; touch-action: manipulation;">
                             <i class="${buttonIcon} mr-2"></i>${buttonText}
                         </button>
+                        `}
                         <button class="w-full bg-gradient-to-r from-gray-500 to-gray-600 text-white py-3 rounded-xl font-semibold hover:from-gray-600 hover:to-gray-700 transition-all hover:scale-105 hover:shadow-xl group-hover:animate-pulse border border-gray-400" 
                                 onclick="viewQuestions(${assessment.id})"
                                 ontouchstart=""

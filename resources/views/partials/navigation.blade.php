@@ -34,6 +34,9 @@
                     <a href="{{ route('transactions') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all flex items-center {{ request()->routeIs('transactions') ? 'text-blue-600 font-semibold' : '' }}" id="transactionsLink" style="display:none;">
                         <i class="fas fa-receipt mr-2 text-sm"></i>Purchases
                     </a>
+                    <a href="{{ route('profile') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all flex items-center {{ request()->routeIs('profile') ? 'text-blue-600 font-semibold' : '' }}" id="profileLink" style="display:none;">
+                        <i class="fas fa-user mr-2 text-sm"></i>Profile
+                    </a>
                 </div>
             </div>
             
@@ -92,6 +95,9 @@
             </a>
             <a href="{{ route('transactions') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-3 flex items-center transition-all duration-200 {{ request()->routeIs('transactions') ? 'text-[#8FC340] font-semibold' : '' }}" id="transactionsLinkMobile" style="display:none;">
                 <i class="fas fa-receipt mr-3 text-lg w-6"></i>Purchases
+            </a>
+            <a href="{{ route('profile') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-3 flex items-center transition-all duration-200 {{ request()->routeIs('profile') ? 'text-[#8FC340] font-semibold' : '' }}" id="profileLinkMobile" style="display:none;">
+                <i class="fas fa-user mr-3 text-lg w-6"></i>Profile
             </a>
             <div class="pt-4 border-t border-gray-200">
                 <button class="w-full bg-gray-500 text-white hover:bg-gray-600 px-6 py-3 rounded-full font-medium transition-all" onclick="logout(); toggleMobileMenu()" id="logoutBtnMobile" style="display:none;">

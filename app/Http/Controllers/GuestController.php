@@ -182,4 +182,12 @@ class GuestController extends Controller
         // For now, return the view - in a real app, you'd add auth middleware
         return view('profile');
     }
+
+    /**
+     * Display the login page
+     */
+    public function login()
+    {
+        return view('login');
+    }
 } 

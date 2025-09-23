@@ -316,8 +316,9 @@
         const user = localStorage.getItem('user');
         
         if (!token || !user) {
-            // Show authentication required state
-            showAuthRequired();
+            // Redirect to login page with return URL
+            const currentUrl = window.location.href;
+            window.location.href = `/login?return=${encodeURIComponent(currentUrl)}`;
             return false;
         }
         
@@ -440,7 +441,8 @@
         try {
             const token = localStorage.getItem('token') || localStorage.getItem('access_token');
             if (!token) {
-                showAuthRequired();
+                const currentUrl = window.location.href;
+                window.location.href = `/login?return=${encodeURIComponent(currentUrl)}`;
                 return;
             }
             
@@ -478,7 +480,8 @@
             
             // Check if it's an authentication error
             if (error.message && error.message.includes('authentication')) {
-                showAuthRequired();
+                const currentUrl = window.location.href;
+                window.location.href = `/login?return=${encodeURIComponent(currentUrl)}`;
             } else {
                 if (errorElement) errorElement.style.display = 'block';
             }
@@ -502,7 +505,8 @@
         try {
             const token = localStorage.getItem('token') || localStorage.getItem('access_token');
             if (!token) {
-                showAuthRequired();
+                const currentUrl = window.location.href;
+                window.location.href = `/login?return=${encodeURIComponent(currentUrl)}`;
                 return;
             }
             
@@ -532,7 +536,8 @@
             
             // Check if it's an authentication error
             if (error.message && error.message.includes('authentication')) {
-                showAuthRequired();
+                const currentUrl = window.location.href;
+                window.location.href = `/login?return=${encodeURIComponent(currentUrl)}`;
             } else {
                 if (errorElement) errorElement.style.display = 'block';
             }

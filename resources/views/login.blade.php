@@ -106,13 +106,13 @@
         <!-- Login Form -->
         <form id="loginForm" class="space-y-6">
             <div>
-                <label for="loginEmail" class="block text-sm font-medium text-gray-700 mb-2">Email or Phone Number</label>
+                <label for="loginEmail" class="block text-sm font-medium text-gray-700 mb-2">Email, Phone Number, or Admission Number</label>
                 <input 
                     type="text" 
                     id="loginEmail" 
                     name="email" 
                     class="form-input w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-[#8FC340]/20 focus:border-[#8FC340] outline-none transition-all duration-300" 
-                    placeholder="Enter your email or phone number"
+                    placeholder="Enter your email, phone number, or admission number"
                     required
                 >
             </div>
@@ -325,8 +325,27 @@
         event.preventDefault();
         
         const formData = new FormData(event.target);
+        let loginIdentifier = formData.get('email').trim();
+        
+        // Standardize phone number if it looks like a phone number
+        if (loginIdentifier && /^[0-9+\-\s()]+$/.test(loginIdentifier)) {
+            // Remove all non-digit characters
+            let phoneNumber = loginIdentifier.replace(/\D/g, '');
+            
+            // Standardize to 254 format
+            if (phoneNumber.startsWith('0')) {
+                phoneNumber = '254' + phoneNumber.substring(1);
+            } else if (phoneNumber.startsWith('254')) {
+                // Already in correct format
+            } else if (phoneNumber.length === 9) {
+                phoneNumber = '254' + phoneNumber;
+            }
+            
+            loginIdentifier = phoneNumber;
+        }
+        
         const loginData = {
-            email: formData.get('email'),
+            login_identifier: loginIdentifier,
             password: formData.get('password'),
             remember: formData.get('remember') === 'on'
         };
@@ -378,7 +397,24 @@
                 }, 1500);
                 
             } else {
-                const errorMessage = data.message || 'Login failed. Please check your credentials.';
+                // Handle API error response with detailed error messages
+                let errorMessage = data.message || 'Login failed. Please check your credentials.';
+                
+                // If there are specific field errors, show them
+                if (data.errors) {
+                    const errorDetails = [];
+                    for (const [field, messages] of Object.entries(data.errors)) {
+                        if (Array.isArray(messages)) {
+                            errorDetails.push(...messages);
+                        } else {
+                            errorDetails.push(messages);
+                        }
+                    }
+                    if (errorDetails.length > 0) {
+                        errorMessage = errorDetails.join('. ');
+                    }
+                }
+                
                 showAlert('Login Failed', errorMessage, 'error');
             }
         } catch (error) {

@@ -391,27 +391,23 @@
                 console.log('Stored token:', localStorage.getItem('token'));
                 console.log('Stored user:', localStorage.getItem('user'));
                 
-                showAlert('Success', 'Login successful! Redirecting...', 'success');
+                // Redirect immediately on successful login
+                // Check for return URL parameter
+                const urlParams = new URLSearchParams(window.location.search);
+                const returnUrl = urlParams.get('return');
                 
-                // Redirect after a short delay
-                setTimeout(() => {
-                    // Check for return URL parameter
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const returnUrl = urlParams.get('return');
-                    
-                    if (returnUrl) {
-                        // Redirect to the original page
-                        window.location.href = returnUrl;
+                if (returnUrl) {
+                    // Redirect to the original page
+                    window.location.href = returnUrl;
+                } else {
+                    // Default redirect based on user type (matching popup login logic)
+                    const user = data.data.user;
+                    if (user.user_type === 'institution') {
+                        window.location.href = '/institution-dashboard';
                     } else {
-                        // Default redirect based on user type (matching popup login logic)
-                        const user = data.data.user;
-                        if (user.user_type === 'institution') {
-                            window.location.href = '/institution-dashboard';
-                        } else {
-                            window.location.href = '/dashboard';
-                        }
+                        window.location.href = '/dashboard';
                     }
-                }, 1500);
+                }
                 
             } else {
                 // Handle API error response with detailed error messages

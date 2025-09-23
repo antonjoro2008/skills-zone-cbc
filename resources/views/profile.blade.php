@@ -348,10 +348,9 @@
         const user = localStorage.getItem('user');
         
         if (!token || !user) {
-            showAlert('Authentication Required', 'Please log in to access your profile.', 'warning');
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 2000);
+            // Redirect to login page with return URL
+            const currentUrl = window.location.href;
+            window.location.href = `/login?return=${encodeURIComponent(currentUrl)}`;
             return false;
         }
         

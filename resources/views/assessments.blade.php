@@ -84,6 +84,23 @@
             <!-- Assessment cards will be dynamically loaded here -->
         </div>
         
+        <!-- Authentication Required State -->
+        <div id="authRequired" class="text-center py-16" style="display: none;">
+            <div class="max-w-md mx-auto">
+                <i class="fas fa-lock text-6xl text-blue-500 mb-6"></i>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Login Required</h3>
+                <p class="text-gray-600 mb-6">You need to be logged in to view assessments. Please log in to continue.</p>
+                <div class="space-y-3">
+                    <button onclick="showModal('loginModal')" class="w-full bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white px-6 py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all shadow-lg hover:shadow-xl">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login Now
+                    </button>
+                    <button onclick="window.location.href='/'" class="w-full bg-gray-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-home mr-2"></i>Go to Home
+                    </button>
+                </div>
+            </div>
+        </div>
+        
         <!-- Error State -->
         <div id="assessmentsError" class="text-center py-16" style="display: none;">
             <div class="max-w-md mx-auto">
@@ -268,6 +285,11 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        // Check authentication first
+        if (!checkAuthentication()) {
+            return; // Stop execution if not authenticated
+        }
+        
         // Load current user data
         loadCurrentUser();
         
@@ -288,6 +310,36 @@
             loadAssessments();
         }
     });
+    
+    function checkAuthentication() {
+        const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+        const user = localStorage.getItem('user');
+        
+        if (!token || !user) {
+            // Show authentication required state
+            showAuthRequired();
+            return false;
+        }
+        
+        return true;
+    }
+    
+    function showAuthRequired() {
+        const loadingElement = document.getElementById('assessmentsLoading');
+        const gridElement = document.getElementById('assessmentsGrid');
+        const errorElement = document.getElementById('assessmentsError');
+        const emptyElement = document.getElementById('assessmentsEmpty');
+        const authRequiredElement = document.getElementById('authRequired');
+        
+        // Hide all other states
+        if (loadingElement) loadingElement.style.display = 'none';
+        if (gridElement) gridElement.style.display = 'none';
+        if (errorElement) errorElement.style.display = 'none';
+        if (emptyElement) emptyElement.style.display = 'none';
+        
+        // Show authentication required state
+        if (authRequiredElement) authRequiredElement.style.display = 'block';
+    }
 
     function loadCurrentUser() {
         const userData = localStorage.getItem('user');
@@ -376,17 +428,20 @@
         const gridElement = document.getElementById('assessmentsGrid');
         const errorElement = document.getElementById('assessmentsError');
         const emptyElement = document.getElementById('assessmentsEmpty');
+        const authRequiredElement = document.getElementById('authRequired');
         
         // Show loading state
         if (loadingElement) loadingElement.style.display = 'grid';
         if (gridElement) gridElement.style.display = 'none';
         if (errorElement) errorElement.style.display = 'none';
         if (emptyElement) emptyElement.style.display = 'none';
+        if (authRequiredElement) authRequiredElement.style.display = 'none';
         
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token') || localStorage.getItem('access_token');
             if (!token) {
-                throw new Error('No authentication token found');
+                showAuthRequired();
+                return;
             }
             
             const response = await fetch(`${API_BASE_URL}/api/subjects/${subjectId}/assessments`, {
@@ -420,7 +475,13 @@
         } catch (error) {
             console.error('Error loading assessments for subject:', error);
             if (loadingElement) loadingElement.style.display = 'none';
-            if (errorElement) errorElement.style.display = 'block';
+            
+            // Check if it's an authentication error
+            if (error.message && error.message.includes('authentication')) {
+                showAuthRequired();
+            } else {
+                if (errorElement) errorElement.style.display = 'block';
+            }
         }
     }
 
@@ -429,17 +490,20 @@
         const gridElement = document.getElementById('assessmentsGrid');
         const errorElement = document.getElementById('assessmentsError');
         const emptyElement = document.getElementById('assessmentsEmpty');
+        const authRequiredElement = document.getElementById('authRequired');
         
         // Show loading state
         if (loadingElement) loadingElement.style.display = 'grid';
         if (gridElement) gridElement.style.display = 'none';
         if (errorElement) errorElement.style.display = 'none';
         if (emptyElement) emptyElement.style.display = 'none';
+        if (authRequiredElement) authRequiredElement.style.display = 'none';
         
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token') || localStorage.getItem('access_token');
             if (!token) {
-                throw new Error('No authentication token found');
+                showAuthRequired();
+                return;
             }
             
             const response = await fetch(`${API_BASE_URL}/api/assessments`, {
@@ -465,7 +529,13 @@
         } catch (error) {
             console.error('Error loading assessments:', error);
             if (loadingElement) loadingElement.style.display = 'none';
-            if (errorElement) errorElement.style.display = 'block';
+            
+            // Check if it's an authentication error
+            if (error.message && error.message.includes('authentication')) {
+                showAuthRequired();
+            } else {
+                if (errorElement) errorElement.style.display = 'block';
+            }
         }
     }
     

@@ -681,8 +681,8 @@
                             <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
                             <div class="text-sm text-blue-800">
                                 <p class="font-semibold mb-2">Token Purchase Info:</p>
-                                <ul class="list-disc list-inside space-y-1">
-                                    <li>1 Token = KES 1</li>
+                                <ul class="list-disc list-inside space-y-1" id="tokenPurchaseInfo">
+                                    <li id="tokenRateInfo">Loading rate information...</li>
                                     <li>You will receive a payment prompt on your phone</li>
                                     <li>Enter your M-PESA PIN to complete the transaction</li>
                                     <li>Tokens will be added to your account immediately</li>

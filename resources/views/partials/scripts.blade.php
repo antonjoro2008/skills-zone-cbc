@@ -1101,6 +1101,33 @@
             }
         }
 
+        // Function to update token purchase info with dynamic settings
+        function updateTokenPurchaseInfo() {
+            const tokenRateInfo = document.getElementById('tokenRateInfo');
+            if (!tokenRateInfo) return;
+            
+            // Get settings from dashboard data stored in localStorage
+            let tokensPerShilling = 1; // Default fallback
+            let minutesPerToken = 1; // Default fallback
+            
+            try {
+                const dashboardData = localStorage.getItem('dashboard');
+                if (dashboardData) {
+                    const dashboard = JSON.parse(dashboardData);
+                    if (dashboard.settings) {
+                        tokensPerShilling = dashboard.settings.tokens_per_shilling || 1;
+                        minutesPerToken = dashboard.settings.minutes_per_token || 1;
+                    }
+                }
+            } catch (e) {
+                console.warn('Could not load settings from dashboard data, using defaults');
+            }
+            
+            // Update the rate information
+            const rateText = `1 Token = KES ${(1/tokensPerShilling).toFixed(2)} | ${minutesPerToken} min/token`;
+            tokenRateInfo.textContent = rateText;
+        }
+
         // Buy tokens function
         async function buyTokens(event) {
             event.preventDefault();
@@ -1416,6 +1443,7 @@
                 document.getElementById('buyTokensMpesaPhone').value = currentUser.phone_number;
             }
             calculateTokens(); // Initialize the display
+            updateTokenPurchaseInfo(); // Update token purchase info with dynamic settings
         }
 
         // Auto-format reset code input (numbers only)

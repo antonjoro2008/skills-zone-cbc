@@ -700,6 +700,10 @@
                             <span class="text-gray-600">Tokens to receive:</span>
                             <span class="font-bold text-blue-600" id="displayTokens">0 tokens</span>
                         </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-gray-600">Minutes included:</span>
+                            <span class="font-bold text-green-600" id="displayMinutes">0 minutes</span>
+                        </div>
                     </div>
                     
                     <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-green-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">

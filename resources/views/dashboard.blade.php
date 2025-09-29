@@ -541,8 +541,25 @@
             return;
         }
         
-        // Calculate tokens (1 token = KES 1)
-        const tokens = Math.floor(amount / 1);
+        // Get settings from dashboard data stored in localStorage
+        let tokensPerShilling = 1; // Default fallback
+        let minutesPerToken = 1; // Default fallback
+        
+        try {
+            const dashboardData = localStorage.getItem('dashboard');
+            if (dashboardData) {
+                const dashboard = JSON.parse(dashboardData);
+                if (dashboard.settings) {
+                    tokensPerShilling = dashboard.settings.tokens_per_shilling || 1;
+                    minutesPerToken = dashboard.settings.minutes_per_token || 1;
+                }
+            }
+        } catch (e) {
+            console.warn('Could not load settings from dashboard data, using defaults');
+        }
+        
+        // Calculate tokens using dynamic settings
+        const tokens = Math.floor(amount * tokensPerShilling);
         
         // Get current user data
         const storedUser = localStorage.getItem('user');
@@ -601,13 +618,37 @@
         const amountInput = document.getElementById('buyTokensAmount');
         const displayAmount = document.getElementById('displayAmount');
         const displayTokens = document.getElementById('displayTokens');
+        const displayMinutes = document.getElementById('displayMinutes');
         
         if (amountInput && displayAmount && displayTokens) {
             const amount = parseFloat(amountInput.value) || 0;
-            const tokens = Math.floor(amount / 1); // 1 KES = 1 token
+            
+            // Get settings from dashboard data stored in localStorage
+            let tokensPerShilling = 1; // Default fallback
+            let minutesPerToken = 1; // Default fallback
+            
+            try {
+                const dashboardData = localStorage.getItem('dashboard');
+                if (dashboardData) {
+                    const dashboard = JSON.parse(dashboardData);
+                    if (dashboard.settings) {
+                        tokensPerShilling = dashboard.settings.tokens_per_shilling || 1;
+                        minutesPerToken = dashboard.settings.minutes_per_token || 1;
+                    }
+                }
+            } catch (e) {
+                console.warn('Could not load settings from dashboard data, using defaults');
+            }
+            
+            const tokens = Math.floor(amount * tokensPerShilling);
+            const minutes = tokens * minutesPerToken;
             
             displayAmount.textContent = `KES ${amount.toLocaleString()}`;
             displayTokens.textContent = `${tokens} token${tokens !== 1 ? 's' : ''}`;
+            
+            if (displayMinutes) {
+                displayMinutes.textContent = `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+            }
         }
     }
     

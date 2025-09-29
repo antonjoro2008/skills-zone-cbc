@@ -530,8 +530,40 @@
 
     function calculateTokens() {
         const amount = parseFloat(document.getElementById('amount').value) || 0;
-        const tokens = Math.floor(amount / 10); // Assuming 10 KES per token
+        
+        // Get settings from dashboard data stored in localStorage
+        let tokensPerShilling = 1; // Default fallback
+        let minutesPerToken = 1; // Default fallback
+        
+        try {
+            const dashboardData = localStorage.getItem('dashboard');
+            if (dashboardData) {
+                const dashboard = JSON.parse(dashboardData);
+                if (dashboard.settings) {
+                    tokensPerShilling = dashboard.settings.tokens_per_shilling || 1;
+                    minutesPerToken = dashboard.settings.minutes_per_token || 1;
+                }
+            }
+        } catch (e) {
+            console.warn('Could not load settings from dashboard data, using defaults');
+        }
+        
+        const tokens = Math.floor(amount * tokensPerShilling);
+        const minutes = tokens * minutesPerToken;
+        
         document.getElementById('tokensToReceive').textContent = tokens;
+        
+        // Update minutes display
+        const minutesDisplay = document.getElementById('minutesIncluded');
+        if (minutesDisplay) {
+            minutesDisplay.textContent = minutes;
+        }
+        
+        // Update rate display
+        const rateDisplay = document.querySelector('.rate-display');
+        if (rateDisplay) {
+            rateDisplay.textContent = `Rate: 1 token = KES ${(1/tokensPerShilling).toFixed(2)} | ${minutesPerToken} min/token`;
+        }
     }
 
     async function buyTokens(event) {
@@ -652,7 +684,11 @@
                         <span class="text-blue-900 font-medium">Tokens to receive:</span>
                         <span class="text-2xl font-bold text-blue-600" id="tokensToReceive">0</span>
                     </div>
-                    <p class="text-sm text-blue-700 mt-1">Rate: 1 token = KES 10</p>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="text-green-900 font-medium">Minutes included:</span>
+                        <span class="text-lg font-bold text-green-600" id="minutesIncluded">0</span>
+                    </div>
+                    <p class="text-sm text-blue-700 mt-1 rate-display">Rate: Loading...</p>
                 </div>
             </div>
             <div class="flex space-x-3 mt-6">

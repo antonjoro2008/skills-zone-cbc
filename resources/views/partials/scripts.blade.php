@@ -536,10 +536,8 @@
                     modal.classList.add('hidden');
                 }
                 
-                // Clear reset data when closing forgot password modals
-                if (['forgotModal', 'verifyCodeModal', 'resetPasswordModal'].includes(modalId)) {
-                    clearResetData();
-                }
+                // Don't automatically clear reset data when closing modals
+                // Reset data will be cleared when the process is completed or user goes back to login
                 
                 // Call callback when alert modal is closed
                 if (modalId === 'alertModal' && window.alertModalCallback) {
@@ -564,6 +562,26 @@
             }
             
             showModal('errorModal');
+        }
+
+        function showSuccessModal(message, title = 'Success') {
+            // Create a temporary success modal content
+            const successModal = document.getElementById('successModal');
+            if (successModal) {
+                // Update the modal content
+                const titleElement = successModal.querySelector('h2');
+                const messageElement = successModal.querySelector('p');
+                const buttonElement = successModal.querySelector('button');
+                
+                if (titleElement) titleElement.textContent = title;
+                if (messageElement) messageElement.textContent = message;
+                if (buttonElement) {
+                    buttonElement.textContent = 'Continue';
+                    buttonElement.onclick = () => closeModal('successModal');
+                }
+                
+                showModal('successModal');
+            }
         }
         
         // Authentication functions
@@ -1052,10 +1070,35 @@
         // Token calculation function
         function calculateTokens() {
             const amount = parseFloat(document.getElementById('buyTokensAmount').value) || 0;
-            const tokens = Math.floor(amount / 1); // 1 KES = 1 token
+            
+            // Get settings from dashboard data stored in localStorage
+            let tokensPerShilling = 1; // Default fallback
+            let minutesPerToken = 1; // Default fallback
+            
+            try {
+                const dashboardData = localStorage.getItem('dashboard');
+                if (dashboardData) {
+                    const dashboard = JSON.parse(dashboardData);
+                    if (dashboard.settings) {
+                        tokensPerShilling = dashboard.settings.tokens_per_shilling || 1;
+                        minutesPerToken = dashboard.settings.minutes_per_token || 1;
+                    }
+                }
+            } catch (e) {
+                console.warn('Could not load settings from dashboard data, using defaults');
+            }
+            
+            const tokens = Math.floor(amount * tokensPerShilling);
+            const minutes = tokens * minutesPerToken;
             
             document.getElementById('displayAmount').textContent = `KES ${amount.toLocaleString()}`;
             document.getElementById('displayTokens').textContent = `${tokens} token${tokens !== 1 ? 's' : ''}`;
+            
+            // Update minutes display if element exists
+            const minutesDisplay = document.getElementById('displayMinutes');
+            if (minutesDisplay) {
+                minutesDisplay.textContent = `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+            }
         }
 
         // Buy tokens function
@@ -1084,7 +1127,22 @@
                 return;
             }
             
-            const tokens = Math.floor(amount / 1);
+            // Get settings from dashboard data stored in localStorage
+            let tokensPerShilling = 1; // Default fallback
+            
+            try {
+                const dashboardData = localStorage.getItem('dashboard');
+                if (dashboardData) {
+                    const dashboard = JSON.parse(dashboardData);
+                    if (dashboard.settings) {
+                        tokensPerShilling = dashboard.settings.tokens_per_shilling || 1;
+                    }
+                }
+            } catch (e) {
+                console.warn('Could not load settings from dashboard data, using defaults');
+            }
+            
+            const tokens = Math.floor(amount * tokensPerShilling);
             
             // Show loading state
             const submitBtn = event.target.querySelector('button[type="submit"]');
@@ -1170,7 +1228,7 @@
                 
                 if (data.success) {
                     // Show success message and move to verify code modal
-                    showAlert('Code Sent', data.message || 'Reset code sent successfully to your phone', 'success');
+                    showSuccessModal(data.message || 'Reset code sent successfully to your phone', 'Code Sent');
                     closeModal('forgotModal');
                     showModal('verifyCodeModal');
                 } else {
@@ -1183,7 +1241,7 @@
                 // For development/testing purposes, still proceed to verify code modal
                 // In production, you might want to show an error instead
                 console.log('API call failed, but proceeding to verify code modal for testing');
-                showAlert('Code Sent', 'Reset code sent successfully to your phone', 'success');
+                showSuccessModal('Reset code sent successfully to your phone', 'Code Sent');
                 closeModal('forgotModal');
                 showModal('verifyCodeModal');
             } finally {
@@ -1198,7 +1256,13 @@
             
             const code = document.getElementById('resetCode').value;
             
+            // Debug logging
+            console.log('verifyResetCode called');
+            console.log('resetPhoneNumber:', resetPhoneNumber);
+            console.log('code:', code);
+            
             if (!resetPhoneNumber) {
+                console.error('resetPhoneNumber is null or undefined');
                 showErrorModal('Phone number not found. Please start the reset process again.', 'Verification Failed');
                 return;
             }
@@ -1225,8 +1289,7 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    // Show success message and move to reset password modal
-                    showAlert('Code Verified', data.message || 'Reset code verified successfully', 'success');
+                    // Move directly to reset password modal
                     closeModal('verifyCodeModal');
                     showModal('resetPasswordModal');
                 } else {
@@ -1286,7 +1349,7 @@
                 
                 if (data.success) {
                     // Show success message and redirect to login
-                    showAlert('Password Reset', data.message || 'Password reset successfully. Please login with your new password.', 'success');
+                    showSuccessModal(data.message || 'Password reset successfully. Please login with your new password.', 'Password Reset');
                     closeModal('resetPasswordModal');
                     
                     // Clear reset data

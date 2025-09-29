@@ -74,6 +74,17 @@
                 </div>
             </div>
 
+            <!-- Category Scores Section (only shown if category_scores exist) -->
+            <div id="categoryScoresSection" class="bg-white rounded-3xl shadow-lg p-8 mb-8 hidden">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                    <i class="fas fa-layer-group text-purple-600 mr-3"></i>
+                    Category Performance
+                </h3>
+                <div id="categoryScoresContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Category scores will be dynamically inserted here -->
+                </div>
+            </div>
+
             <!-- Detailed Statistics -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                 <!-- Performance Metrics -->
@@ -384,6 +395,9 @@
         // Animate score ring
         animateScoreRing(percentage);
 
+        // Handle category scores if they exist
+        displayCategoryScores(assessmentResults.category_scores || []);
+
         // Generate question reviews
         generateQuestionReviews(assessmentResults.feedback || []);
 
@@ -417,6 +431,78 @@
         const offset = circumference - (percentage / 100) * circumference;
         
         ring.style.strokeDashoffset = offset;
+    }
+
+    function displayCategoryScores(categoryScores) {
+        const categoryScoresSection = document.getElementById('categoryScoresSection');
+        const categoryScoresContainer = document.getElementById('categoryScoresContainer');
+        
+        // Hide section if no category scores
+        if (!categoryScores || categoryScores.length === 0) {
+            categoryScoresSection.classList.add('hidden');
+            return;
+        }
+        
+        // Show section and clear previous content
+        categoryScoresSection.classList.remove('hidden');
+        categoryScoresContainer.innerHTML = '';
+        
+        // Create category score cards
+        categoryScores.forEach(category => {
+            const categoryCard = document.createElement('div');
+            categoryCard.className = 'bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-200 hover:shadow-lg transition-all duration-300';
+            
+            // Determine performance color based on percentage
+            let performanceColor = 'text-red-600';
+            let performanceBg = 'bg-red-100';
+            let performanceIcon = 'fas fa-exclamation-triangle';
+            
+            if (category.percentage >= 80) {
+                performanceColor = 'text-green-600';
+                performanceBg = 'bg-green-100';
+                performanceIcon = 'fas fa-star';
+            } else if (category.percentage >= 60) {
+                performanceColor = 'text-yellow-600';
+                performanceBg = 'bg-yellow-100';
+                performanceIcon = 'fas fa-check-circle';
+            }
+            
+            categoryCard.innerHTML = `
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 ${performanceBg} rounded-full flex items-center justify-center mr-3">
+                            <i class="${performanceIcon} ${performanceColor} text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-gray-900">${category.category_tag}</h4>
+                            <p class="text-sm text-gray-600">Category Performance</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold ${performanceColor}">${category.percentage.toFixed(1)}%</div>
+                        <div class="text-sm text-gray-600">${category.score}/${category.out_of}</div>
+                    </div>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-200 rounded-full h-3 mb-3">
+                    <div class="h-3 rounded-full transition-all duration-1000 ease-out" 
+                         style="width: ${category.percentage}%; background: linear-gradient(90deg, 
+                         ${category.percentage >= 80 ? '#10B981' : category.percentage >= 60 ? '#F59E0B' : '#EF4444'} 0%, 
+                         ${category.percentage >= 80 ? '#059669' : category.percentage >= 60 ? '#D97706' : '#DC2626'} 100%);">
+                    </div>
+                </div>
+                
+                <!-- Performance Description -->
+                <div class="text-sm text-gray-600">
+                    ${category.percentage >= 80 ? 'Excellent performance!' : 
+                      category.percentage >= 60 ? 'Good performance, room for improvement' : 
+                      'Needs improvement - consider reviewing this topic'}
+                </div>
+            `;
+            
+            categoryScoresContainer.appendChild(categoryCard);
+        });
     }
 
     function generateQuestionReviews(feedback) {

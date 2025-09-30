@@ -354,71 +354,109 @@
         const currentTimeEl = document.getElementById('currentTime');
         const durationEl = document.getElementById('duration');
 
+        // Exit early if video element doesn't exist
+        if (!video) {
+            console.warn('Navigation video element not found');
+            return;
+        }
+
         // Progressive loading - load video metadata first
         video.addEventListener('loadedmetadata', function() {
-            placeholder.style.display = 'none';
+            if (placeholder) {
+                placeholder.style.display = 'none';
+            }
             video.classList.remove('hidden');
-            videoControls.classList.remove('hidden');
+            if (videoControls) {
+                videoControls.classList.remove('hidden');
+            }
             
             // Format and display duration
-            const duration = formatTime(video.duration);
-            durationEl.textContent = duration;
+            if (durationEl) {
+                const duration = formatTime(video.duration);
+                durationEl.textContent = duration;
+            }
         });
 
         // Handle play button click
-        playButton.addEventListener('click', function() {
-            video.play();
-            playButton.style.display = 'none';
-        });
+        if (playButton) {
+            playButton.addEventListener('click', function() {
+                video.play();
+                playButton.style.display = 'none';
+            });
+        }
 
         // Handle play/pause button
-        playPauseBtn.addEventListener('click', function() {
-            if (video.paused) {
-                video.play();
-            } else {
-                video.pause();
-            }
-        });
+        if (playPauseBtn) {
+            playPauseBtn.addEventListener('click', function() {
+                if (video.paused) {
+                    video.play();
+                } else {
+                    video.pause();
+                }
+            });
+        }
 
         // Handle mute button
-        muteBtn.addEventListener('click', function() {
-            video.muted = !video.muted;
-            const icon = muteBtn.querySelector('i');
-            icon.className = video.muted ? 'fas fa-volume-mute text-lg' : 'fas fa-volume-up text-lg';
-        });
+        if (muteBtn) {
+            muteBtn.addEventListener('click', function() {
+                video.muted = !video.muted;
+                const icon = muteBtn.querySelector('i');
+                if (icon) {
+                    icon.className = video.muted ? 'fas fa-volume-mute text-lg' : 'fas fa-volume-up text-lg';
+                }
+            });
+        }
 
         // Handle fullscreen button
-        fullscreenBtn.addEventListener('click', function() {
-            if (video.requestFullscreen) {
-                video.requestFullscreen();
-            } else if (video.webkitRequestFullscreen) {
-                video.webkitRequestFullscreen();
-            } else if (video.msRequestFullscreen) {
-                video.msRequestFullscreen();
-            }
-        });
+        if (fullscreenBtn) {
+            fullscreenBtn.addEventListener('click', function() {
+                if (video.requestFullscreen) {
+                    video.requestFullscreen();
+                } else if (video.webkitRequestFullscreen) {
+                    video.webkitRequestFullscreen();
+                } else if (video.msRequestFullscreen) {
+                    video.msRequestFullscreen();
+                }
+            });
+        }
 
         // Update play/pause button icon
         video.addEventListener('play', function() {
-            const icon = playPauseBtn.querySelector('i');
-            icon.className = 'fas fa-pause text-xl';
+            if (playPauseBtn) {
+                const icon = playPauseBtn.querySelector('i');
+                if (icon) {
+                    icon.className = 'fas fa-pause text-xl';
+                }
+            }
         });
 
         video.addEventListener('pause', function() {
-            const icon = playPauseBtn.querySelector('i');
-            icon.className = 'fas fa-play text-xl';
+            if (playPauseBtn) {
+                const icon = playPauseBtn.querySelector('i');
+                if (icon) {
+                    icon.className = 'fas fa-play text-xl';
+                }
+            }
         });
 
         // Update current time
         video.addEventListener('timeupdate', function() {
-            currentTimeEl.textContent = formatTime(video.currentTime);
+            if (currentTimeEl) {
+                currentTimeEl.textContent = formatTime(video.currentTime);
+            }
         });
 
         // Show play button when video ends
         video.addEventListener('ended', function() {
-            playButton.style.display = 'flex';
-            const icon = playPauseBtn.querySelector('i');
-            icon.className = 'fas fa-play text-xl';
+            if (playButton) {
+                playButton.style.display = 'flex';
+            }
+            if (playPauseBtn) {
+                const icon = playPauseBtn.querySelector('i');
+                if (icon) {
+                    icon.className = 'fas fa-play text-xl';
+                }
+            }
         });
 
         // Format time helper function

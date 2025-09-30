@@ -204,7 +204,6 @@
                             id="navigationVideo"
                             class="w-full h-full object-cover hidden"
                             preload="metadata"
-                            poster="/images/video-poster.jpg"
                             controls
                             playsinline
                             webkit-playsinline>

@@ -185,22 +185,10 @@
             return false;
         }
         
-        // Check if assessment results exist (indicating completion)
-        const assessmentResults = localStorage.getItem('assessmentResults');
-        if (assessmentResults) {
-            try {
-                const results = JSON.parse(assessmentResults);
-                if (results.assessment_id === assessmentId) {
-                    console.log('Assessment already completed, clearing time tracking data');
-                    localStorage.removeItem('assessmentTimeTracking');
-                    localStorage.removeItem('currentAttemptId');
-                    localStorage.removeItem('assessmentStartTime');
-                    return false;
-                }
-            } catch (e) {
-                console.error('Error parsing assessment results:', e);
-            }
-        }
+        // Note: We no longer check for assessment results here because:
+        // 1. Results can be cleared from localStorage
+        // 2. clearAllAssessmentData() is called on successful submission
+        // 3. If in-progress data exists, it means assessment is truly in progress
         
         // Check if time hasn't expired
         const remainingTime = calculateRemainingTime(timeData);
@@ -489,6 +477,22 @@
     }
 
     async function loadAssessments() {
+        // Prevent multiple clicks
+        const button = event?.target;
+        if (button && button.disabled) {
+            return; // Already processing
+        }
+        
+        // Disable button and show loading state
+        if (button) {
+            button.disabled = true;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+            
+            // Store original state for reset
+            button.dataset.originalText = originalText;
+        }
+        
         const loadingElement = document.getElementById('assessmentsLoading');
         const gridElement = document.getElementById('assessmentsGrid');
         const errorElement = document.getElementById('assessmentsError');
@@ -541,6 +545,9 @@
             } else {
                 if (errorElement) errorElement.style.display = 'block';
             }
+            
+            // Reset button state on error
+            resetButtonState();
         }
     }
     
@@ -664,9 +671,58 @@
         `;
     }
     
-    function viewQuestions(assessmentId) {
-        // Navigate to question viewer page
-        window.location.href = `/questions/${assessmentId}`;
+    async function viewQuestions(assessmentId) {
+        // Prevent multiple clicks
+        const button = event?.target;
+        if (button && button.disabled) {
+            return; // Already processing
+        }
+        
+        // Disable button and show loading state
+        if (button) {
+            button.disabled = true;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+            
+            // Store original state for reset
+            button.dataset.originalText = originalText;
+        }
+        
+        try {
+            const token = localStorage.getItem('token');
+            if (!token || token === 'null' || token === 'undefined' || token.length === 0) {
+                console.error('No valid token found in localStorage');
+                showAlert('Authentication Required', 'Please log in to view questions', 'warning');
+                resetButtonState();
+                return;
+            }
+
+            // Call the assessment endpoint to get assessment details
+            const response = await fetch(`${API_BASE_URL}/api/assessments/${assessmentId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                }
+            });
+
+            const data = await response.json();
+            
+            if (data.success && data.data) {
+                // Store assessment data and redirect to question viewer page
+                localStorage.setItem('currentAssessment', JSON.stringify(data.data));
+                window.location.href = `/questions/${assessmentId}`;
+            } else {
+                const errorMessage = extractErrorMessage(data, 'Failed to load assessment details');
+                showAlert('Error', errorMessage, 'error');
+                resetButtonState();
+            }
+        } catch (error) {
+            console.error('Error loading assessment for viewing:', error);
+            showAlert('Error', 'Failed to load assessment. Please try again.', 'error');
+            resetButtonState();
+        }
     }
 
     async function purchaseAssessment(title, assessmentId) {
@@ -696,6 +752,22 @@
     }
 
     async function startAssessment(assessmentId) {
+        // Prevent multiple clicks
+        const button = event?.target;
+        if (button && button.disabled) {
+            return; // Already processing
+        }
+        
+        // Disable button and show loading state
+        if (button) {
+            button.disabled = true;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Starting...';
+            
+            // Store original state for reset
+            button.dataset.originalText = originalText;
+        }
+        
         try {
             // Debug mobile localStorage access
             console.log('Starting assessment for ID:', assessmentId);
@@ -747,10 +819,20 @@
             } else {
                 const errorMessage = extractErrorMessage(data, 'Failed to load assessment details');
                 showAlert('Error', errorMessage, 'error');
+                resetButtonState();
             }
         } catch (error) {
             console.error('Error starting assessment:', error);
             showAlert('Error', 'Failed to start assessment. Please try again.', 'error');
+            resetButtonState();
+        }
+    }
+    
+    function resetButtonState() {
+        const button = event?.target;
+        if (button && button.dataset.originalText) {
+            button.innerHTML = button.dataset.originalText;
+            button.disabled = false;
         }
     }
 </script>

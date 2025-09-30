@@ -46,8 +46,214 @@
         </div>
     </div>
     
+    <!-- Instructions Page -->
+    <div id="instructionsPage" class="relative z-10 flex-1 flex items-center justify-center px-4 py-8">
+        <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-4xl w-full mx-auto">
+            <!-- KNEC Header -->
+            <div class="mb-2">
+                <div class="flex items-center mb-3">
+                    <img src="/images/knec-logo.png" alt="KNEC Logo" class="h-20 w-auto mr-4">
+                    <div class="text-left">
+                        <div class="text-base font-bold uppercase text-gray-900 mb-1">THE KENYA NATIONAL EXAMINATIONS BOARD</div>
+                        <div class="text-base font-bold uppercase text-gray-900">KENYA JUNIOR SCHOOL EDUCATION ASSESSMENT</div>
+                    </div>
+                </div>
+                
+                <!-- Paper Information -->
+                <div class="text-xs font-bold uppercase text-gray-700 mb-3" id="paperInfo">
+                    <div class="mb-1">KJSEA</div>
+                    <div class="mb-1"><span id="paperCode">-</span></div>
+                    <div class="mb-1"><span id="paperTitle">-</span></div>
+                    <div class="mb-1">SAMPLE PAPER</div>
+                    <div class="mb-1">JANUARY 2025</div>
+                    <div class="mb-1"><span class="normal-case">Time: <span id="paperDuration">-</span></span></div>
+                </div>
+            </div>
+
+            <!-- Instructions Title -->
+            <h2 class="text-sm font-bold uppercase text-gray-900 mb-4">INSTRUCTIONS TO CANDIDATES</h2>
+
+            <!-- Instructions Content -->
+            <div class="text-sm text-gray-700 mb-6 leading-relaxed" id="assessmentInstructions">
+                <p class="mb-4">1. Write your name and index number in the spaces provided above.</p>
+                <p class="mb-4">2. Answer all the questions in the spaces provided.</p>
+                <p class="mb-4">3. This paper consists of <span id="questionsCount">0</span> questions.</p>
+                <p class="mb-4">4. All questions carry equal marks.</p>
+                <p class="mb-4">5. Check the question paper to ensure that all pages are printed and no questions are missing.</p>
+                <p class="mb-4">6. For each question, choose the correct answer and mark it clearly.</p>
+                <p class="mb-4">7. Do not write anything on the question paper except your name and index number.</p>
+                <p class="mb-4">8. Use only blue or black ink.</p>
+                <p class="mb-4">9. Mobile phones and any unauthorized materials are not allowed in the examination room.</p>
+                <p class="mb-4">10. Do not turn over this page until you are told to do so.</p>
+            </div>
+
+            <!-- Official Use Section -->
+            <div class="mb-6">
+                <div class="font-bold text-gray-900 text-center mb-1">For Official Use only</div>
+                <div class="font-bold text-gray-900 text-center mb-2">SECTION B</div>
+            </div>
+
+            <!-- Tasks Table -->
+            <div class="mb-8">
+                <table class="w-full border-collapse border border-gray-400">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border border-gray-400 px-4 py-2 text-left font-bold">Task</th>
+                            <th class="border border-gray-400 px-4 py-2 text-left font-bold" colspan="6">Question Numbers</th>
+                            <th class="border border-gray-400 px-4 py-2 text-left font-bold">Total Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border border-gray-400 px-4 py-2 font-bold" rowspan="2">Task 1</td>
+                            <td class="border border-gray-400 px-4 py-2">
+                                Question
+                            </td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2 font-bold">
+                                Max. ___
+                            </td>
+                        </tr>
+                        <tr>
+                                <td class="border border-gray-400 px-4 py-2">
+                                    Score
+                                </td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-400 px-4 py-2 font-bold" rowspan="2">Task 2</td>
+                            <td class="border border-gray-400 px-4 py-2">
+                                Question
+                            </td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2 font-bold">
+                                Max. ___
+                            </td>
+                        </tr>
+                        <tr>
+                                <td class="border border-gray-400 px-4 py-2">
+                                    Score
+                                </td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-400 px-4 py-2 font-bold" rowspan="2">Task 3</td>
+                            <td class="border border-gray-400 px-4 py-2">
+                                Question
+                            </td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2 font-bold">
+                                Max. ___
+                            </td>
+                        </tr>
+                        <tr>
+                                <td class="border border-gray-400 px-4 py-2">
+                                    Score
+                                </td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-400 px-4 py-2 font-bold" rowspan="2">Task 4</td>
+                            <td class="border border-gray-400 px-4 py-2">
+                                Question
+                            </td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2 font-bold">
+                                Max. ___
+                            </td>
+                        </tr>
+                        <tr>
+                                <td class="border border-gray-400 px-4 py-2">
+                                    Score
+                                </td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-400 px-4 py-2 font-bold" rowspan="2">Task 5</td>
+                            <td class="border border-gray-400 px-4 py-2">
+                                Question
+                            </td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2"></td>
+                            <td class="border border-gray-400 px-4 py-2 font-bold">
+                                Max. ___
+                            </td>
+                        </tr>
+                        <tr>
+                                <td class="border border-gray-400 px-4 py-2">
+                                    Score
+                                </td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer Sections -->
+            <div class="mb-6 text-center">
+                <div class="font-bold text-gray-900 mb-4 leading-5">
+                    Candidates should check the question paper to ascertain that all the pages are printed as indicated and that no questions are missing.
+                </div>
+                <div class="mt-3 text-xs text-gray-600">
+                    &copy; 2025, The Kenya National Examinations Council
+                </div>
+            </div>
+
+            <!-- Go to Questions Button -->
+            <div class="text-center" id="goToQuestionsButtonContainer">
+                <button id="goToQuestionsBtn" class="bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white px-12 py-4 rounded-2xl text-lg font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                    <i class="fas fa-book-open mr-3"></i>Go to Questions
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Book Container -->
-    <div class="relative z-10 flex-1 flex items-center justify-center px-4 py-8">
+    <div id="bookContainer" class="relative z-10 flex-1 flex flex-col items-center justify-center px-4 py-8 hidden">
         <div class="book-container w-full max-w-4xl mx-auto">
             <!-- Book Spine -->
             <div class="book-spine"></div>
@@ -127,33 +333,27 @@
                 </div>
             </div>
         </div>
-    </div>
+        
+        <!-- Navigation Controls - Desktop Only -->
+        <div id="navigationControls" class="relative z-10 pb-8 mt-4 hidden sm:block">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
+                <div class="flex items-center justify-center space-x-8">
+                    <!-- Previous Button -->
+                    <button id="prevBtn" class="nav-btn prev-btn" onclick="previousQuestion()" disabled>
+                        <i class="fas fa-angle-left text-xl"></i>
+                        <span>Previous</span>
+                    </button>
 
-    <!-- Navigation Controls - Desktop Only -->
-    <div class="relative z-10 pb-8 hidden sm:block">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
-            <div class="flex items-center justify-center space-x-6">
-                <!-- Previous Button -->
-                <button id="prevBtn" class="nav-btn prev-btn" onclick="previousQuestion()" disabled>
-                    <i class="fas fa-chevron-left"></i>
-                    <span>Previous</span>
-                </button>
-
-                <!-- Page Indicator -->
-                <div class="page-indicator">
-                    <div class="page-dots" id="pageDots">
-                        <!-- Dots will be generated here -->
-                    </div>
+                    <!-- Next Button -->
+                    <button id="nextBtn" class="nav-btn next-btn" onclick="nextQuestion()">
+                        <span>Next</span>
+                        <i class="fas fa-angle-right text-xl"></i>
+                    </button>
                 </div>
-
-                <!-- Next Button -->
-                <button id="nextBtn" class="nav-btn next-btn" onclick="nextQuestion()">
-                    <span>Next</span>
-                    <i class="fas fa-chevron-right"></i>
-                </button>
             </div>
         </div>
     </div>
+
 </div>
 
 <!-- Custom Styles for Book Effect -->
@@ -386,24 +586,25 @@
 .nav-btn {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 15px 30px;
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    gap: 12px;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, rgba(143, 195, 64, 0.9), rgba(227, 104, 167, 0.9));
+    border: 2px solid rgba(255, 255, 255, 0.4);
     border-radius: 50px;
     color: white;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 1.1rem;
     transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px);
     cursor: pointer;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .nav-btn:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.5);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    background: linear-gradient(135deg, rgba(143, 195, 64, 1), rgba(227, 104, 167, 1));
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
 }
 
 .nav-btn:disabled {
@@ -416,28 +617,8 @@
     align-items: center;
 }
 
-.page-dots {
-    display: flex;
-    gap: 8px;
-}
+/* Page dots removed - using only Previous/Next navigation */
 
-.page-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.page-dot.active {
-    background: white;
-    transform: scale(1.2);
-}
-
-.page-dot:hover {
-    background: rgba(255, 255, 255, 0.6);
-}
 
 .loading-spinner {
     display: flex;
@@ -1225,6 +1406,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize sound button state
         initializeSoundButton();
     }
+    
+    // Go to Questions button
+    const goToQuestionsBtn = document.getElementById('goToQuestionsBtn');
+    if (goToQuestionsBtn) {
+        goToQuestionsBtn.addEventListener('click', goToQuestions);
+    }
 });
 
 // Initialize sound button state
@@ -1289,13 +1476,15 @@ async function loadAssessmentQuestions(assessmentId) {
                 });
             }
             
+            // Show instructions page first
+            displayInstructionsPage();
+            
             // Update page title
             document.getElementById('assessmentTitle').textContent = assessmentData.title || 'Assessment Questions';
             
-            // Generate page dots
-            generatePageDots();
+            // Page dots removed - using only Previous/Next navigation
             
-            // Load questions into pages
+            // Load questions into pages (but don't show them yet)
             if (questions.length > 0) {
                 loadQuestionsIntoPages();
                 updateNavigation();
@@ -1323,8 +1512,7 @@ function loadQuestionsIntoPages() {
     // Update question counter
     document.getElementById('questionCounter').textContent = `Question ${currentPage + 1} of ${questions.length}`;
     
-    // Update page dots
-    updatePageDots();
+    // Page dots removed - using only Previous/Next navigation
 }
 
 function loadMobilePages() {
@@ -1392,7 +1580,6 @@ function flipNext() {
             setTimeout(() => {
                 updateMobilePageContent('front', null, 'End of Assessment');
                 updateNavigation();
-                updatePageDots();
                 isFlipping = false;
             }, 300);
         } else {
@@ -1400,7 +1587,6 @@ function flipNext() {
             
             // Update navigation and page dots
             updateNavigation();
-            updatePageDots();
             
             // Reset flipping state after animation
             setTimeout(() => {
@@ -1422,8 +1608,7 @@ function flipNext() {
         // Update question counter
         document.getElementById('questionCounter').textContent = `Question ${currentPage + 1} of ${questions.length}`;
         
-        // Update page dots
-        updatePageDots();
+        // Page dots removed
         
         // Update navigation
         updateNavigation();
@@ -1452,7 +1637,6 @@ function flipPrevious() {
             
             // Update navigation and page dots
             updateNavigation();
-            updatePageDots();
             
             // Reset flipping state after animation
             setTimeout(() => {
@@ -1471,7 +1655,6 @@ function flipPrevious() {
             document.getElementById('questionCounter').textContent = `Question ${currentPage + 1} of ${questions.length}`;
             
             // Update page dots
-            updatePageDots();
             
             // Update navigation
             updateNavigation();
@@ -1675,24 +1858,7 @@ function displayQuestionMedia(pageType, question) {
     }
 }
 
-function generatePageDots() {
-    const dotsContainer = document.getElementById('pageDots');
-    dotsContainer.innerHTML = '';
-    
-    for (let i = 0; i < questions.length; i++) {
-        const dot = document.createElement('div');
-        dot.className = `page-dot ${i === 0 ? 'active' : ''}`;
-        dot.onclick = () => goToQuestion(i);
-        dotsContainer.appendChild(dot);
-    }
-}
-
-function updatePageDots() {
-    const dots = document.querySelectorAll('.page-dot');
-    dots.forEach((dot, index) => {
-        dot.classList.toggle('active', index === currentPage);
-    });
-}
+// Page dots functionality removed - using only Previous/Next navigation
 
 function updateNavigation() {
     const prevBtn = document.getElementById('prevBtn');
@@ -1819,6 +1985,50 @@ function showNoQuestions() {
             <p class="text-gray-400">This assessment doesn't have any questions yet.</p>
         </div>
     `;
+}
+
+function displayInstructionsPage() {
+    if (!assessmentData) return;
+    
+    // Populate paper information
+    document.getElementById('paperCode').textContent = assessmentData.paper_code || '-';
+    document.getElementById('paperTitle').textContent = assessmentData.title || '-';
+    
+    // Format duration
+    const duration = assessmentData.duration_minutes || 0;
+    let durationText = '';
+    if (duration >= 60) {
+        const hours = Math.floor(duration / 60);
+        const minutes = duration % 60;
+        durationText = `${hours} Hr${hours !== 1 ? 's' : ''} ${minutes} Min${minutes !== 1 ? 's' : ''}`;
+    } else {
+        durationText = `${duration} Min${duration !== 1 ? 's' : ''}`;
+    }
+    document.getElementById('paperDuration').textContent = durationText;
+    
+    // Update questions count
+    document.getElementById('questionsCount').textContent = questions.length;
+    
+    // Update instructions if available
+    if (assessmentData.instructions) {
+        document.getElementById('assessmentInstructions').innerHTML = assessmentData.instructions;
+    }
+    
+    // Show instructions page, hide book container (navigation controls are inside book container)
+    document.getElementById('instructionsPage').classList.remove('hidden');
+    document.getElementById('bookContainer').classList.add('hidden');
+}
+
+function goToQuestions() {
+    // Hide instructions page, show book container (navigation controls are inside book container)
+    document.getElementById('instructionsPage').classList.add('hidden');
+    document.getElementById('bookContainer').classList.remove('hidden');
+    
+    // Initialize the question viewer
+    if (questions.length > 0) {
+        loadQuestionsIntoPages();
+        updateNavigation();
+    }
 }
 
 function showError(message) {

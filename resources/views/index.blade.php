@@ -162,6 +162,116 @@
             </div>
         </div>
 
+        <!-- Navigation Guide Video Section -->
+        <div class="py-24 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 relative overflow-hidden">
+            <!-- Background decoration -->
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
+            <div class="absolute top-0 left-0 w-full h-full">
+                <div class="absolute top-20 left-10 w-32 h-32 bg-blue-500/20 rounded-full blur-xl"></div>
+                <div class="absolute bottom-20 right-10 w-24 h-24 bg-purple-500/20 rounded-full blur-xl"></div>
+            </div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 relative z-10">
+                <div class="text-center mb-16">
+                    <div class="inline-flex items-center bg-blue-500/20 backdrop-blur-sm rounded-full px-6 py-3 mb-6 border border-blue-400/30">
+                        <i class="fas fa-play-circle text-blue-400 mr-3 text-xl"></i>
+                        <span class="text-blue-300 font-medium">Quick Start Guide</span>
+                    </div>
+                    <h2 class="text-4xl md:text-4xl font-bold text-white mb-6">
+                        How to Navigate
+                        <span class="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Gravity CBC Assessments Portal</span>
+                    </h2>
+                    <p class="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                        Watch this quick guide to learn how to get started with assessments, purchase tokens, and track your progress.
+                    </p>
+                </div>
+                
+                <!-- Video Container -->
+                <div class="max-w-4xl mx-auto">
+                    <div class="relative bg-black rounded-3xl overflow-hidden shadow-2xl border border-gray-700">
+                        <!-- Video Loading Placeholder -->
+                        <div id="videoPlaceholder" class="aspect-video bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                            <div class="text-center">
+                                <div class="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center mb-4 mx-auto animate-pulse">
+                                    <i class="fas fa-play text-blue-400 text-2xl"></i>
+                                </div>
+                                <p class="text-gray-400 text-lg">Loading navigation guide...</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Video Element -->
+                        <video 
+                            id="navigationVideo"
+                            class="w-full h-full object-cover hidden"
+                            preload="metadata"
+                            poster="/images/video-poster.jpg"
+                            controls
+                            playsinline
+                            webkit-playsinline>
+                            <source src="/videos/navigation-guide.mp4" type="video/mp4">
+                            <p class="text-white p-8 text-center">
+                                Your browser doesn't support HTML5 video. 
+                                <a href="/videos/navigation-guide.mp4" class="text-blue-400 underline">Download the video</a> instead.
+                            </p>
+                        </video>
+                        
+                        <!-- Custom Play Button -->
+                        <div id="playButton" class="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm cursor-pointer group transition-all duration-300 hover:bg-black/20">
+                            <div class="w-24 h-24 bg-blue-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-2xl">
+                                <i class="fas fa-play text-white text-3xl ml-1"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Video Controls Overlay -->
+                        <div id="videoControls" class="absolute bottom-4 left-4 right-4 hidden">
+                            <div class="flex items-center justify-between bg-black/50 backdrop-blur-sm rounded-lg px-4 py-2">
+                                <div class="flex items-center space-x-4">
+                                    <button id="playPauseBtn" class="text-white hover:text-blue-400 transition-colors">
+                                        <i class="fas fa-play text-xl"></i>
+                                    </button>
+                                    <div class="flex items-center space-x-2">
+                                        <span id="currentTime" class="text-white text-sm">0:00</span>
+                                        <span class="text-gray-400">/</span>
+                                        <span id="duration" class="text-gray-400 text-sm">0:00</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button id="muteBtn" class="text-white hover:text-blue-400 transition-colors">
+                                        <i class="fas fa-volume-up text-lg"></i>
+                                    </button>
+                                    <button id="fullscreenBtn" class="text-white hover:text-blue-400 transition-colors">
+                                        <i class="fas fa-expand text-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Video Description -->
+                    <div class="mt-8 text-center">
+                        <p class="text-gray-300 text-lg leading-relaxed max-w-2xl mx-auto">
+                            This guide covers everything you need to know: creating an account, purchasing tokens, 
+                            taking assessments, and understanding your results. Perfect for new users!
+                        </p>
+                        <div class="mt-6 flex flex-wrap justify-center gap-4">
+                            <div class="flex items-center text-blue-300">
+                                <i class="fas fa-clock mr-2"></i>
+                                <span>3-5 minutes</span>
+                            </div>
+                            <div class="flex items-center text-blue-300">
+                                <i class="fas fa-mobile-alt mr-2"></i>
+                                <span>Mobile & Desktop</span>
+                            </div>
+                            <div class="flex items-center text-blue-300">
+                                <i class="fas fa-closed-captioning mr-2"></i>
+                                <span>Subtitles Available</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Stats Section -->
         <div class="bg-gradient-to-r from-gray-900 via-blue-900 to-gray-900 py-20 relative overflow-hidden">
             <!-- Background pattern -->
@@ -229,6 +339,110 @@
                 // Hide the Join Free button
                 joinFreeBtn.style.display = 'none';
             }
+        }
+    });
+
+    // Video Navigation Guide Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const video = document.getElementById('navigationVideo');
+        const placeholder = document.getElementById('videoPlaceholder');
+        const playButton = document.getElementById('playButton');
+        const videoControls = document.getElementById('videoControls');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const muteBtn = document.getElementById('muteBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationEl = document.getElementById('duration');
+
+        // Progressive loading - load video metadata first
+        video.addEventListener('loadedmetadata', function() {
+            placeholder.style.display = 'none';
+            video.classList.remove('hidden');
+            videoControls.classList.remove('hidden');
+            
+            // Format and display duration
+            const duration = formatTime(video.duration);
+            durationEl.textContent = duration;
+        });
+
+        // Handle play button click
+        playButton.addEventListener('click', function() {
+            video.play();
+            playButton.style.display = 'none';
+        });
+
+        // Handle play/pause button
+        playPauseBtn.addEventListener('click', function() {
+            if (video.paused) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        });
+
+        // Handle mute button
+        muteBtn.addEventListener('click', function() {
+            video.muted = !video.muted;
+            const icon = muteBtn.querySelector('i');
+            icon.className = video.muted ? 'fas fa-volume-mute text-lg' : 'fas fa-volume-up text-lg';
+        });
+
+        // Handle fullscreen button
+        fullscreenBtn.addEventListener('click', function() {
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.webkitRequestFullscreen) {
+                video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) {
+                video.msRequestFullscreen();
+            }
+        });
+
+        // Update play/pause button icon
+        video.addEventListener('play', function() {
+            const icon = playPauseBtn.querySelector('i');
+            icon.className = 'fas fa-pause text-xl';
+        });
+
+        video.addEventListener('pause', function() {
+            const icon = playPauseBtn.querySelector('i');
+            icon.className = 'fas fa-play text-xl';
+        });
+
+        // Update current time
+        video.addEventListener('timeupdate', function() {
+            currentTimeEl.textContent = formatTime(video.currentTime);
+        });
+
+        // Show play button when video ends
+        video.addEventListener('ended', function() {
+            playButton.style.display = 'flex';
+            const icon = playPauseBtn.querySelector('i');
+            icon.className = 'fas fa-play text-xl';
+        });
+
+        // Format time helper function
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Intersection Observer for lazy loading
+        const videoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Start loading video when it comes into view
+                    video.load();
+                    videoObserver.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '50px' });
+
+        // Observe the video container
+        const videoContainer = document.querySelector('.max-w-4xl.mx-auto');
+        if (videoContainer) {
+            videoObserver.observe(videoContainer);
         }
     });
 </script>

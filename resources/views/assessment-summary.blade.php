@@ -171,7 +171,7 @@
 
             <!-- Action Buttons -->
             <div class="text-center mt-8 space-x-4">
-                <button onclick="window.location.href='/assessments'" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                <button onclick="goBackToAssessments()" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
                     <i class="fas fa-list mr-2"></i>Back to Subjects
                 </button>
                 <button onclick="window.location.href='/dashboard'" class="bg-gray-100 text-gray-700 px-8 py-4 rounded-xl font-semibold hover:bg-gray-200 transition-all">
@@ -273,11 +273,8 @@
         loadAssessmentResults();
     });
 
-    // Clear assessment results when user navigates away from summary page
-    window.addEventListener('beforeunload', function() {
-        console.log('Clearing assessment results on page unload');
-        localStorage.removeItem('assessmentResults');
-    });
+    // Note: We don't clear assessmentResults on page unload to allow page refreshes
+    // Results are only cleared when user explicitly navigates away via buttons
 
     // Also clear results when user clicks back to assessments
     function goBackToAssessments() {
@@ -300,8 +297,8 @@
         }
         console.log('=== END ASSESSMENT RESULTS DEBUG ===');
         if (!resultsData) {
-            showAlert('Error', 'No assessment results found. Please try taking the assessment again.', 'error');
-            window.location.href = '/assessments';
+            showAlert('Error', 'No assessment results found. Redirecting to your transactions page.', 'error');
+            window.location.href = '/transactions';
             return;
         }
 
@@ -310,8 +307,8 @@
             displayResults();
         } catch (error) {
             console.error('Error parsing assessment results:', error);
-            showAlert('Error', 'Failed to load assessment results.', 'error');
-            window.location.href = '/assessments';
+            showAlert('Error', 'Failed to load assessment results. Redirecting to your transactions page.', 'error');
+            window.location.href = '/transactions';
         }
     }
 
@@ -326,8 +323,17 @@
         document.getElementById('assessmentId').textContent = assessmentResults.assessment_id || '-';
         document.getElementById('attemptId').textContent = assessmentResults.attempt_id || '-';
         
-        // Update submission time
-        const submissionTime = new Date().toLocaleString();
+        // Update submission time in Kenya style format (dd/mm/yyyy H:iA)
+        const now = new Date();
+        const day = now.getDate().toString().padStart(2, '0');
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const year = now.getFullYear();
+        const hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const displayHours = hours % 12 || 12;
+        
+        const submissionTime = `${day}/${month}/${year} ${displayHours}:${minutes}${ampm}`;
         document.getElementById('submissionTime').textContent = submissionTime;
 
         // Update summary data

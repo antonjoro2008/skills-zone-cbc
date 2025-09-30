@@ -713,6 +713,22 @@
     }
     
     function viewSubjectAssessments(subjectId) {
+        // Prevent multiple clicks
+        const button = event?.target;
+        if (button && button.disabled) {
+            return; // Already processing
+        }
+        
+        // Disable button and show loading state
+        if (button) {
+            button.disabled = true;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+            
+            // Store original state for reset
+            button.dataset.originalText = originalText;
+        }
+        
         // Navigate to assessments page for this subject
         window.location.href = `/assessments/subject/${subjectId}`;
     }

@@ -50,9 +50,30 @@
                     </div>
                 </div>
 
+                <!-- KNEC Header -->
+                <div class="mb-2">
+                    <div class="flex items-center mb-3">
+                        <img src="/images/knec-logo.png" alt="KNEC Logo" class="h-20 w-auto mr-4">
+                        <div class="text-left">
+                            <div class="text-base font-bold uppercase text-gray-900 mb-1">THE KENYA NATIONAL EXAMINATIONS BOARD</div>
+                            <div class="text-base font-bold uppercase text-gray-900">KENYA JUNIOR SCHOOL EDUCATION ASSESSMENT</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Paper Information -->
+                    <div class="text-xs font-bold uppercase text-gray-700 mb-3" id="paperInfo">
+                        <div class="mb-1">KJSEA</div>
+                        <div class="mb-1"><span id="paperCode">-</span></div>
+                        <div class="mb-1"><span id="paperTitle">-</span></div>
+                        <div class="mb-1">SAMPLE PAPER</div>
+                        <div class="mb-1">JANUARY 2025</div>
+                        <div class="mb-1"><span class="normal-case">Time: <span id="paperDuration">-</span></span></div>
+                    </div>
+                </div>
+
                 <!-- Instructions -->
                 <div class="mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-3">Instructions</h2>
+                    <h2 class="text-sm font-bold uppercase text-gray-900 mb-3">INSTRUCTIONS TO CANDIDATES</h2>
                     <div class="bg-gray-50 rounded-2xl p-4">
                         <div id="assessmentInstructions">
                             <p class="text-gray-700 mb-4">Please read the following instructions carefully before starting the assessment:</p>
@@ -65,6 +86,162 @@
                                 <li>Make sure you have a stable internet connection</li>
                             </ul>
                         </div>
+                    </div>
+                </div>
+
+                <!-- For Official Use Only -->
+                <div class="mb-4 text-center">
+                    <div class="font-bold text-gray-900 mb-1">For Official Use only</div>
+                    <div class="font-bold text-gray-900 mb-2">SECTION B</div>
+                </div>
+
+                <!-- Tasks Table -->
+                <div class="mb-8">
+                    <table class="w-full border-collapse border border-gray-400">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border border-gray-400 px-4 py-2 text-left font-bold">Task</th>
+                                <th class="border border-gray-400 px-4 py-2 text-left font-bold" colspan="6">Question Numbers</th>
+                                <th class="border border-gray-400 px-4 py-2 text-left font-bold">Total Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border border-gray-400 px-4 py-2 font-bold" rowspan="2">Task 1</td>
+                                <td class="border border-gray-400 px-4 py-2">
+                                    Question
+                                </td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2 font-bold">
+                                    Max. ___
+                                </td>
+                            </tr>
+                            <tr>
+                                    <td class="border border-gray-400 px-4 py-2">
+                                        Score
+                                    </td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-400 px-4 py-2 font-bold" rowspan="2">Task 2</td>
+                                <td class="border border-gray-400 px-4 py-2">
+                                    Question
+                                </td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2 font-bold">
+                                    Max. ___
+                                </td>
+                            </tr>
+                            <tr>
+                                    <td class="border border-gray-400 px-4 py-2">
+                                        Score
+                                    </td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-400 px-4 py-2 font-bold" rowspan="2">Task 3</td>
+                                <td class="border border-gray-400 px-4 py-2">
+                                    Question
+                                </td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2 font-bold">
+                                    Max. ___
+                                </td>
+                            </tr>
+                            <tr>
+                                    <td class="border border-gray-400 px-4 py-2">
+                                        Score
+                                    </td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-400 px-4 py-2 font-bold" rowspan="2">Task 4</td>
+                                <td class="border border-gray-400 px-4 py-2">
+                                    Question
+                                </td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2 font-bold">
+                                    Max. ___
+                                </td>
+                            </tr>
+                            <tr>
+                                    <td class="border border-gray-400 px-4 py-2">
+                                        Score
+                                    </td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-400 px-4 py-2 font-bold" rowspan="2">Task 5</td>
+                                <td class="border border-gray-400 px-4 py-2">
+                                    Question
+                                </td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2"></td>
+                                <td class="border border-gray-400 px-4 py-2 font-bold">
+                                    Max. ___
+                                </td>
+                            </tr>
+                            <tr>
+                                    <td class="border border-gray-400 px-4 py-2">
+                                        Score
+                                    </td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                                    <td class="border border-gray-400 px-4 py-2"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Footer Sections -->
+                <div class="mb-6 text-center">
+                    <div class="font-bold text-gray-900 mb-4 leading-5">
+                        Candidates should check the question paper to ascertain that all the pages are printed as indicated and that no questions are missing.
+                    </div>
+                    <div class="mt-3 text-xs text-gray-600">
+                        &copy; 2025, The Kenya National Examinations Council
                     </div>
                 </div>
 
@@ -580,6 +757,20 @@
         document.getElementById('assessmentTitle').textContent = currentAssessment.title || 'Assessment';
         document.getElementById('assessmentSubject').textContent = currentAssessment.subject ? currentAssessment.subject.name : 'General';
         
+        // Update paper information
+        document.getElementById('paperCode').textContent = currentAssessment.paper_code || '-';
+        document.getElementById('paperTitle').textContent = currentAssessment.title || '-';
+        
+        // Format duration - convert to Hrs Mins if more than 1 hour
+        const durationMinutes = currentAssessment.duration_minutes || 0;
+        let durationText = `${durationMinutes} min`;
+        if (durationMinutes >= 60) {
+            const hours = Math.floor(durationMinutes / 60);
+            const minutes = durationMinutes % 60;
+            durationText = minutes > 0 ? `${hours} Hr ${minutes} Min` : `${hours} Hr`;
+        }
+        document.getElementById('paperDuration').textContent = durationText;
+        
         // Show remaining time if in progress, otherwise show total duration
         if (isInProgress && remainingTime > 0) {
             const minutes = Math.floor(remainingTime / 60);
@@ -599,6 +790,7 @@
 
         // Update start button text and icon
         const startBtn = document.getElementById('startAssessmentBtn');
+        
         if (isInProgress && remainingTime > 0) {
             startBtn.innerHTML = '<i class="fas fa-play mr-3"></i>Resume Assessment';
         } else {
@@ -756,8 +948,8 @@
                 // Load first question
                 loadQuestion();
 
-                // Show appropriate message based on status
-                if (data.data.status === 'in_progress') {
+                // Show appropriate message based on whether user is resuming or starting fresh
+                if (isResuming) {
                     showAssessmentAlert('Resuming Assessment', 'Continuing your previous assessment session.', 'info');
                 } else {
                     showAssessmentAlert('Assessment Started', 'Assessment started successfully! Tokens will be deducted based on time spent.', 'success');
@@ -1212,14 +1404,34 @@
         submitAssessment();
     }
 
+    // Track submission state to prevent double submissions
+    let isSubmitting = false;
+
     async function submitAssessment() {
+        // Prevent double submissions
+        if (isSubmitting) {
+            console.log('Assessment submission already in progress, ignoring duplicate request');
+            return;
+        }
+
         try {
+            isSubmitting = true;
+            
+            // Disable submit button and show loading state
+            const submitBtn = document.getElementById('submitAssessmentBtn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i>Submitting...';
+                submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+            }
+
             clearInterval(timerInterval);
             // Don't clear assessment data yet - we need it for submission
 
             const token = localStorage.getItem('token');
             if (!token) {
                 showAssessmentAlert('Error', 'Authentication required', 'error');
+                resetSubmissionState();
                 return;
             }
 
@@ -1232,6 +1444,7 @@
             if (!userId) {
                 console.error('User ID not found in localStorage. Available keys:', Object.keys(currentUser));
                 showAssessmentAlert('Error', 'User information not found. Please log in again.', 'error');
+                resetSubmissionState();
                 return;
             }
 
@@ -1358,10 +1571,22 @@
                 window.location.href = `/assessment-summary/${currentAssessment.id}`;
             } else {
                 showAssessmentAlert('Error', data.message || 'Failed to submit assessment', 'error');
+                resetSubmissionState();
             }
         } catch (error) {
             console.error('Error submitting assessment:', error);
             showAssessmentAlert('Error', 'Failed to submit assessment. Please try again.', 'error');
+            resetSubmissionState();
+        }
+    }
+
+    function resetSubmissionState() {
+        isSubmitting = false;
+        const submitBtn = document.getElementById('submitAssessmentBtn');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-check mr-3"></i>Submit Assessment';
+            submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
         }
     }
 

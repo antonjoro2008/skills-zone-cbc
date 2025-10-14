@@ -104,14 +104,14 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">Grade Level *</label>
                     <select id="learnerGradeLevel" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">Select Grade Level</option>
-                        <option value="Grade 1">Grade 1</option>
-                        <option value="Grade 2">Grade 2</option>
-                        <option value="Grade 3">Grade 3</option>
-                        <option value="Grade 4">Grade 4</option>
-                        <option value="Grade 5">Grade 5</option>
-                        <option value="Grade 6">Grade 6</option>
-                        <option value="Grade 7">Grade 7</option>
-                        <option value="Grade 8">Grade 8</option>
+                        <!-- <option value="Grade 1">Grade 1</option> -->
+                        <!-- <option value="Grade 2">Grade 2</option> -->
+                        <!-- <option value="Grade 3">Grade 3</option> -->
+                        <!-- <option value="Grade 4">Grade 4</option> -->
+                        <!-- <option value="Grade 5">Grade 5</option> -->
+                        <!-- <option value="Grade 6">Grade 6</option> -->
+                        <!-- <option value="Grade 7">Grade 7</option> -->
+                        <!-- <option value="Grade 8">Grade 8</option> -->
                         <option value="Grade 9">Grade 9</option>
                     </select>
                 </div>

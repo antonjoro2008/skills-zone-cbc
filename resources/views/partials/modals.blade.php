@@ -123,14 +123,14 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Grade Level <span class="text-red-500">*</span></label>
                         <select id="registerGradeLevel" class="form-input w-full px-4 py-3 rounded-xl">
                             <option value="">Select your grade level</option>
-                            <option value="Grade 1">Grade 1</option>
-                            <option value="Grade 2">Grade 2</option>
-                            <option value="Grade 3">Grade 3</option>
-                            <option value="Grade 4">Grade 4</option>
-                            <option value="Grade 5">Grade 5</option>
-                            <option value="Grade 6">Grade 6</option>
-                            <option value="Grade 7">Grade 7</option>
-                            <option value="Grade 8">Grade 8</option>
+                            <!-- <option value="Grade 1">Grade 1</option> -->
+                            <!-- <option value="Grade 2">Grade 2</option> -->
+                            <!-- <option value="Grade 3">Grade 3</option> -->
+                            <!-- <option value="Grade 4">Grade 4</option> -->
+                            <!-- <option value="Grade 5">Grade 5</option> -->
+                            <!-- <option value="Grade 6">Grade 6</option> -->
+                            <!-- <option value="Grade 7">Grade 7</option> -->
+                            <!-- <option value="Grade 8">Grade 8</option> -->
                             <option value="Grade 9">Grade 9</option>
                         </select>
                         <p class="text-xs text-gray-500 mt-1">Your current grade level</p>
@@ -551,14 +551,14 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Grade Level <span class="text-red-500">*</span></label>
                         <select id="learnerGradeLevel" class="form-input w-full px-4 py-3 rounded-xl" required>
                             <option value="">Select grade level</option>
-                            <option value="Grade 1">Grade 1</option>
-                            <option value="Grade 2">Grade 2</option>
-                            <option value="Grade 3">Grade 3</option>
-                            <option value="Grade 4">Grade 4</option>
-                            <option value="Grade 5">Grade 5</option>
-                            <option value="Grade 6">Grade 6</option>
-                            <option value="Grade 7">Grade 7</option>
-                            <option value="Grade 8">Grade 8</option>
+                            <!-- <option value="Grade 1">Grade 1</option> -->
+                            <!-- <option value="Grade 2">Grade 2</option> -->
+                            <!-- <option value="Grade 3">Grade 3</option> -->
+                            <!-- <option value="Grade 4">Grade 4</option> -->
+                            <!-- <option value="Grade 5">Grade 5</option> -->
+                            <!-- <option value="Grade 6">Grade 6</option> -->
+                            <!-- <option value="Grade 7">Grade 7</option> -->
+                            <!-- <option value="Grade 8">Grade 8</option> -->
                             <option value="Grade 9">Grade 9</option>
                         </select>
                         <p class="text-xs text-gray-500 mt-1">Current grade level</p>

@@ -138,18 +138,18 @@
                         <label for="profileGrade" class="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
                         <select id="profileGrade" name="grade_level" class="form-input w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-[#8FC340]/20 focus:border-[#8FC340] outline-none transition-all duration-300">
                             <option value="">Select grade level</option>
-                            <option value="Grade 1">Grade 1</option>
-                            <option value="Grade 2">Grade 2</option>
-                            <option value="Grade 3">Grade 3</option>
-                            <option value="Grade 4">Grade 4</option>
-                            <option value="Grade 5">Grade 5</option>
-                            <option value="Grade 6">Grade 6</option>
-                            <option value="Grade 7">Grade 7</option>
-                            <option value="Grade 8">Grade 8</option>
+                            <!-- <option value="Grade 1">Grade 1</option> -->
+                            <!-- <option value="Grade 2">Grade 2</option> -->
+                            <!-- <option value="Grade 3">Grade 3</option> -->
+                            <!-- <option value="Grade 4">Grade 4</option> -->
+                            <!-- <option value="Grade 5">Grade 5</option> -->
+                            <!-- <option value="Grade 6">Grade 6</option> -->
+                            <!-- <option value="Grade 7">Grade 7</option> -->
+                            <!-- <option value="Grade 8">Grade 8</option> -->
                             <option value="Grade 9">Grade 9</option>
-                            <option value="Grade 10">Grade 10</option>
-                            <option value="Grade 11">Grade 11</option>
-                            <option value="Grade 12">Grade 12</option>
+                            <!-- <option value="Grade 10">Grade 10</option> -->
+                            <!-- <option value="Grade 11">Grade 11</option> -->
+                            <!-- <option value="Grade 12">Grade 12</option> -->
                         </select>
                     </div>
                 </div>

@@ -75,93 +75,6 @@
             </div>
         </div>
 
-        <!-- Features Section -->
-        <div class="py-24 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
-            <!-- Background decoration -->
-            <div class="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-blue-50 to-transparent opacity-50"></div>
-            
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 relative z-10">
-                <div class="text-center mb-20">
-                    <div class="inline-flex items-center bg-blue-100 rounded-full px-4 py-2 mb-4">
-                        <i class="fas fa-magic text-blue-600 mr-2"></i>
-                        <span class="text-blue-600 font-medium text-sm">Why Choose Gravity CBC Assessments?</span>
-                    </div>
-                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Features that make us
-                        <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">extraordinary</span>
-                    </h2>
-                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">Discover the affordable, accessible features that make us the leading assessment platform for Competency Based Curriculum Based Curriculum learners practicing with us</p>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="group bg-white rounded-3xl p-8 shadow-lg card-hover border border-gray-100 hover:border-blue-200">
-                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-brain"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-4 text-gray-900 group-hover:text-blue-600 transition-colors">Token-Based Access</h3>
-                        <p class="text-gray-600 leading-relaxed">Pay only for what you use with our flexible token system. No monthly fees, just affordable per-assessment pricing.</p>
-                        <div class="mt-6 text-blue-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                            <a href="{{ route('pricing') }}">Learn more →</a>
-                        </div>
-                    </div>
-                    
-                    <div class="group bg-white rounded-3xl p-8 shadow-lg card-hover border border-gray-100 hover:border-green-200">
-                        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-certificate"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-4 text-gray-900 group-hover:text-green-600 transition-colors">Affordable Learning</h3>
-                        <p class="text-gray-600 leading-relaxed">Designed for CBC Based learners with competitive pricing and flexible payment options.</p>
-                        <div class="mt-6 text-green-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                            <a href="{{ route('subjects') }}">View certificates →</a>
-                        </div>
-                    </div>
-                    
-                    <div class="group bg-white rounded-3xl p-8 shadow-lg card-hover border border-gray-100 hover:border-purple-200">
-                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-4 text-gray-900 group-hover:text-purple-600 transition-colors">Progress Tracking</h3>
-                        <p class="text-gray-600 leading-relaxed">Detailed analytics and progress reports help you identify strengths and areas for improvement.</p>
-                        <div class="mt-6 text-purple-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                            <a href="{{ route('dashboard') }}">See analytics →</a>
-                        </div>
-                    </div>
-                    
-                    <div class="group bg-white rounded-3xl p-8 shadow-lg card-hover border border-gray-100 hover:border-orange-200">
-                        <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-mobile-alt"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-4 text-gray-900 group-hover:text-orange-600 transition-colors">Mobile Friendly</h3>
-                        <p class="text-gray-600 leading-relaxed">Take assessments anywhere, anytime on any device with our responsive platform.</p>
-                        <div class="mt-6 text-orange-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                            <a href="{{ route('subjects') }}">Try mobile →</a>
-                        </div>
-                    </div>
-                    
-                    <div class="group bg-white rounded-3xl p-8 shadow-lg card-hover border border-gray-100 hover:border-red-200">
-                        <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-4 text-gray-900 group-hover:text-red-600 transition-colors">Secure & Reliable</h3>
-                        <p class="text-gray-600 leading-relaxed">Bank-level security ensures your data and assessment results are always protected.</p>
-                        <div class="mt-6 text-red-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                            <a href="{{ route('privacy') }}">Security details →</a>
-                        </div>
-                    </div>
-                    
-                    <div class="group bg-white rounded-3xl p-8 shadow-lg card-hover border border-gray-100 hover:border-teal-200">
-                        <div class="w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-4 text-gray-900 group-hover:text-teal-600 transition-colors">Expert Support</h3>
-                        <p class="text-gray-600 leading-relaxed">Get help from our team of assessment experts and career counselors.</p>
-                        <div class="mt-6 text-teal-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                            <a href="{{ route('help') }}">Contact support →</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Navigation Guide Video Section -->
         <div class="py-24 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 relative overflow-hidden">
             <!-- Background decoration -->
@@ -265,6 +178,93 @@
                                 <i class="fas fa-closed-captioning mr-2"></i>
                                 <span>Subtitles Available</span>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="py-24 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
+            <!-- Background decoration -->
+            <div class="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-blue-50 to-transparent opacity-50"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 relative z-10">
+                <div class="text-center mb-20">
+                    <div class="inline-flex items-center bg-blue-100 rounded-full px-4 py-2 mb-4">
+                        <i class="fas fa-magic text-blue-600 mr-2"></i>
+                        <span class="text-blue-600 font-medium text-sm">Why Choose Gravity CBC Assessments?</span>
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Features that make us
+                        <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">extraordinary</span>
+                    </h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">Discover the affordable, accessible features that make us the leading assessment platform for Competency Based Curriculum Based Curriculum learners practicing with us</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="group bg-white rounded-3xl p-8 shadow-lg card-hover border border-gray-100 hover:border-blue-200">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 text-gray-900 group-hover:text-blue-600 transition-colors">Token-Based Access</h3>
+                        <p class="text-gray-600 leading-relaxed">Pay only for what you use with our flexible token system. No monthly fees, just affordable per-assessment pricing.</p>
+                        <div class="mt-6 text-blue-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                            <a href="{{ route('pricing') }}">Learn more →</a>
+                        </div>
+                    </div>
+                    
+                    <div class="group bg-white rounded-3xl p-8 shadow-lg card-hover border border-gray-100 hover:border-green-200">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-certificate"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 text-gray-900 group-hover:text-green-600 transition-colors">Affordable Learning</h3>
+                        <p class="text-gray-600 leading-relaxed">Designed for CBC Based learners with competitive pricing and flexible payment options.</p>
+                        <div class="mt-6 text-green-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                            <a href="{{ route('subjects') }}">View certificates →</a>
+                        </div>
+                    </div>
+                    
+                    <div class="group bg-white rounded-3xl p-8 shadow-lg card-hover border border-gray-100 hover:border-purple-200">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 text-gray-900 group-hover:text-purple-600 transition-colors">Progress Tracking</h3>
+                        <p class="text-gray-600 leading-relaxed">Detailed analytics and progress reports help you identify strengths and areas for improvement.</p>
+                        <div class="mt-6 text-purple-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                            <a href="{{ route('dashboard') }}">See analytics →</a>
+                        </div>
+                    </div>
+                    
+                    <div class="group bg-white rounded-3xl p-8 shadow-lg card-hover border border-gray-100 hover:border-orange-200">
+                        <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 text-gray-900 group-hover:text-orange-600 transition-colors">Mobile Friendly</h3>
+                        <p class="text-gray-600 leading-relaxed">Take assessments anywhere, anytime on any device with our responsive platform.</p>
+                        <div class="mt-6 text-orange-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                            <a href="{{ route('subjects') }}">Try mobile →</a>
+                        </div>
+                    </div>
+                    
+                    <div class="group bg-white rounded-3xl p-8 shadow-lg card-hover border border-gray-100 hover:border-red-200">
+                        <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 text-gray-900 group-hover:text-red-600 transition-colors">Secure & Reliable</h3>
+                        <p class="text-gray-600 leading-relaxed">Bank-level security ensures your data and assessment results are always protected.</p>
+                        <div class="mt-6 text-red-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                            <a href="{{ route('privacy') }}">Security details →</a>
+                        </div>
+                    </div>
+                    
+                    <div class="group bg-white rounded-3xl p-8 shadow-lg card-hover border border-gray-100 hover:border-teal-200">
+                        <div class="w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 text-gray-900 group-hover:text-teal-600 transition-colors">Expert Support</h3>
+                        <p class="text-gray-600 leading-relaxed">Get help from our team of assessment experts and career counselors.</p>
+                        <div class="mt-6 text-teal-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                            <a href="{{ route('help') }}">Contact support →</a>
                         </div>
                     </div>
                 </div>

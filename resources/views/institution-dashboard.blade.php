@@ -861,14 +861,14 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Grade Level <span class="text-red-500">*</span></label>
                                 <select id="editLearnerGradeLevel" class="form-input w-full px-3 py-2.5 sm:py-2 rounded-lg text-sm" required>
                                     <option value="">Select grade level</option>
-                                    <option value="Grade 1" ${gradeLevel === 'Grade 1' ? 'selected' : ''}>Grade 1</option>
-                                    <option value="Grade 2" ${gradeLevel === 'Grade 2' ? 'selected' : ''}>Grade 2</option>
-                                    <option value="Grade 3" ${gradeLevel === 'Grade 3' ? 'selected' : ''}>Grade 3</option>
-                                    <option value="Grade 4" ${gradeLevel === 'Grade 4' ? 'selected' : ''}>Grade 4</option>
-                                    <option value="Grade 5" ${gradeLevel === 'Grade 5' ? 'selected' : ''}>Grade 5</option>
-                                    <option value="Grade 6" ${gradeLevel === 'Grade 6' ? 'selected' : ''}>Grade 6</option>
-                                    <option value="Grade 7" ${gradeLevel === 'Grade 7' ? 'selected' : ''}>Grade 7</option>
-                                    <option value="Grade 8" ${gradeLevel === 'Grade 8' ? 'selected' : ''}>Grade 8</option>
+                                    <!-- <option value="Grade 1" ${gradeLevel === 'Grade 1' ? 'selected' : ''}>Grade 1</option> -->
+                                    <!-- <option value="Grade 2" ${gradeLevel === 'Grade 2' ? 'selected' : ''}>Grade 2</option> -->
+                                    <!-- <option value="Grade 3" ${gradeLevel === 'Grade 3' ? 'selected' : ''}>Grade 3</option> -->
+                                    <!-- <option value="Grade 4" ${gradeLevel === 'Grade 4' ? 'selected' : ''}>Grade 4</option> -->
+                                    <!-- <option value="Grade 5" ${gradeLevel === 'Grade 5' ? 'selected' : ''}>Grade 5</option> -->
+                                    <!-- <option value="Grade 6" ${gradeLevel === 'Grade 6' ? 'selected' : ''}>Grade 6</option> -->
+                                    <!-- <option value="Grade 7" ${gradeLevel === 'Grade 7' ? 'selected' : ''}>Grade 7</option> -->
+                                    <!-- <option value="Grade 8" ${gradeLevel === 'Grade 8' ? 'selected' : ''}>Grade 8</option> -->
                                     <option value="Grade 9" ${gradeLevel === 'Grade 9' ? 'selected' : ''}>Grade 9</option>
                                 </select>
                             </div>

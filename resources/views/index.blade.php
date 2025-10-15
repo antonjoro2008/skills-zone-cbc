@@ -330,10 +330,11 @@
         
         if (user && token) {
             // User is logged in
-            if (buyTokensBtn) {
-                // Show the Buy Tokens button
-                buyTokensBtn.classList.remove('hidden');
-            }
+            // Buy Tokens button is hidden for pilot phase
+            // if (buyTokensBtn) {
+            //     // Show the Buy Tokens button
+            //     buyTokensBtn.classList.remove('hidden');
+            // }
             if (joinFreeBtn) {
                 // Hide the Join Free button
                 joinFreeBtn.style.display = 'none';

@@ -42,9 +42,10 @@
             
             <!-- Mobile menu button and auth buttons -->
             <div class="md:hidden flex items-center space-x-1">
-                <button class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 px-2 py-1.5 rounded-full text-xs font-medium transition-all shadow-lg hover:shadow-xl hover:scale-105" onclick="showBuyTokensModal()" id="buyTokensBtnMobile" style="display:none;">
+                <!-- Buy Tokens button hidden for pilot phase -->
+                <!-- <button class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 px-2 py-1.5 rounded-full text-xs font-medium transition-all shadow-lg hover:shadow-xl hover:scale-105" onclick="showBuyTokensModal()" id="buyTokensBtnMobile" style="display:none;">
                     <i class="fas fa-coins mr-1"></i>Buy Tokens
-                </button>
+                </button> -->
                 <button class="bg-white text-[#8FC340] border border-[#8FC340] hover:bg-[#8FC340]/10 px-2 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105" onclick="showModal('loginModal')" id="loginBtnMobile">
                     <i class="fas fa-sign-in-alt mr-1"></i>Login
                 </button>
@@ -57,9 +58,10 @@
             </div>
             
             <div class="hidden md:flex items-center space-x-4">
-                <button class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 px-6 py-2 rounded-full text-sm font-medium transition-all shadow-lg hover:shadow-xl hover:scale-105" onclick="showBuyTokensModal()" id="buyTokensBtn" style="display:none;">
+                <!-- Buy Tokens button hidden for pilot phase -->
+                <!-- <button class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 px-6 py-2 rounded-full text-sm font-medium transition-all shadow-lg hover:shadow-xl hover:scale-105" onclick="showBuyTokensModal()" id="buyTokensBtn" style="display:none;">
                     <i class="fas fa-coins mr-2"></i>Buy Tokens
-                </button>
+                </button> -->
                 <button class="bg-white text-[#8FC340] border-2 border-[#8FC340] hover:bg-[#8FC340]/10 px-6 py-2 rounded-full text-sm font-medium transition-all hover:scale-105" onclick="showModal('loginModal')" id="loginBtn">
                     <i class="fas fa-sign-in-alt mr-2"></i>Login
                 </button>

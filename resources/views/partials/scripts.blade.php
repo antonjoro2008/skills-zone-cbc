@@ -929,8 +929,8 @@
                 if (registerBtn) registerBtn.style.display = 'none';
                 if (logoutBtn) logoutBtn.style.display = 'block';
                 
-                // Hide Buy Tokens for institutional learners
-                if (buyTokensBtn) buyTokensBtn.style.display = isInstitutionalLearner ? 'none' : 'block';
+                // Hide Buy Tokens for institutional learners and pilot phase
+                if (buyTokensBtn) buyTokensBtn.style.display = 'none'; // Hidden for pilot phase
                 if (transactionsLink) transactionsLink.style.display = isInstitutionalLearner ? 'none' : 'block';
                 if (assessmentsLink) assessmentsLink.style.display = 'block';
                 if (profileLink) profileLink.style.display = 'block';
@@ -939,8 +939,8 @@
                 if (registerBtnMobile) registerBtnMobile.style.display = 'none';
                 if (logoutBtnMobile) logoutBtnMobile.style.display = 'block';
                 
-                // Hide Buy Tokens for institutional learners (mobile)
-                if (buyTokensBtnMobile) buyTokensBtnMobile.style.display = isInstitutionalLearner ? 'none' : 'block';
+                // Hide Buy Tokens for institutional learners and pilot phase (mobile)
+                if (buyTokensBtnMobile) buyTokensBtnMobile.style.display = 'none'; // Hidden for pilot phase
                 if (transactionsLinkMobile) transactionsLinkMobile.style.display = isInstitutionalLearner ? 'none' : 'block';
                 if (assessmentsLinkMobile) assessmentsLinkMobile.style.display = 'block';
                 if (profileLinkMobile) profileLinkMobile.style.display = 'block';

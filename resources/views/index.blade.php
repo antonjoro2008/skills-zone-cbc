@@ -287,16 +287,16 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                     <div class="stat-counter rounded-2xl p-6 text-center group hover:scale-105 transition-all duration-300">
                         <div class="text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text mb-2 group-hover:scale-110 transition-transform">
-                            50K+
+                            900+
                         </div>
-                        <p class="text-gray-300 font-medium">Learners Assessed</p>
+                        <p class="text-gray-300 font-medium">Learners</p>
                         <div class="w-12 h-1 bg-gradient-to-r from-yellow-400 to-orange-400 mx-auto mt-3 rounded-full"></div>
                     </div>
                     <div class="stat-counter rounded-2xl p-6 text-center group hover:scale-105 transition-all duration-300">
                         <div class="text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text mb-2 group-hover:scale-110 transition-transform">
                             200+
                         </div>
-                        <p class="text-gray-300 font-medium">Assessment Categories</p>
+                        <p class="text-gray-300 font-medium">Active Users</p>
                         <div class="w-12 h-1 bg-gradient-to-r from-green-400 to-blue-400 mx-auto mt-3 rounded-full"></div>
                     </div>
                     <div class="stat-counter rounded-2xl p-6 text-center group hover:scale-105 transition-all duration-300">

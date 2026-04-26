@@ -1661,14 +1661,17 @@
             const H = doc.internal.pageSize.getHeight();
             const M = 14;
 
-            // Brand strip (Gravity CBC colours)
+            // Brand strip: two colour blocks + plain light panel on the right for the logo
             const stripH = 18;
             doc.setFillColor(236, 40, 52);
             doc.rect(0, 0, W / 3, stripH, 'F');
             doc.setFillColor(143, 195, 64);
             doc.rect(W / 3, 0, W / 3, stripH, 'F');
-            doc.setFillColor(227, 104, 167);
+            doc.setFillColor(252, 252, 252);
             doc.rect((2 * W) / 3, 0, W / 3, stripH, 'F');
+            doc.setDrawColor(226, 232, 240);
+            doc.setLineWidth(0.2);
+            doc.line((2 * W) / 3, 0, (2 * W) / 3, stripH);
             doc.setTextColor(255, 255, 255);
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(12);
@@ -1684,7 +1687,30 @@
                         r.onerror = reject;
                         r.readAsDataURL(blob);
                     });
-                    doc.addImage(dataUrl, 'PNG', W - M - 24, 3, 20, 12);
+                    const nat = await new Promise((resolve) => {
+                        const img = new Image();
+                        img.onload = () => resolve({ w: img.naturalWidth, h: img.naturalHeight });
+                        img.onerror = () => resolve(null);
+                        img.src = dataUrl;
+                    });
+                    const zonePad = 2;
+                    const zoneLeft = (2 * W) / 3 + zonePad;
+                    const zoneW = W / 3 - 2 * zonePad;
+                    const zoneTop = zonePad;
+                    const zoneH = stripH - 2 * zonePad;
+                    if (nat && nat.w > 0 && nat.h > 0) {
+                        const ar = nat.w / nat.h;
+                        let drawW = zoneW;
+                        let drawH = drawW / ar;
+                        if (drawH > zoneH) {
+                            drawH = zoneH;
+                            drawW = drawH * ar;
+                        }
+                        const lx = zoneLeft + (zoneW - drawW) / 2;
+                        const ly = zoneTop + (zoneH - drawH) / 2;
+                        doc.addImage(dataUrl, 'PNG', lx, ly, drawW, drawH);
+                    }
+                    // If natural size could not be read, skip logo (avoids a stretched placeholder).
                 }
             } catch (e) { /* optional logo */ }
 

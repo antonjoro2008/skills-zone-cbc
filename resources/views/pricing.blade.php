@@ -115,7 +115,7 @@
                 </div>
                 <ul class="space-y-3 mb-8">
                     <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i>Up to 1,000 students</li>
-                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i>Advanced assessments</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i>In-depth assessments</li>
                     <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i>Detailed analytics</li>
                     <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i>Priority support</li>
                     <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i>Custom branding</li>
@@ -139,7 +139,7 @@
                 <ul class="space-y-3 mb-8">
                     <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i>Unlimited students</li>
                     <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i>All assessment types</li>
-                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i>Advanced reporting</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i>Detailed reporting</li>
                     <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i>Dedicated support</li>
                     <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i>API integration</li>
                     <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i>On-site training</li>

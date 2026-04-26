@@ -70,7 +70,7 @@
                         <i class="fas fa-trophy text-orange-600 text-xl"></i>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-500">Average Score</p>
+                        <p class="text-sm text-gray-500">Average CBE level</p>
                         <p class="text-2xl font-bold text-gray-900" id="averageScore">
                             <i class="fas fa-spinner fa-spin text-gray-400"></i>
                         </p>
@@ -104,10 +104,13 @@
                         Start New Assessment
                     </a>
                     
+                    <!-- Payment / tokens intentionally hidden during pilot (enable later) -->
+                    <!--
                     <button id="dashboardBuyTokensBtn" onclick="showBuyTokensModal()" class="block w-full bg-white border-2 border-blue-600 text-blue-600 p-4 rounded-xl text-center font-semibold hover:bg-blue-50 transition-all">
                         <i class="fas fa-coins mr-2"></i>
                         Buy More Tokens
                     </button>
+                    -->
                     
                     <a href="{{ route('transactions') }}" class="block w-full bg-white border-2 border-gray-300 text-gray-700 p-4 rounded-xl text-center font-semibold hover:bg-gray-50 transition-all">
                         <i class="fas fa-history mr-2"></i>
@@ -328,7 +331,9 @@
         }
         
         if (averageScoreElement && dashboard.assessment_stats) {
-            averageScoreElement.textContent = `${dashboard.assessment_stats.average_score || 0}%`;
+            const avg = dashboard.assessment_stats.average_score || 0;
+            const c = (typeof window.getCompetencyFromPercent === 'function') ? window.getCompetencyFromPercent(avg) : null;
+            averageScoreElement.textContent = c ? `${c.displayFull} · ${avg}% avg` : `${avg}%`;
         }
     }
     

@@ -38,10 +38,13 @@
                 <i class="fas fa-plus"></i>
                 <span>Add Learner</span>
             </button>
+            <!-- Payment / tokens intentionally hidden during pilot (enable later) -->
+            <!--
             <button onclick="showBuyTokensModal()" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all flex items-center space-x-2">
                 <i class="fas fa-coins"></i>
                 <span>Buy Tokens</span>
             </button>
+            -->
         </div>
 
         <!-- Learners Table -->

@@ -101,6 +101,62 @@
             return fallbackMessage;
         }
 
+        /**
+         * Kenya CBC/CBE performance levels — full wording plus acronym (stakeholder standard).
+         * BE Below Expectation · AE Approaching Expectation · ME Meeting Expectation · EE Exceeding Expectation
+         */
+        function getCompetencyFromPercent(percent) {
+            const p = Math.max(0, Math.min(100, Number(percent) || 0));
+
+            if (p < 50) {
+                return {
+                    code: 'BE',
+                    label: 'Below Expectation',
+                    descriptor: 'Below Expectation (BE)',
+                    displayFull: 'Below Expectation (BE)',
+                    feedback: 'Prioritise foundational skills and targeted support before the next assessment.',
+                };
+            }
+
+            if (p <= 70) {
+                return {
+                    code: 'AE',
+                    label: 'Approaching Expectation',
+                    descriptor: 'Approaching Expectation (AE)',
+                    displayFull: 'Approaching Expectation (AE)',
+                    feedback: 'On the right track; consolidate gaps and practise applied tasks.',
+                };
+            }
+
+            if (p <= 85) {
+                return {
+                    code: 'ME',
+                    label: 'Meeting Expectation',
+                    descriptor: 'Meeting Expectation (ME)',
+                    displayFull: 'Meeting Expectation (ME)',
+                    feedback: 'Meets grade-level competency; extend depth and independence.',
+                };
+            }
+
+            return {
+                code: 'EE',
+                label: 'Exceeding Expectation',
+                descriptor: 'Exceeding Expectation (EE)',
+                displayFull: 'Exceeding Expectation (EE)',
+                feedback: 'Above grade-level evidence; offer enrichment and leadership of peers.',
+            };
+        }
+
+        function formatCompetencyLevel(percent) {
+            const c = getCompetencyFromPercent(percent);
+            const p = Math.max(0, Math.min(100, Number(percent) || 0));
+            return `${c.displayFull} · ${p.toFixed(1)}% · ${c.feedback}`;
+        }
+
+        // Expose helpers for page scripts
+        window.getCompetencyFromPercent = getCompetencyFromPercent;
+        window.formatCompetencyLevel = formatCompetencyLevel;
+
         // Token Balance Functions
         async function fetchTokenBalance() {
             try {
@@ -641,6 +697,10 @@
                     // Redirect based on user type
                     if (currentUser.user_type === 'institution') {
                         window.location.href = '/institution-dashboard';
+                    } else if (currentUser.user_type === 'teacher') {
+                        window.location.href = '/teacher-dashboard';
+                    } else if (currentUser.user_type === 'parent') {
+                        window.location.href = '/parent-dashboard';
                     } else {
                         window.location.href = '/dashboard';
                     }
@@ -723,9 +783,12 @@
                     
                     // Small delay to ensure UI updates before redirect
                     setTimeout(() => {
-                        // Redirect based on user type
                         if (currentUser.user_type === 'institution') {
                             window.location.href = '/institution-dashboard';
+                        } else if (currentUser.user_type === 'teacher') {
+                            window.location.href = '/teacher-dashboard';
+                        } else if (currentUser.user_type === 'parent') {
+                            window.location.href = '/parent-dashboard';
                         } else {
                             window.location.href = '/dashboard';
                         }
@@ -894,10 +957,12 @@
             const buyTokensBtn = document.getElementById('buyTokensBtn');
             const dashboardLink = document.getElementById('dashboardLink');
             const institutionDashboardLink = document.getElementById('institutionDashboardLink');
+            const teacherDashboardLink = document.getElementById('teacherDashboardLink');
             const parentDashboardLink = document.getElementById('parentDashboardLink');
             const transactionsLink = document.getElementById('transactionsLink');
             const assessmentsLink = document.getElementById('assessmentsLink');
             const profileLink = document.getElementById('profileLink');
+            const sampleReportPdfBtn = document.getElementById('sampleReportPdfBtn');
             
             const loginBtnMobile = document.getElementById('loginBtnMobile');
             const registerBtnMobile = document.getElementById('registerBtnMobile');
@@ -905,10 +970,12 @@
             const buyTokensBtnMobile = document.getElementById('buyTokensBtnMobile');
             const dashboardLinkMobile = document.getElementById('dashboardLinkMobile');
             const institutionDashboardLinkMobile = document.getElementById('institutionDashboardLinkMobile');
+            const teacherDashboardLinkMobile = document.getElementById('teacherDashboardLinkMobile');
             const parentDashboardLinkMobile = document.getElementById('parentDashboardLinkMobile');
             const transactionsLinkMobile = document.getElementById('transactionsLinkMobile');
             const assessmentsLinkMobile = document.getElementById('assessmentsLinkMobile');
             const profileLinkMobile = document.getElementById('profileLinkMobile');
+            const sampleReportPdfBtnMobile = document.getElementById('sampleReportPdfBtnMobile');
             
             // Ensure currentUser is properly set and not just an empty object
             // Check for any valid identifier: email, phone_number, or admission_number
@@ -923,15 +990,18 @@
             if (isLoggedIn) {
                 // Check if user is an institutional learner (student with institution_id)
                 const isInstitutionalLearner = currentUser.user_type === 'student' && currentUser.institution_id;
+                const hidePurchasesPilot = isInstitutionalLearner || currentUser.user_type === 'teacher';
                 
                 // User is logged in
                 if (loginBtn) loginBtn.style.display = 'none';
                 if (registerBtn) registerBtn.style.display = 'none';
                 if (logoutBtn) logoutBtn.style.display = 'block';
+                if (sampleReportPdfBtn) sampleReportPdfBtn.style.display = 'inline-flex';
+                if (sampleReportPdfBtnMobile) sampleReportPdfBtnMobile.style.display = 'block';
                 
                 // Hide Buy Tokens for institutional learners and pilot phase
                 if (buyTokensBtn) buyTokensBtn.style.display = 'none'; // Hidden for pilot phase
-                if (transactionsLink) transactionsLink.style.display = isInstitutionalLearner ? 'none' : 'block';
+                if (transactionsLink) transactionsLink.style.display = hidePurchasesPilot ? 'none' : 'block';
                 if (assessmentsLink) assessmentsLink.style.display = 'block';
                 if (profileLink) profileLink.style.display = 'block';
                 
@@ -941,7 +1011,7 @@
                 
                 // Hide Buy Tokens for institutional learners and pilot phase (mobile)
                 if (buyTokensBtnMobile) buyTokensBtnMobile.style.display = 'none'; // Hidden for pilot phase
-                if (transactionsLinkMobile) transactionsLinkMobile.style.display = isInstitutionalLearner ? 'none' : 'block';
+                if (transactionsLinkMobile) transactionsLinkMobile.style.display = hidePurchasesPilot ? 'none' : 'block';
                 if (assessmentsLinkMobile) assessmentsLinkMobile.style.display = 'block';
                 if (profileLinkMobile) profileLinkMobile.style.display = 'block';
                 
@@ -949,6 +1019,17 @@
                 if (currentUser.user_type === 'institution') {
                     if (institutionDashboardLink) institutionDashboardLink.style.display = 'block';
                     if (institutionDashboardLinkMobile) institutionDashboardLinkMobile.style.display = 'block';
+                    if (teacherDashboardLink) teacherDashboardLink.style.display = 'none';
+                    if (teacherDashboardLinkMobile) teacherDashboardLinkMobile.style.display = 'none';
+                    if (dashboardLink) dashboardLink.style.display = 'none';
+                    if (dashboardLinkMobile) dashboardLinkMobile.style.display = 'none';
+                } else if (currentUser.user_type === 'teacher') {
+                    if (teacherDashboardLink) teacherDashboardLink.style.display = 'block';
+                    if (teacherDashboardLinkMobile) teacherDashboardLinkMobile.style.display = 'block';
+                    if (institutionDashboardLink) institutionDashboardLink.style.display = 'none';
+                    if (institutionDashboardLinkMobile) institutionDashboardLinkMobile.style.display = 'none';
+                    if (parentDashboardLink) parentDashboardLink.style.display = 'none';
+                    if (parentDashboardLinkMobile) parentDashboardLinkMobile.style.display = 'none';
                     if (dashboardLink) dashboardLink.style.display = 'none';
                     if (dashboardLinkMobile) dashboardLinkMobile.style.display = 'none';
                 } else if (currentUser.user_type === 'parent') {
@@ -959,11 +1040,15 @@
                     if (dashboardLinkMobile) dashboardLinkMobile.style.display = 'none';
                     if (institutionDashboardLink) institutionDashboardLink.style.display = 'none';
                     if (institutionDashboardLinkMobile) institutionDashboardLinkMobile.style.display = 'none';
+                    if (teacherDashboardLink) teacherDashboardLink.style.display = 'none';
+                    if (teacherDashboardLinkMobile) teacherDashboardLinkMobile.style.display = 'none';
                 } else {
                     if (dashboardLink) dashboardLink.style.display = 'block';
                     if (dashboardLinkMobile) dashboardLinkMobile.style.display = 'block';
                     if (institutionDashboardLink) institutionDashboardLink.style.display = 'none';
                     if (institutionDashboardLinkMobile) institutionDashboardLinkMobile.style.display = 'none';
+                    if (teacherDashboardLink) teacherDashboardLink.style.display = 'none';
+                    if (teacherDashboardLinkMobile) teacherDashboardLinkMobile.style.display = 'none';
                 }
 
                 // Start token balance updates for logged-in users
@@ -973,9 +1058,12 @@
                 if (loginBtn) loginBtn.style.display = 'block';
                 if (registerBtn) registerBtn.style.display = 'block';
                 if (logoutBtn) logoutBtn.style.display = 'none';
+                if (sampleReportPdfBtn) sampleReportPdfBtn.style.display = 'none';
+                if (sampleReportPdfBtnMobile) sampleReportPdfBtnMobile.style.display = 'none';
                 if (buyTokensBtn) buyTokensBtn.style.display = 'none';
                 if (dashboardLink) dashboardLink.style.display = 'none';
                 if (institutionDashboardLink) institutionDashboardLink.style.display = 'none';
+                if (teacherDashboardLink) teacherDashboardLink.style.display = 'none';
                 if (parentDashboardLink) parentDashboardLink.style.display = 'none';
                 if (transactionsLink) transactionsLink.style.display = 'none';
                 if (assessmentsLink) assessmentsLink.style.display = 'none';
@@ -984,9 +1072,11 @@
                 if (loginBtnMobile) loginBtnMobile.style.display = 'block';
                 if (registerBtnMobile) registerBtnMobile.style.display = 'block';
                 if (logoutBtnMobile) logoutBtnMobile.style.display = 'none';
+                if (sampleReportPdfBtnMobile) sampleReportPdfBtnMobile.style.display = 'none';
                 if (buyTokensBtnMobile) buyTokensBtnMobile.style.display = 'none';
                 if (dashboardLinkMobile) dashboardLinkMobile.style.display = 'none';
                 if (institutionDashboardLinkMobile) institutionDashboardLinkMobile.style.display = 'none';
+                if (teacherDashboardLinkMobile) teacherDashboardLinkMobile.style.display = 'none';
                 if (parentDashboardLinkMobile) parentDashboardLinkMobile.style.display = 'none';
                 if (transactionsLinkMobile) transactionsLinkMobile.style.display = 'none';
                 if (assessmentsLinkMobile) assessmentsLinkMobile.style.display = 'none';
@@ -1137,14 +1227,17 @@
                 return;
             }
             
-            const amount = parseFloat(document.getElementById('buyTokensAmount').value);
+            // Some users reported "Invalid amount" even for valid input.
+            // Send a clean integer amount to the API to avoid float/format issues.
+            const rawAmount = document.getElementById('buyTokensAmount').value;
+            const amount = Number.parseInt(String(rawAmount).replace(/[^\d]/g, ''), 10);
             const phoneNumber = document.getElementById('buyTokensMpesaPhone').value;
             
             // Always format phone number to 2547... or 2541... format
             const formattedPhoneNumber = standardizePhoneNumber(phoneNumber);
             
             // Validate inputs
-            if (!amount || amount < 1) {
+            if (!Number.isFinite(amount) || amount < 1) {
                 showAlert('Invalid Amount', 'Please enter an amount of at least KES 1.', 'error');
                 return;
             }
@@ -1170,6 +1263,10 @@
             }
             
             const tokens = Math.floor(amount * tokensPerShilling);
+            if (!Number.isFinite(tokens) || tokens <= 0) {
+                showAlert('Invalid Amount', 'Amount results in 0 tokens. Please try a higher amount.', 'error');
+                return;
+            }
             
             // Show loading state
             const submitBtn = event.target.querySelector('button[type="submit"]');
@@ -1543,6 +1640,182 @@
             
             showModal('alertModal');
         }
+
+        const SITE_LOGO_URL = @json(asset('images/logo.png'));
+
+        /**
+         * Branded sample learner performance report (PDF) — for demos and stakeholder previews.
+         */
+        async function downloadSamplePerformanceReportPdf() {
+            if (!(window.jspdf && window.jspdf.jsPDF)) {
+                if (typeof showAlert === 'function') {
+                    showAlert('PDF', 'The PDF library is still loading. Please wait a moment and try again.', 'warning');
+                } else {
+                    alert('PDF library not ready.');
+                }
+                return;
+            }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
+            const W = doc.internal.pageSize.getWidth();
+            const H = doc.internal.pageSize.getHeight();
+            const M = 14;
+
+            // Brand strip (Gravity CBC colours)
+            const stripH = 18;
+            doc.setFillColor(236, 40, 52);
+            doc.rect(0, 0, W / 3, stripH, 'F');
+            doc.setFillColor(143, 195, 64);
+            doc.rect(W / 3, 0, W / 3, stripH, 'F');
+            doc.setFillColor(227, 104, 167);
+            doc.rect((2 * W) / 3, 0, W / 3, stripH, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(12);
+            doc.text('Gravity CBC', M, 12);
+
+            try {
+                const res = await fetch(SITE_LOGO_URL, { credentials: 'same-origin' });
+                if (res.ok) {
+                    const blob = await res.blob();
+                    const dataUrl = await new Promise((resolve, reject) => {
+                        const r = new FileReader();
+                        r.onload = () => resolve(r.result);
+                        r.onerror = reject;
+                        r.readAsDataURL(blob);
+                    });
+                    doc.addImage(dataUrl, 'PNG', W - M - 24, 3, 20, 12);
+                }
+            } catch (e) { /* optional logo */ }
+
+            doc.setTextColor(33, 37, 41);
+            doc.setFontSize(17);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Learning performance report', M, stripH + 12);
+            doc.setFont('helvetica', 'italic');
+            doc.setFontSize(9);
+            doc.setTextColor(100, 116, 139);
+            doc.text('Sample document — illustrative layout only. Not an official school record.', M, stripH + 18);
+
+            let y = stripH + 26;
+            doc.setDrawColor(226, 232, 240);
+            doc.setFillColor(248, 250, 252);
+            doc.roundedRect(M, y, W - 2 * M, 30, 2, 2, 'FD');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(9);
+            doc.setTextColor(71, 85, 105);
+            doc.text('Learner', M + 4, y + 8);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Amina W. (sample)', M + 28, y + 8);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Grade / pathway', M + 4, y + 16);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Grade 5 · CBC (integrated)', M + 42, y + 16);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Reporting period', M + 4, y + 24);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Term 2 · ' + new Date().getFullYear(), M + 42, y + 24);
+            y += 36;
+
+            // Overall competency badge
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            doc.setTextColor(30, 41, 59);
+            doc.text('Overall competency (sample)', M, y);
+            y += 6;
+            doc.setFillColor(143, 195, 64);
+            doc.roundedRect(M, y, W - 2 * M, 14, 2, 2, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(11);
+            doc.text('Meeting Expectation (ME) — sample overall band for this report.', M + 4, y + 9);
+            y += 22;
+
+            const rows = [
+                ['Literacy & languages', '78%', 'Meeting Expectation (ME)', 'Stretch: compare viewpoints in informational texts'],
+                ['Mathematics', '72%', 'Meeting Expectation (ME)', 'Reinforce multi-step word problems with bar models'],
+                ['Integrated science', '65%', 'Approaching Expectation (AE)', 'Hands-on inquiry on energy & environment'],
+                ['Creative arts', '88%', 'Exceeding Expectation (EE)', 'Showcase portfolio piece in school exhibition'],
+            ];
+
+            try {
+                if (typeof doc.autoTable === 'function') {
+                    doc.autoTable({
+                        startY: y,
+                        head: [['Learning area', 'Score', 'CBE level (Kenya)', 'Suggested next step']],
+                        body: rows,
+                        theme: 'plain',
+                        styles: { fontSize: 8.5, cellPadding: 3, textColor: [30, 41, 59], lineColor: [226, 232, 240], lineWidth: 0.2 },
+                        headStyles: { fillColor: [51, 65, 85], textColor: [255, 255, 255], fontStyle: 'bold' },
+                        columnStyles: {
+                            0: { cellWidth: 42 },
+                            1: { cellWidth: 18, halign: 'center' },
+                            2: { cellWidth: 32, halign: 'center' },
+                            3: { cellWidth: 'auto' },
+                        },
+                        didParseCell: function (data) {
+                            if (data.section !== 'body' || data.column.index !== 2) return;
+                            const v = String(data.cell.raw || '');
+                            if (v.includes('(EE)')) {
+                                data.cell.styles.fillColor = [37, 99, 235];
+                                data.cell.styles.textColor = [255, 255, 255];
+                            } else if (v.includes('(ME)')) {
+                                data.cell.styles.fillColor = [143, 195, 64];
+                                data.cell.styles.textColor = [255, 255, 255];
+                            } else if (v.includes('(AE)')) {
+                                data.cell.styles.fillColor = [245, 158, 11];
+                                data.cell.styles.textColor = [30, 41, 59];
+                            } else if (v.includes('(BE)')) {
+                                data.cell.styles.fillColor = [239, 68, 68];
+                                data.cell.styles.textColor = [255, 255, 255];
+                            }
+                        },
+                    });
+                    y = (doc.lastAutoTable && doc.lastAutoTable.finalY) ? doc.lastAutoTable.finalY + 8 : y + 40;
+                } else {
+                    throw new Error('autoTable missing');
+                }
+            } catch (e) {
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(9);
+                doc.text('Learning areas (sample)', M, y);
+                y += 5;
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(8.5);
+                rows.forEach((row) => {
+                    doc.setTextColor(30, 41, 59);
+                    doc.text(row[0] + ' — ' + row[1] + ' — ' + row[2], M, y);
+                    y += 5;
+                    doc.setTextColor(100, 116, 139);
+                    const w = doc.splitTextToSize(row[3], W - 2 * M);
+                    doc.text(w, M, y);
+                    y += w.length * 4 + 3;
+                });
+                y += 4;
+            }
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(9);
+            doc.setTextColor(71, 85, 105);
+            doc.text('Inclusion snapshot (sample)', M, y);
+            y += 5;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8.5);
+            doc.setTextColor(100, 116, 139);
+            const inc = 'Gender-segmented cohort metrics are available in teacher and institution views when schools record optional demographic fields, in line with Kenya’s Data Protection Act, 2019.';
+            const splitInc = doc.splitTextToSize(inc, W - 2 * M);
+            doc.text(splitInc, M, y);
+            y += splitInc.length * 4.2 + 6;
+
+            doc.setDrawColor(226, 232, 240);
+            doc.line(M, y, W - M, y);
+            y += 5;
+            doc.setFontSize(8);
+            doc.setTextColor(148, 163, 184);
+            doc.text('Gravity CBC · CBC-aligned assessments · assessments.gravitycbc.co.ke', M, y);
+            y += 4;
+            doc.text('Generated ' + new Date().toLocaleString(), M, y);
+
+            doc.save('GravityCBC-Sample-Performance-Report.pdf');
+        }
+        window.downloadSamplePerformanceReportPdf = downloadSamplePerformanceReportPdf;
     </script>
-</body>
-</html> 

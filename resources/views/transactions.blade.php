@@ -430,8 +430,8 @@
             : '';
         
         // Score info for completed assessments
-        const scoreInfo = transaction.score 
-            ? `<p class="text-xs text-gray-400">Score: ${transaction.score}%</p>`
+        const scoreInfo = (transaction.score !== null && transaction.score !== undefined && transaction.score !== '') 
+            ? `<p class="text-xs text-gray-400">${(typeof window.formatCompetencyLevel === 'function') ? window.formatCompetencyLevel(transaction.score) : `CBE: ${transaction.score}%`}</p>`
             : '';
 
         return `

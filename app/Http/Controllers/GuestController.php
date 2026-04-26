@@ -128,6 +128,22 @@ class GuestController extends Controller
     }
 
     /**
+     * Display the first screen after login (simplified start screen)
+     */
+    public function start()
+    {
+        return view('start');
+    }
+
+    /**
+     * Learner profile (progress over time)
+     */
+    public function learnerProfile($learnerId)
+    {
+        return view('learner-profile', ['learnerId' => $learnerId]);
+    }
+
+    /**
      * Display the transactions page (requires authentication)
      */
     public function transactions()
@@ -143,6 +159,14 @@ class GuestController extends Controller
     {
         // For now, return the view - in a real app, you'd add auth middleware
         return view('institution-dashboard');
+    }
+
+    /**
+     * Teacher dashboard (institution-scoped teacher)
+     */
+    public function teacherDashboard()
+    {
+        return view('teacher-dashboard');
     }
 
     /**

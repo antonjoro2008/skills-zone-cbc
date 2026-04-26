@@ -52,8 +52,11 @@ Route::prefix('api')->group(function () {
 
 // User routes (will need authentication middleware later)
 Route::get('/login', [GuestController::class, 'login'])->name('login');
+Route::get('/start', [GuestController::class, 'start'])->name('start');
+Route::get('/learner/{learnerId}', [GuestController::class, 'learnerProfile'])->name('learner-profile');
 Route::get('/dashboard', [GuestController::class, 'dashboard'])->name('dashboard');
 Route::get('/institution-dashboard', [GuestController::class, 'institutionDashboard'])->name('institution-dashboard');
+Route::get('/teacher-dashboard', [GuestController::class, 'teacherDashboard'])->name('teacher-dashboard');
 Route::get('/parent-dashboard', [GuestController::class, 'parentDashboard'])->name('parent-dashboard');
 Route::get('/transactions', [GuestController::class, 'transactions'])->name('transactions');
 Route::get('/profile', [GuestController::class, 'profile'])->name('profile');

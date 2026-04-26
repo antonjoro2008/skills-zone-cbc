@@ -376,8 +376,9 @@
                     <div class="w-24 h-24 bg-gradient-to-r from-[#8FC340] to-[#EC2834] rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-trophy text-white text-3xl"></i>
                     </div>
-                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Your Score</h2>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">CBE performance level</h2>
                     <div class="text-6xl font-bold text-transparent bg-gradient-to-r from-[#8FC340] to-[#EC2834] bg-clip-text mb-2" id="finalScore">0%</div>
+                    <p class="text-gray-700 font-semibold" id="competencyLabel">Meeting Expectation (ME)</p>
                     <p class="text-gray-600" id="scoreDescription">Great job!</p>
                 </div>
 
@@ -395,6 +396,26 @@
                         <div class="text-3xl font-bold text-[#E368A7]" id="totalTime">0</div>
                         <div class="text-sm text-gray-600">Time Taken</div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Feedback + Next step -->
+            <div class="bg-white rounded-3xl shadow-lg p-8 mb-8">
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Learning Insights</h3>
+                <div class="rounded-2xl border border-gray-100 bg-gray-50 p-6">
+                    <p class="text-gray-800 font-semibold mb-2" id="resultFeedbackTitle">Feedback</p>
+                    <p class="text-gray-700" id="resultFeedbackMessage">—</p>
+                </div>
+
+                <div class="mt-6 rounded-2xl border border-gray-100 bg-white p-6">
+                    <p class="text-gray-700 font-semibold mb-2">Recommended Next Step:</p>
+                    <p class="text-gray-600 mb-4">Attempt next level assessment</p>
+                    <button
+                        id="startNextAssessmentBtn"
+                        class="w-full sm:w-auto bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white px-8 py-3 rounded-xl font-semibold hover:from-[#7bb02d] hover:to-[#d15a8a] transition-all shadow-lg hover:shadow-xl hover:scale-105"
+                    >
+                        <i class="fas fa-play mr-2"></i>Start Next Assessment
+                    </button>
                 </div>
             </div>
 
@@ -1519,6 +1540,12 @@
                 return;
             }
 
+            let learnerClassroomId = null;
+            try {
+                const u = JSON.parse(localStorage.getItem('user') || '{}');
+                learnerClassroomId = u.classroom_id != null ? u.classroom_id : null;
+            } catch (e) {}
+
             // Prepare the complete payload
             const payload = {
                 attempt_id: parseInt(attemptId),
@@ -1536,7 +1563,8 @@
                     browser_info: navigator.userAgent,
                     submission_method: 'manual',
                     ip_address: '127.0.0.1', // This would be set by the server
-                    user_agent: 'Gravity CBC Assessment Platform'
+                    user_agent: 'Gravity CBC Assessment Platform',
+                    classroom_id: learnerClassroomId
                 }
             };
 
@@ -1558,6 +1586,37 @@
             if (data.success) {
                 // Store results first
                 localStorage.setItem('assessmentResults', JSON.stringify(data.data));
+
+                // Store lightweight learner progress history for dashboards/analytics
+                try {
+                    const storedUser = localStorage.getItem('user');
+                    const currentUser = storedUser ? JSON.parse(storedUser) : null;
+                    const learnerUserId = currentUser?.id;
+                    if (learnerUserId) {
+                        const historyRaw = localStorage.getItem('learner_assessment_history');
+                        const history = historyRaw ? JSON.parse(historyRaw) : {};
+                        const key = String(learnerUserId);
+                        const arr = Array.isArray(history[key]) ? history[key] : [];
+
+                        const summary = data.data?.summary || {};
+                        const percent = summary.percentage ?? data.data?.summary?.percentage ?? data.data?.score_percent ?? data.data?.score ?? 0;
+
+                        arr.push({
+                            assessment_id: currentAssessment?.id,
+                            assessment_title: currentAssessment?.title || currentAssessment?.name || 'Assessment',
+                            subject: currentAssessment?.subject?.name || currentAssessment?.subject || null,
+                            score_percent: Number(percent) || 0,
+                            assessed_at: new Date().toISOString(),
+                            classroom_id: currentUser?.classroom_id ?? null,
+                        });
+
+                        // Keep last 50 entries per learner (mobile-friendly)
+                        history[key] = arr.slice(-50);
+                        localStorage.setItem('learner_assessment_history', JSON.stringify(history));
+                    }
+                } catch (e) {
+                    console.warn('Failed to store learner assessment history', e);
+                }
                 
                 // Clean up all assessment data after successful submission
                 clearAllAssessmentData();
@@ -1595,10 +1654,27 @@
         document.getElementById('assessmentQuestionsPage').classList.add('hidden');
         document.getElementById('assessmentResultsPage').classList.remove('hidden');
 
-        // Update score
+        // Update competency + score
         const score = results.score || 0;
         document.getElementById('finalScore').textContent = `${score}%`;
-        document.getElementById('scoreDescription').textContent = getScoreDescription(score);
+
+        const competency = (typeof window.getCompetencyFromPercent === 'function')
+            ? window.getCompetencyFromPercent(score)
+            : null;
+
+        const competencyLabelEl = document.getElementById('competencyLabel');
+        if (competencyLabelEl && competency) {
+            competencyLabelEl.textContent = `${competency.displayFull} · ${score}%`;
+        }
+
+        const feedbackMessageEl = document.getElementById('resultFeedbackMessage');
+        if (feedbackMessageEl && competency) {
+            feedbackMessageEl.textContent = competency.feedback;
+        }
+
+        document.getElementById('scoreDescription').textContent = competency
+            ? window.formatCompetencyLevel(score)
+            : getScoreDescription(score);
 
         // Update breakdown
         document.getElementById('correctAnswers').textContent = results.correct_count || 0;
@@ -1608,6 +1684,16 @@
         // Generate question review
         generateQuestionReview(results.question_reviews || []);
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const btn = document.getElementById('startNextAssessmentBtn');
+        if (btn) {
+            btn.addEventListener('click', function () {
+                // QA: simple next step (next level assessment)
+                window.location.href = '/assessments';
+            });
+        }
+    });
 
     function getScoreDescription(score) {
         if (score >= 90) return 'Excellent work!';

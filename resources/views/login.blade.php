@@ -312,6 +312,8 @@
                 const userData = JSON.parse(user);
                 if (userData.user_type === 'institution') {
                     window.location.href = '/institution-dashboard';
+                } else if (userData.user_type === 'teacher') {
+                    window.location.href = '/teacher-dashboard';
                 } else if (userData.user_type === 'parent') {
                     window.location.href = '/parent-dashboard';
                 } else {
@@ -400,13 +402,8 @@
                     // Redirect to the original page
                     window.location.href = returnUrl;
                 } else {
-                    // Default redirect based on user type (matching popup login logic)
-                    const user = data.data.user;
-                    if (user.user_type === 'institution') {
-                        window.location.href = '/institution-dashboard';
-                    } else {
-                        window.location.href = '/dashboard';
-                    }
+                    // Send everyone to the simplified first screen (QA "Login Dashboard")
+                    window.location.href = '/start';
                 }
                 
             } else {

@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Gvavity CBC - Skills Assessment for African Students')</title>
+    <meta name="theme-color" content="#8FC340">
+    <meta name="application-name" content="GravityCBC">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="GravityCBC">
+    <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}">
+    <title>@yield('title', 'Gravity CBC - Skills Assessment for African Students')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -37,14 +44,15 @@
             }
         }
     </script>
-    <link rel="stylesheet" href="/css/style.css?v=1">
+    <link rel="stylesheet" href="/css/style.css?v=2">
     @yield('additional_head')
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 antialiased text-gray-900 min-h-screen flex flex-col">
     @include('partials.navigation')
 
     <!-- Main Content -->
-    <main class="pt-16">
+    <main class="pt-16 flex-1 w-full">
+        @include('partials.pwa-install-banner')
         @yield('content')
     </main>
 

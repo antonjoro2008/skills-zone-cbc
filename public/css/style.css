@@ -65,9 +65,9 @@
 }
 .glass-effect {
 	backdrop-filter: blur(16px) saturate(180%);
-	background-color: rgba(255, 255, 255, 0.85);
-	border: 1px solid rgba(255, 255, 255, 0.2);
-	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+	background-color: rgba(255, 255, 255, 0.92);
+	border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+	box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06);
 }
 .card-hover {
 	transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -212,4 +212,28 @@
 * {
 	scrollbar-width: thin;
 	scrollbar-color: #E8F0FE #f1f5f9;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+::selection {
+	background-color: rgba(143, 195, 64, 0.35);
+	color: #111827;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+	outline: 2px solid #8FC340;
+	outline-offset: 2px;
+}
+
+main img,
+nav img {
+	height: auto;
+	max-width: 100%;
 }

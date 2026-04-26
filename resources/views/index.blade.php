@@ -35,8 +35,8 @@
                         </p>
                         <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                             <a href="{{ route('subjects') }}"
-                                class="group bg-white text-blue-600 hover:bg-gray-50 px-8 py-4 rounded-full text-lg font-semibold transition-all shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 inline-block">
-                                <i class="fas fa-rocket mr-2 group-hover:animate-bounce"></i>
+                                class="group bg-white text-gray-900 hover:bg-gray-50 px-8 py-4 rounded-full text-lg font-semibold transition-all shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 inline-block ring-2 ring-white/60">
+                                <i class="fas fa-rocket mr-2 text-[#8FC340] group-hover:animate-bounce"></i>
                                 Explore Assessments
                             </a>
                             <button id="joinFreeBtn"
@@ -45,12 +45,15 @@
                                 <i class="fas fa-user-plus mr-2 group-hover:rotate-12 transition-transform"></i>
                                 Join Free
                             </button>
+                            <!-- Payment / tokens intentionally hidden during pilot (enable later) -->
+                            <!--
                             <button id="buyTokensBtn"
                                 class="group border-2 border-[#8FC340] text-[#8FC340] hover:bg-[#8FC340] hover:text-white px-8 py-4 rounded-full text-lg font-semibold transition-all hover:scale-105 hover:-translate-y-1 shadow-lg hidden"
                                 onclick="showModal('buyTokensModal')">
                                 <i class="fas fa-coins mr-2 group-hover:animate-pulse"></i>
                                 Buy Tokens
                             </button>
+                            -->
                         </div>
                     </div>
 

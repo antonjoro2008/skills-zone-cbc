@@ -25,7 +25,7 @@
                         <div class="w-32 h-32 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
                             <div class="text-center">
                                 <div class="text-2xl font-bold text-white" id="finalScore">0%</div>
-                                <div class="text-sm text-white opacity-90">Score</div>
+                        <div class="text-sm text-white opacity-90">CBE level</div>
                             </div>
                         </div>
                         <!-- Score Ring -->
@@ -39,6 +39,7 @@
                     </div>
                     <h2 class="text-3xl font-bold text-gray-900 mb-2" id="scoreDescription">Great job!</h2>
                     <p class="text-gray-600" id="scoreDetails">You answered questions correctly</p>
+                    <p class="text-gray-800 font-semibold mt-3" id="competencyLabelSummary"></p>
                 </div>
 
                 <!-- Score Breakdown Grid -->
@@ -107,7 +108,7 @@
                             <span class="font-semibold text-gray-900" id="manualReviewQuestions">0</span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-600">Score (Auto-marked)</span>
+                            <span class="text-gray-600">CBE level (auto-marked)</span>
                             <span class="font-semibold text-gray-900" id="autoMarkedScore">0/0</span>
                         </div>
                     </div>
@@ -319,7 +320,7 @@
         document.getElementById('loadingOverlay').classList.add('hidden');
 
         // Update basic info
-        document.getElementById('assessmentTitle').textContent = 'Assessment Results';
+        document.getElementById('assessmentTitle').textContent = 'Learning Insights';
         document.getElementById('assessmentId').textContent = assessmentResults.assessment_id || '-';
         document.getElementById('attemptId').textContent = assessmentResults.attempt_id || '-';
         
@@ -341,7 +342,19 @@
         const percentage = summary.percentage || 0;
         
         document.getElementById('finalScore').textContent = `${percentage.toFixed(1)}%`;
-        document.getElementById('scoreDescription').textContent = getScoreDescription(percentage);
+
+        const competency = (typeof window.getCompetencyFromPercent === 'function')
+            ? window.getCompetencyFromPercent(percentage)
+            : null;
+
+        const competencyEl = document.getElementById('competencyLabelSummary');
+        if (competencyEl && competency) {
+            competencyEl.textContent = `${competency.displayFull} · ${percentage.toFixed(1)}% · ${competency.feedback}`;
+        }
+
+        document.getElementById('scoreDescription').textContent = competency
+            ? window.formatCompetencyLevel(percentage)
+            : getScoreDescription(percentage);
         document.getElementById('scoreDetails').textContent = `You scored ${summary.correct_answers || 0} out of ${summary.auto_marked_questions || 0} auto-marked questions`;
         
         // Update breakdown
@@ -412,12 +425,14 @@
     }
 
     function getScoreDescription(score) {
-        if (score >= 90) return 'Outstanding Performance!';
-        if (score >= 80) return 'Excellent Work!';
-        if (score >= 70) return 'Great Job!';
-        if (score >= 60) return 'Good Effort!';
-        if (score >= 50) return 'Keep Practicing!';
-        return 'Room for Improvement';
+        if (typeof window.formatCompetencyLevel === 'function') {
+            return window.formatCompetencyLevel(score);
+        }
+        const p = Number(score) || 0;
+        if (p < 50) return 'Below Expectation (BE) · ' + p.toFixed(1) + '%';
+        if (p <= 70) return 'Approaching Expectation (AE) · ' + p.toFixed(1) + '%';
+        if (p <= 85) return 'Meeting Expectation (ME) · ' + p.toFixed(1) + '%';
+        return 'Exceeding Expectation (EE) · ' + p.toFixed(1) + '%';
     }
 
     function formatTime(seconds) {
@@ -499,11 +514,13 @@
                     </div>
                 </div>
                 
-                <!-- Performance Description -->
                 <div class="text-sm text-gray-600">
-                    ${category.percentage >= 80 ? 'Excellent performance!' : 
-                      category.percentage >= 60 ? 'Good performance, room for improvement' : 
-                      'Needs improvement - consider reviewing this topic'}
+                    ${typeof window.getCompetencyFromPercent === 'function'
+                        ? (() => {
+                            const cc = window.getCompetencyFromPercent(category.percentage);
+                            return cc.displayFull + ' — ' + cc.feedback;
+                        })()
+                        : 'Review this strand with your teacher.'}
                 </div>
             `;
             

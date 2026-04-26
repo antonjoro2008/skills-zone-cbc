@@ -1,5 +1,5 @@
 <!-- Navigation -->
-<nav class="fixed top-0 w-full z-50 glass-effect">
+<nav class="fixed top-0 w-full z-50 glass-effect shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
         <div class="flex justify-between items-center h-16">
             <div class="flex items-center">
@@ -27,6 +27,9 @@
                     </a>
                     <a href="{{ route('institution-dashboard') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all flex items-center {{ request()->routeIs('institution-dashboard') ? 'text-blue-600 font-semibold' : '' }}" id="institutionDashboardLink" style="display:none;">
                         <i class="fas fa-users-cog mr-2 text-sm"></i>Manage Learners
+                    </a>
+                    <a href="{{ route('teacher-dashboard') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all flex items-center {{ request()->routeIs('teacher-dashboard') ? 'text-blue-600 font-semibold' : '' }}" id="teacherDashboardLink" style="display:none;">
+                        <i class="fas fa-chalkboard-teacher mr-2 text-sm"></i>Teacher hub
                     </a>
                     <a href="{{ route('parent-dashboard') }}" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all flex items-center {{ request()->routeIs('parent-dashboard') ? 'text-blue-600 font-semibold' : '' }}" id="parentDashboardLink" style="display:none;">
                         <i class="fas fa-child mr-2 text-sm"></i>My Learners
@@ -68,6 +71,10 @@
                 <button class="bg-gradient-to-r from-[#8FC340] to-[#E368A7] text-white hover:from-[#7bb02d] hover:to-[#d15a8a] px-6 py-2 rounded-full text-sm font-medium transition-all shadow-lg hover:shadow-xl hover:scale-105" onclick="showModal('registerModal')" id="registerBtn">
                     <i class="fas fa-rocket mr-2"></i>Get Started
                 </button>
+                <button type="button" id="sampleReportPdfBtn" onclick="downloadSamplePerformanceReportPdf()" style="display:none;" class="inline-flex items-center gap-2 rounded-full border-2 border-indigo-200 bg-white text-indigo-800 hover:bg-indigo-50 px-4 py-2 text-sm font-semibold shadow-sm transition-all hover:border-indigo-300" title="Download a branded sample performance report (PDF)">
+                    <i class="fas fa-file-pdf text-red-600"></i>
+                    <span>Sample report</span>
+                </button>
                 <button class="bg-gray-500 text-white hover:bg-gray-600 px-6 py-2 rounded-full text-sm font-medium transition-all hover:scale-105" onclick="logout()" id="logoutBtn" style="display:none;">
                     <i class="fas fa-sign-out-alt mr-2"></i>Logout
                 </button>
@@ -92,6 +99,9 @@
             <a href="{{ route('institution-dashboard') }}" class="block text-lg font-medium text-gray-700 hover:text-[#E368A7] py-3 flex items-center transition-all duration-200 {{ request()->routeIs('institution-dashboard') ? 'text-[#E368A7] font-semibold' : '' }}" id="institutionDashboardLinkMobile" style="display:none;">
                 <i class="fas fa-users-cog mr-3 text-lg w-6"></i>Manage Learners
             </a>
+            <a href="{{ route('teacher-dashboard') }}" class="block text-lg font-medium text-gray-700 hover:text-teal-700 py-3 flex items-center transition-all duration-200 {{ request()->routeIs('teacher-dashboard') ? 'text-teal-700 font-semibold' : '' }}" id="teacherDashboardLinkMobile" style="display:none;">
+                <i class="fas fa-chalkboard-teacher mr-3 text-lg w-6"></i>Teacher hub
+            </a>
             <a href="{{ route('parent-dashboard') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-3 flex items-center transition-all duration-200 {{ request()->routeIs('parent-dashboard') ? 'text-[#8FC340] font-semibold' : '' }}" id="parentDashboardLinkMobile" style="display:none;">
                 <i class="fas fa-child mr-3 text-lg w-6"></i>My Learners
             </a>
@@ -101,7 +111,10 @@
             <a href="{{ route('profile') }}" class="block text-lg font-medium text-gray-700 hover:text-[#8FC340] py-3 flex items-center transition-all duration-200 {{ request()->routeIs('profile') ? 'text-[#8FC340] font-semibold' : '' }}" id="profileLinkMobile" style="display:none;">
                 <i class="fas fa-user mr-3 text-lg w-6"></i>Profile
             </a>
-            <div class="pt-4 border-t border-gray-200">
+            <div class="pt-4 border-t border-gray-200 space-y-3">
+                <button type="button" id="sampleReportPdfBtnMobile" onclick="downloadSamplePerformanceReportPdf(); toggleMobileMenu();" style="display:none;" class="w-full inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-indigo-200 bg-white text-indigo-800 hover:bg-indigo-50 px-6 py-3 font-semibold transition-all">
+                    <i class="fas fa-file-pdf text-red-600"></i>Sample performance report (PDF)
+                </button>
                 <button class="w-full bg-gray-500 text-white hover:bg-gray-600 px-6 py-3 rounded-full font-medium transition-all" onclick="logout(); toggleMobileMenu()" id="logoutBtnMobile" style="display:none;">
                     <i class="fas fa-sign-out-alt mr-2"></i>Logout
                 </button>

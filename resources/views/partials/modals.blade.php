@@ -564,14 +564,132 @@
                         <p class="text-xs text-gray-500 mt-1">Current grade level</p>
                     </div>
                     <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Gender <span class="text-gray-400">(Optional)</span></label>
+                        <select id="learnerGender" class="form-input w-full px-4 py-3 rounded-xl">
+                            <option value="">Prefer not to specify</option>
+                            <option value="female">Female</option>
+                            <option value="male">Male</option>
+                            <option value="non_binary">Non-binary</option>
+                            <option value="prefer_not_to_say">Learner prefers not to say</option>
+                            <option value="other">Other / school category</option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">Used only for aggregate inclusion &amp; CBC reporting; optional under your school policy.</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Classroom <span class="text-gray-400">(Optional)</span></label>
+                        <select id="learnerClassroomId" class="form-input w-full px-4 py-3 rounded-xl">
+                            <option value="">Not assigned</option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">Assign this learner to a class for insights</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Guardian email <span class="text-gray-400">(Optional)</span></label>
+                        <input type="email" id="learnerGuardianEmail" class="form-input w-full px-4 py-3 rounded-xl" placeholder="parent@example.com">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Guardian phone <span class="text-gray-400">(Optional)</span></label>
+                        <input type="text" id="learnerGuardianPhone" class="form-input w-full px-4 py-3 rounded-xl" placeholder="07… or 254…">
+                    </div>
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Password <span class="text-red-500">*</span></label>
-                        <input type="password" id="learnerPassword" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter password (min 6 characters)" required>
-                        <p class="text-xs text-gray-500 mt-1">At least 8 characters</p>
+                        <input type="password" id="learnerPassword" class="form-input w-full px-4 py-3 rounded-xl" placeholder="At least 8 characters" required minlength="8">
+                        <p class="text-xs text-gray-500 mt-1">At least 8 characters (matches server policy)</p>
                     </div>
                     <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-green-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
                         <i class="fas fa-user-plus mr-2"></i>Add Learner
                     </button>
                 </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add classroom (institution admin) -->
+    <div id="addClassroomModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4 modal-container">
+            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full relative modal-content flex flex-col max-h-[90vh]">
+                <div class="sticky top-0 bg-white rounded-t-3xl p-6 pb-4 border-b border-gray-100 z-10">
+                    <button type="button" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('addClassroomModal')">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-door-open text-white text-2xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900">Add classroom</h2>
+                        <p class="text-gray-600 text-sm">Create a class your teachers and learners can use</p>
+                    </div>
+                </div>
+                <div class="flex-1 overflow-y-auto p-6 pt-4">
+                    <form id="addClassroomForm" class="space-y-5" onsubmit="submitAddClassroom(event)">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Class name <span class="text-red-500">*</span></label>
+                            <input type="text" id="newClassroomName" class="form-input w-full px-4 py-3 rounded-xl" placeholder="e.g. Grade 4 East" required maxlength="255">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Grade level <span class="text-red-500">*</span></label>
+                            <input type="text" id="newClassroomGrade" class="form-input w-full px-4 py-3 rounded-xl" placeholder="e.g. Grade 4" required maxlength="50">
+                        </div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-indigo-700 hover:to-blue-700 transition-all shadow-lg">
+                            <i class="fas fa-plus mr-2"></i>Create classroom
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add / edit teacher (institution admin) -->
+    <div id="teacherAccountModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4 modal-container">
+            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full relative modal-content flex flex-col max-h-[90vh]">
+                <div class="sticky top-0 bg-white rounded-t-3xl p-6 pb-4 border-b border-gray-100 z-10">
+                    <button type="button" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeModal('teacherAccountModal')">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-chalkboard-teacher text-white text-2xl"></i>
+                        </div>
+                        <h2 id="teacherAccountModalTitle" class="text-2xl font-bold text-gray-900">Add teacher</h2>
+                        <p class="text-gray-600 text-sm">Teachers sign in with their phone number</p>
+                    </div>
+                </div>
+                <div class="flex-1 overflow-y-auto p-6 pt-4">
+                    <form id="teacherAccountForm" class="space-y-4" onsubmit="submitTeacherAccount(event)">
+                        <input type="hidden" id="teacherAccountEditId" value="">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Full name <span class="text-red-500">*</span></label>
+                            <input type="text" id="teacherAccountName" class="form-input w-full px-4 py-3 rounded-xl" required maxlength="255">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Phone (login) <span class="text-red-500">*</span></label>
+                            <input type="text" id="teacherAccountPhone" class="form-input w-full px-4 py-3 rounded-xl" required placeholder="07… or 254…">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email <span class="text-gray-400">(Optional)</span></label>
+                            <input type="email" id="teacherAccountEmail" class="form-input w-full px-4 py-3 rounded-xl">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Assigned classroom <span class="text-gray-400">(Optional)</span></label>
+                            <select id="teacherAccountClassroomId" class="form-input w-full px-4 py-3 rounded-xl">
+                                <option value="">Not assigned yet</option>
+                            </select>
+                        </div>
+                        <div id="teacherAccountPasswordWrap" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Password <span class="text-red-500">*</span></label>
+                                <input type="password" id="teacherAccountPassword" class="form-input w-full px-4 py-3 rounded-xl" minlength="8" placeholder="At least 8 characters">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Confirm password <span class="text-red-500">*</span></label>
+                                <input type="password" id="teacherAccountPasswordConfirm" class="form-input w-full px-4 py-3 rounded-xl" minlength="8">
+                            </div>
+                        </div>
+                        <button type="submit" id="teacherAccountSubmitBtn" class="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white py-3 rounded-xl font-semibold hover:from-teal-700 hover:to-emerald-700 transition-all shadow-lg">
+                            <i class="fas fa-save mr-2"></i>Save
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -606,8 +724,8 @@
                             <div class="text-sm text-blue-800">
                                 <p class="font-semibold mb-2">Upload Instructions:</p>
                                 <ul class="list-disc list-inside space-y-1">
-                                    <li>Upload a CSV file with columns: name, admission_number, email, grade_level, password</li>
-                                    <li>First row should contain headers</li>
+                                    <li>Upload a CSV with headers: <strong>name, admission_number, email, grade_level, password</strong> (required), plus optional <strong>gender</strong> (female, male, non_binary, prefer_not_to_say, other)</li>
+                                    <li>First row must be headers; column order can vary as long as header names match</li>
                                     <li>Maximum 100 learners per upload</li>
                                     <li>Each learner must have a unique admission number</li>
                                     <li>Email is optional (can be left empty)</li>

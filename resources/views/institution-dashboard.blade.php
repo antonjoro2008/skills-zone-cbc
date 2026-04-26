@@ -115,6 +115,93 @@
                 </div>
             </div>
         </div>
+
+        <!-- Class Insights -->
+        <div class="bg-white rounded-3xl shadow-lg p-8 mb-8">
+            <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900">Class Insights</h3>
+                    <p class="text-gray-600 text-sm">A quick view of learner progress in your class.</p>
+                    <p id="institutionGenderReporting" class="text-sm text-gray-600 mt-2 max-w-3xl"></p>
+                </div>
+                <div class="text-sm text-gray-500">
+                    <span class="font-semibold text-gray-700">Grade:</span> <span id="classInsightsGrade">—</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="rounded-2xl border border-gray-100 bg-gray-50 p-6">
+                    <p class="text-sm text-gray-500 mb-1">Average CBE level</p>
+                    <p class="text-2xl font-extrabold text-gray-900" id="classAvgLevel">—</p>
+                </div>
+                <div class="rounded-2xl border border-gray-100 bg-gray-50 p-6">
+                    <p class="text-sm text-gray-500 mb-1">Strong area</p>
+                    <p class="text-2xl font-extrabold text-gray-900" id="classStrongArea">Literacy</p>
+                </div>
+                <div class="rounded-2xl border border-gray-100 bg-gray-50 p-6">
+                    <p class="text-sm text-gray-500 mb-1">Weak area</p>
+                    <p class="text-2xl font-extrabold text-gray-900" id="classWeakArea">Numeracy</p>
+                </div>
+                <div class="rounded-2xl border border-gray-100 bg-gray-50 p-6">
+                    <p class="text-sm text-gray-500 mb-1">Learners improving</p>
+                    <p class="text-2xl font-extrabold text-gray-900" id="classImproving">60%</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Classrooms & teachers -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="bg-white rounded-3xl shadow-lg p-8">
+                <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900">Classrooms</h3>
+                        <p class="text-sm text-gray-600">Create classes, then assign teachers and learners.</p>
+                    </div>
+                    <button type="button" onclick="openAddClassroomModal()" class="shrink-0 bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-indigo-700 transition-all">
+                        <i class="fas fa-plus mr-2"></i>Add
+                    </button>
+                </div>
+                <div class="overflow-x-auto rounded-xl border border-gray-100">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50 text-left text-gray-600">
+                            <tr>
+                                <th class="py-3 px-3 font-semibold">Name</th>
+                                <th class="py-3 px-3 font-semibold">Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody id="classroomsTableBody">
+                            <tr><td colspan="2" class="py-6 px-3 text-center text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i>Loading…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="bg-white rounded-3xl shadow-lg p-8">
+                <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900">Teachers</h3>
+                        <p class="text-sm text-gray-600">Add staff who manage one class and its learners.</p>
+                    </div>
+                    <button type="button" onclick="openTeacherAccountModal()" class="shrink-0 bg-teal-600 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-teal-700 transition-all">
+                        <i class="fas fa-user-plus mr-2"></i>Add
+                    </button>
+                </div>
+                <div class="overflow-x-auto rounded-xl border border-gray-100">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50 text-left text-gray-600">
+                            <tr>
+                                <th class="py-3 px-3 font-semibold">Name</th>
+                                <th class="py-3 px-3 font-semibold">Phone</th>
+                                <th class="py-3 px-3 font-semibold">Class</th>
+                                <th class="py-3 px-3 font-semibold w-24">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teachersTableBody">
+                            <tr><td colspan="4" class="py-6 px-3 text-center text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i>Loading…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
         
         <!-- Action Buttons -->
         <div class="mb-8">
@@ -152,14 +239,16 @@
                         <tr class="border-b border-gray-200">
                             <th class="text-left py-3 px-4 font-semibold text-gray-700">Name</th>
                             <th class="text-left py-3 px-4 font-semibold text-gray-700">Email</th>
-                            <th class="text-left py-3 px-4 font-semibold text-gray-700">Grade Level</th>
+                            <th class="text-left py-3 px-4 font-semibold text-gray-700">Grade</th>
+                            <th class="text-left py-3 px-4 font-semibold text-gray-700">Gender</th>
+                            <th class="text-left py-3 px-4 font-semibold text-gray-700">Class</th>
                             <th class="text-left py-3 px-4 font-semibold text-gray-700">Status</th>
                             <th class="text-left py-3 px-4 font-semibold text-gray-700">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="learnersTableBody">
                         <tr>
-                            <td colspan="5" class="text-center py-8 text-gray-500">
+                            <td colspan="7" class="text-center py-8 text-gray-500">
                                 <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
                                 <p>Loading learners...</p>
                             </td>
@@ -174,15 +263,39 @@
 @section('scripts')
 <script>
     let learnersData = [];
+
+    function safeParse(json, fallback) {
+        try { return JSON.parse(json); } catch (e) { return fallback; }
+    }
     
     function checkAuthentication() {
         const token = localStorage.getItem('token') || localStorage.getItem('access_token');
         const user = localStorage.getItem('user');
         
         if (!token || !user) {
-            // Redirect to login page with return URL
             const currentUrl = window.location.href;
             window.location.href = `/login?return=${encodeURIComponent(currentUrl)}`;
+            return false;
+        }
+
+        try {
+            const u = JSON.parse(user);
+            if (u.user_type === 'teacher') {
+                window.location.href = '/teacher-dashboard';
+                return false;
+            }
+            if (u.user_type !== 'institution') {
+                if (u.user_type === 'parent') {
+                    window.location.href = '/parent-dashboard';
+                } else if (u.user_type === 'student') {
+                    window.location.href = '/dashboard';
+                } else {
+                    window.location.href = '/';
+                }
+                return false;
+            }
+        } catch (e) {
+            window.location.href = '/login?return=' + encodeURIComponent(window.location.pathname);
             return false;
         }
         
@@ -198,6 +311,7 @@
         // Load current user data
         loadCurrentUser();
         loadDashboardData();
+        loadClassroomsAndTeachers();
         loadLearners();
         
         // Search functionality
@@ -323,6 +437,279 @@
         document.getElementById('averageTokens').textContent = '0';
     }
     
+    window.institutionClassroomsList = [];
+
+    async function loadClassroomsAndTeachers() {
+        await Promise.all([loadClassrooms(), loadTeachers()]);
+    }
+
+    function applyClassroomOptionsToSelects() {
+        const lists = window.institutionClassroomsList || [];
+        const opts = lists.map(c => `<option value="${c.id}">${escapeHtml(c.name || '')} (${escapeHtml(c.grade_level || '')})</option>`).join('');
+        const learnerSel = document.getElementById('learnerClassroomId');
+        if (learnerSel) {
+            learnerSel.innerHTML = '<option value="">Not assigned</option>' + opts;
+        }
+        const teacherSel = document.getElementById('teacherAccountClassroomId');
+        if (teacherSel) {
+            teacherSel.innerHTML = '<option value="">Not assigned yet</option>' + opts;
+        }
+    }
+
+    async function loadClassrooms() {
+        const tbody = document.getElementById('classroomsTableBody');
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_BASE_URL}/api/institution/classrooms`, {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+            const data = await response.json();
+            if (data.success && Array.isArray(data.data)) {
+                window.institutionClassroomsList = data.data;
+                applyClassroomOptionsToSelects();
+                if (!tbody) return;
+                if (data.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="2" class="py-8 px-3 text-center text-gray-500">No classrooms yet. Add one to get started.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data.data.map(c => `
+                    <tr class="border-t border-gray-100">
+                        <td class="py-3 px-3 font-medium text-gray-900">${escapeHtml(c.name || '')}</td>
+                        <td class="py-3 px-3 text-gray-600">${escapeHtml(c.grade_level || '')}</td>
+                    </tr>
+                `).join('');
+            } else {
+                if (tbody) tbody.innerHTML = '<tr><td colspan="2" class="py-6 px-3 text-center text-red-600">Could not load classrooms.</td></tr>';
+            }
+        } catch (e) {
+            console.error(e);
+            if (tbody) tbody.innerHTML = '<tr><td colspan="2" class="py-6 px-3 text-center text-red-600">Network error.</td></tr>';
+        }
+    }
+
+    async function loadTeachers() {
+        const tbody = document.getElementById('teachersTableBody');
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_BASE_URL}/api/institution/teachers`, {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+            const data = await response.json();
+            if (data.success && Array.isArray(data.data)) {
+                window.__teachersCache = data.data;
+                if (!tbody) return;
+                if (data.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="py-8 px-3 text-center text-gray-500">No teachers yet.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data.data.map(t => {
+                    const cn = t.classroom ? (t.classroom.name || '') : '—';
+                    return `
+                    <tr class="border-t border-gray-100">
+                        <td class="py-3 px-3 font-medium text-gray-900">${escapeHtml(t.name || '')}</td>
+                        <td class="py-3 px-3 text-gray-600">${escapeHtml(t.phone_number || '')}</td>
+                        <td class="py-3 px-3 text-gray-600">${escapeHtml(cn)}</td>
+                        <td class="py-3 px-3">
+                            <button type="button" onclick="openTeacherAccountModal(${t.id})" class="text-teal-700 hover:underline text-sm font-semibold">Edit</button>
+                        </td>
+                    </tr>`;
+                }).join('');
+            } else {
+                if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="py-6 px-3 text-center text-red-600">Could not load teachers.</td></tr>';
+            }
+        } catch (e) {
+            console.error(e);
+            if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="py-6 px-3 text-center text-red-600">Network error.</td></tr>';
+        }
+    }
+
+    function escapeHtml(s) {
+        return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+    }
+
+    function formatGenderLabel(code) {
+        const m = {
+            female: 'Female',
+            male: 'Male',
+            non_binary: 'Non-binary',
+            prefer_not_to_say: 'Prefer not to say',
+            other: 'Other',
+        };
+        return m[code] || '—';
+    }
+
+    function openAddClassroomModal() {
+        const n = document.getElementById('newClassroomName');
+        const g = document.getElementById('newClassroomGrade');
+        if (n) n.value = '';
+        if (g) g.value = '';
+        showModal('addClassroomModal');
+    }
+
+    async function submitAddClassroom(event) {
+        event.preventDefault();
+        const name = document.getElementById('newClassroomName')?.value?.trim();
+        const grade_level = document.getElementById('newClassroomGrade')?.value?.trim();
+        if (!name || !grade_level) {
+            showAlert('Validation', 'Please enter class name and grade level.', 'error');
+            return;
+        }
+        const btn = event.target.querySelector('button[type="submit"]');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving…';
+        btn.disabled = true;
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_BASE_URL}/api/institution/classrooms`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ name, grade_level })
+            });
+            const data = await response.json();
+            if (data.success) {
+                showAlert('Saved', data.message || 'Classroom created.', 'success');
+                closeModal('addClassroomModal');
+                await loadClassrooms();
+            } else {
+                showAlert('Error', extractErrorMessage(data, 'Could not create classroom.'), 'error');
+            }
+        } catch (e) {
+            showAlert('Network', 'Could not reach server.', 'error');
+        } finally {
+            btn.innerHTML = orig;
+            btn.disabled = false;
+        }
+    }
+
+    function openTeacherAccountModal(teacherId) {
+        const title = document.getElementById('teacherAccountModalTitle');
+        const editId = document.getElementById('teacherAccountEditId');
+        const pwWrap = document.getElementById('teacherAccountPasswordWrap');
+        const pw = document.getElementById('teacherAccountPassword');
+        const pwc = document.getElementById('teacherAccountPasswordConfirm');
+        applyClassroomOptionsToSelects();
+
+        if (teacherId) {
+            const t = (window.__teachersCache || []).find(x => x.id === teacherId);
+            if (title) title.textContent = 'Edit teacher';
+            if (editId) editId.value = String(teacherId);
+            if (pwWrap) pwWrap.classList.add('hidden');
+            if (pw) { pw.value = ''; pw.removeAttribute('required'); }
+            if (pwc) { pwc.value = ''; pwc.removeAttribute('required'); }
+            if (t) {
+                document.getElementById('teacherAccountName').value = t.name || '';
+                document.getElementById('teacherAccountPhone').value = t.phone_number || '';
+                document.getElementById('teacherAccountEmail').value = t.email || '';
+                document.getElementById('teacherAccountClassroomId').value = t.classroom_id || '';
+            }
+        } else {
+            if (title) title.textContent = 'Add teacher';
+            if (editId) editId.value = '';
+            if (pwWrap) pwWrap.classList.remove('hidden');
+            if (pw) pw.setAttribute('required', 'required');
+            if (pwc) pwc.setAttribute('required', 'required');
+            document.getElementById('teacherAccountName').value = '';
+            document.getElementById('teacherAccountPhone').value = '';
+            document.getElementById('teacherAccountEmail').value = '';
+            document.getElementById('teacherAccountClassroomId').value = '';
+            if (pw) pw.value = '';
+            if (pwc) pwc.value = '';
+        }
+        showModal('teacherAccountModal');
+    }
+
+    async function submitTeacherAccount(event) {
+        event.preventDefault();
+        const editId = document.getElementById('teacherAccountEditId')?.value;
+        const name = document.getElementById('teacherAccountName')?.value?.trim();
+        const phone_number = standardizePhoneNumber(document.getElementById('teacherAccountPhone')?.value || '');
+        const email = document.getElementById('teacherAccountEmail')?.value?.trim() || null;
+        const classroom_id = document.getElementById('teacherAccountClassroomId')?.value || null;
+        const password = document.getElementById('teacherAccountPassword')?.value || '';
+        const password_confirmation = document.getElementById('teacherAccountPasswordConfirm')?.value || '';
+
+        if (!name || !phone_number) {
+            showAlert('Validation', 'Name and phone are required.', 'error');
+            return;
+        }
+        if (!editId) {
+            if (!password || password.length < 8) {
+                showAlert('Validation', 'Password must be at least 8 characters.', 'error');
+                return;
+            }
+            if (password !== password_confirmation) {
+                showAlert('Validation', 'Passwords do not match.', 'error');
+                return;
+            }
+        }
+
+        const btn = document.getElementById('teacherAccountSubmitBtn');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving…';
+        btn.disabled = true;
+        const token = localStorage.getItem('token');
+        try {
+            if (editId) {
+                const response = await fetch(`${API_BASE_URL}/api/institution/teachers/${editId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name,
+                        phone_number,
+                        email,
+                        classroom_id: classroom_id ? parseInt(classroom_id, 10) : null,
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showAlert('Saved', data.message || 'Teacher updated.', 'success');
+                    closeModal('teacherAccountModal');
+                    await loadTeachers();
+                } else {
+                    showAlert('Error', extractErrorMessage(data, 'Update failed.'), 'error');
+                }
+            } else {
+                const response = await fetch(`${API_BASE_URL}/api/institution/teachers`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name,
+                        phone_number,
+                        email,
+                        password,
+                        password_confirmation,
+                        classroom_id: classroom_id ? parseInt(classroom_id, 10) : null,
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showAlert('Saved', data.message || 'Teacher created.', 'success');
+                    closeModal('teacherAccountModal');
+                    await loadTeachers();
+                } else {
+                    showAlert('Error', extractErrorMessage(data, 'Could not create teacher.'), 'error');
+                }
+            }
+        } catch (e) {
+            showAlert('Network', 'Could not reach server.', 'error');
+        } finally {
+            btn.innerHTML = orig;
+            btn.disabled = false;
+        }
+    }
+
     async function loadLearners() {
         try {
             const token = localStorage.getItem('token');
@@ -337,14 +724,121 @@
             
             if (data.success) {
                 learnersData = data.data.data; // The students are in data.data.data due to pagination
+                // Cache for learner profile page
+                try {
+                    localStorage.setItem('cached_institution_learners', JSON.stringify(learnersData));
+                } catch (e) {}
                 renderLearnersTable(learnersData);
                 updateLearnerStats(learnersData);
+                updateClassInsights(learnersData);
             } else {
                 showError('Failed to load learners');
             }
         } catch (error) {
             console.error('Error loading learners:', error);
             showError('Error loading learners');
+        }
+    }
+
+    function updateClassInsights(learners) {
+        // Defaults required by QA (and kept as fallback)
+        const defaults = {
+            avgLevel: 'Approaching Expectation (AE)',
+            strongArea: 'Literacy',
+            weakArea: 'Numeracy',
+            improving: 60,
+        };
+
+        const gradeEl = document.getElementById('classInsightsGrade');
+        if (gradeEl) {
+            const firstGrade = learners?.find(l => l.grade_level)?.grade_level;
+            gradeEl.textContent = firstGrade || 'Grade 5';
+        }
+
+        // If we have locally stored results, compute simple insights.
+        const historyRaw = localStorage.getItem('learner_assessment_history');
+        const history = historyRaw ? safeParse(historyRaw, {}) : {};
+        const learnerIds = (learners || []).map(l => String(l.id));
+        const classroomByLearner = {};
+        (learners || []).forEach(l => {
+            classroomByLearner[String(l.id)] = l.classroom_id != null ? l.classroom_id : null;
+        });
+
+        let all = [];
+        learnerIds.forEach(id => {
+            const arr = history[id];
+            if (!Array.isArray(arr)) return;
+            const expectedCid = classroomByLearner[id];
+            const filtered = arr.filter(x => {
+                if (expectedCid == null) return true;
+                if (x.classroom_id == null) return true;
+                return String(x.classroom_id) === String(expectedCid);
+            });
+            all = all.concat(filtered.map(x => ({...x, learner_id: id})));
+        });
+
+        // Avg competency level from avg percent
+        let avgPercent = 0;
+        if (all.length) {
+            avgPercent = all.reduce((s, x) => s + (Number(x.score_percent ?? x.score ?? 0) || 0), 0) / all.length;
+        }
+
+        const c = (typeof window.getCompetencyFromPercent === 'function')
+            ? window.getCompetencyFromPercent(avgPercent)
+            : null;
+
+        document.getElementById('classAvgLevel').textContent = (all.length && c)
+            ? c.displayFull
+            : defaults.avgLevel;
+
+        // Strong/weak area based on average by subject if available
+        const bySubject = {};
+        all.forEach(x => {
+            const subj = (x.subject || 'Literacy').toString();
+            const p = Number(x.score_percent ?? x.score ?? 0) || 0;
+            if (!bySubject[subj]) bySubject[subj] = { sum: 0, n: 0 };
+            bySubject[subj].sum += p;
+            bySubject[subj].n += 1;
+        });
+
+        const subjects = Object.keys(bySubject);
+        if (subjects.length >= 2) {
+            const ranked = subjects
+                .map(s => ({ s, avg: bySubject[s].sum / bySubject[s].n }))
+                .sort((a, b) => b.avg - a.avg);
+            document.getElementById('classStrongArea').textContent = ranked[0].s;
+            document.getElementById('classWeakArea').textContent = ranked[ranked.length - 1].s;
+        } else {
+            document.getElementById('classStrongArea').textContent = defaults.strongArea;
+            document.getElementById('classWeakArea').textContent = defaults.weakArea;
+        }
+
+        // Learners improving: percentage whose last score > first score
+        let improvingCount = 0;
+        let withProgress = 0;
+        learnerIds.forEach(id => {
+            const arr = history[id];
+            if (!Array.isArray(arr) || arr.length < 2) return;
+            const sorted = [...arr].sort((a, b) => new Date(a.assessed_at) - new Date(b.assessed_at));
+            const first = Number(sorted[0].score_percent ?? sorted[0].score ?? 0) || 0;
+            const last = Number(sorted[sorted.length - 1].score_percent ?? sorted[sorted.length - 1].score ?? 0) || 0;
+            withProgress += 1;
+            if (last > first) improvingCount += 1;
+        });
+
+        const improvingPct = withProgress ? Math.round((improvingCount / withProgress) * 100) : defaults.improving;
+        document.getElementById('classImproving').textContent = `${improvingPct}%`;
+
+        const grEl = document.getElementById('institutionGenderReporting');
+        if (grEl) {
+            if (learners && learners.length) {
+                const allowed = ['female', 'male', 'non_binary', 'prefer_not_to_say', 'other'];
+                const withG = learners.filter(l => l.gender && allowed.includes(l.gender)).length;
+                const rate = Math.round((withG / learners.length) * 100);
+                grEl.textContent = `Inclusion data: gender on record for ${withG} of ${learners.length} learners (${rate}%). Complete records improve segmented analytics for stakeholders.`;
+            } else {
+                grEl.textContent = '';
+            }
         }
     }
     
@@ -386,7 +880,7 @@
         if (learners.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="5" class="text-center py-8 text-gray-500">
+                    <td colspan="7" class="text-center py-8 text-gray-500">
                         <i class="fas fa-users text-4xl mb-4"></i>
                         <p>No learners found. Add your first learner to get started!</p>
                     </td>
@@ -403,17 +897,21 @@
                             <i class="fas fa-user text-blue-600"></i>
                         </div>
                         <div>
-                            <span class="font-medium text-gray-900">${learner.name}</span>
-                            <div class="text-xs text-gray-500">${learner.admission_number || 'N/A'}</div>
+                            <a href="/learner/${learner.id}" class="font-medium text-gray-900 hover:text-blue-700">
+                                ${escapeHtml(learner.name)}
+                            </a>
+                            <div class="text-xs text-gray-500">${escapeHtml(learner.admission_number || 'N/A')}</div>
                         </div>
                     </div>
                 </td>
-                <td class="py-4 px-4 text-gray-600">${learner.email || 'N/A'}</td>
+                <td class="py-4 px-4 text-gray-600">${escapeHtml(learner.email || 'N/A')}</td>
                 <td class="py-4 px-4">
                     <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
-                        ${learner.grade_level || 'N/A'}
+                        ${escapeHtml(learner.grade_level || 'N/A')}
                     </span>
                 </td>
+                <td class="py-4 px-4 text-gray-600 text-sm">${escapeHtml(formatGenderLabel(learner.gender))}</td>
+                <td class="py-4 px-4 text-gray-600 text-sm">${learner.classroom ? escapeHtml(learner.classroom.name || '') : '—'}</td>
                 <td class="py-4 px-4">
                     <span class="px-3 py-1 rounded-full text-sm font-semibold ${learner.is_active !== false ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
                         ${learner.is_active !== false ? 'Active' : 'Inactive'}
@@ -421,7 +919,7 @@
                 </td>
                 <td class="py-4 px-4">
                     <div class="flex items-center space-x-2">
-                        <button onclick="editLearner(${learner.id}, '${learner.name}', '${learner.admission_number || ''}', '${learner.email || ''}', '${learner.grade_level || ''}')" class="text-blue-600 hover:text-blue-800 p-2 hover:bg-blue-50 rounded-lg transition-all" title="Edit Learner">
+                        <button type="button" onclick="editLearnerById(${learner.id})" class="text-blue-600 hover:text-blue-800 p-2 hover:bg-blue-50 rounded-lg transition-all" title="Edit Learner">
                             <i class="fas fa-edit"></i>
                         </button>
                         <button onclick="deleteLearner(${learner.id}, '${learner.name}')" class="text-red-600 hover:text-red-800 p-2 hover:bg-red-50 rounded-lg transition-all" title="Delete Learner">
@@ -434,11 +932,15 @@
     }
     
     function filterLearners(searchTerm) {
+        const q = searchTerm.toLowerCase();
         const filtered = learnersData.filter(learner => 
-            learner.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (learner.email && learner.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
-            (learner.admission_number && learner.admission_number.toLowerCase().includes(searchTerm.toLowerCase())) ||
-            (learner.grade_level && learner.grade_level.toLowerCase().includes(searchTerm.toLowerCase()))
+            learner.name.toLowerCase().includes(q) ||
+            (learner.email && learner.email.toLowerCase().includes(q)) ||
+            (learner.admission_number && learner.admission_number.toLowerCase().includes(q)) ||
+            (learner.grade_level && learner.grade_level.toLowerCase().includes(q)) ||
+            (learner.classroom && (learner.classroom.name || '').toLowerCase().includes(q)) ||
+            (learner.gender && String(learner.gender).toLowerCase().includes(q)) ||
+            (learner.gender && formatGenderLabel(learner.gender).toLowerCase().includes(q))
         );
         renderLearnersTable(filtered);
     }
@@ -454,6 +956,7 @@
     }
     
     function showAddLearnerModal() {
+        applyClassroomOptionsToSelects();
         showModal('addLearnerModal');
     }
     
@@ -622,6 +1125,12 @@
         const email = document.getElementById('learnerEmail').value;
         const gradeLevel = document.getElementById('learnerGradeLevel').value;
         const password = document.getElementById('learnerPassword').value;
+        const classroomIdRaw = document.getElementById('learnerClassroomId')?.value;
+        const classroom_id = classroomIdRaw ? parseInt(classroomIdRaw, 10) : null;
+        const guardian_email = document.getElementById('learnerGuardianEmail')?.value?.trim() || null;
+        const guardian_phone = document.getElementById('learnerGuardianPhone')?.value?.trim() || null;
+        const genderRaw = document.getElementById('learnerGender')?.value;
+        const gender = genderRaw && genderRaw.length ? genderRaw : null;
         
         // Validate required fields (email is optional)
         if (!name || !admissionNumber || !gradeLevel || !password) {
@@ -629,9 +1138,8 @@
             return;
         }
         
-        // Validate password length
-        if (password.length < 6) {
-            showAlert('Validation Error', 'Password must be at least 6 characters long.', 'error');
+        if (password.length < 8) {
+            showAlert('Validation Error', 'Password must be at least 8 characters.', 'error');
             return;
         }
         
@@ -656,7 +1164,11 @@
                     email: email || null,
                     password: password,
                     password_confirmation: password,
-                    grade_level: gradeLevel
+                    grade_level: gradeLevel,
+                    classroom_id: classroom_id || null,
+                    guardian_email: guardian_email || null,
+                    guardian_phone: guardian_phone || null,
+                    gender: gender,
                 })
             });
             
@@ -673,6 +1185,14 @@
                 document.getElementById('learnerEmail').value = '';
                 document.getElementById('learnerGradeLevel').value = '';
                 document.getElementById('learnerPassword').value = '';
+                const lc = document.getElementById('learnerClassroomId');
+                if (lc) lc.value = '';
+                const ge = document.getElementById('learnerGuardianEmail');
+                if (ge) ge.value = '';
+                const gp = document.getElementById('learnerGuardianPhone');
+                if (gp) gp.value = '';
+                const gg = document.getElementById('learnerGender');
+                if (gg) gg.value = '';
             } else {
                 const errorMessage = extractErrorMessage(data, 'Failed to create student. Please try again.');
                 showAlert('Error', errorMessage, 'error');
@@ -732,42 +1252,54 @@
                 return result;
             }
             
-            const headers = parseCSVLine(lines[0]);
-            
-            // Validate headers - updated for new API format
-            const expectedHeaders = ['name', 'admission_number', 'email', 'grade_level', 'password'];
-            if (!expectedHeaders.every(header => headers.includes(header))) {
-                showAlert('Validation Error', 'Invalid CSV format. Required headers: name, admission_number, email, grade_level, password', 'error');
+            const headers = parseCSVLine(lines[0]).map(h => h.trim().toLowerCase());
+            const required = ['name', 'admission_number', 'email', 'grade_level', 'password'];
+            if (!required.every(h => headers.includes(h))) {
+                showAlert('Validation Error', 'Invalid CSV format. Required headers: name, admission_number, email, grade_level, password. Optional: gender.', 'error');
                 return;
             }
-            
+            const col = {};
+            headers.forEach((h, idx) => { col[h] = idx; });
+            const allowedGender = ['female', 'male', 'non_binary', 'prefer_not_to_say', 'other'];
+
             const students = [];
             for (let i = 1; i < lines.length; i++) {
                 const line = lines[i].trim();
                 if (!line) continue;
-                
+
                 const values = parseCSVLine(line);
-                if (values.length >= 5) {
-                    // Validate required fields
-                    if (!values[0] || !values[1] || !values[3] || !values[4]) {
-                        showAlert('Validation Error', `Row ${i + 1}: All required fields (name, admission_number, grade_level, password) must be filled`, 'error');
+                const name = (values[col['name']] || '').trim();
+                const admission_number = (values[col['admission_number']] || '').trim();
+                const email = (values[col['email']] || '').trim() || null;
+                const grade_level = (values[col['grade_level']] || '').trim();
+                const password = (values[col['password']] || '').trim();
+                let gender = null;
+                if (headers.includes('gender') && col['gender'] !== undefined) {
+                    const g = (values[col['gender']] || '').trim().toLowerCase();
+                    if (g && !allowedGender.includes(g)) {
+                        showAlert('Validation Error', `Row ${i + 1}: gender must be one of: ${allowedGender.join(', ')}`, 'error');
                         return;
                     }
-                    
-                    // Validate password length
-                    if (values[4].length < 8) {
-                        showAlert('Validation Error', `Row ${i + 1}: Password must be at least 8 characters long`, 'error');
-                        return;
-                    }
-                    
-                    students.push({
-                        name: values[0],
-                        admission_number: values[1],
-                        email: values[2] || null, // Email is optional
-                        grade_level: values[3],
-                        password: values[4]
-                    });
+                    gender = g || null;
                 }
+
+                if (!name || !admission_number || !grade_level || !password) {
+                    showAlert('Validation Error', `Row ${i + 1}: name, admission_number, grade_level, and password are required`, 'error');
+                    return;
+                }
+                if (password.length < 8) {
+                    showAlert('Validation Error', `Row ${i + 1}: Password must be at least 8 characters long`, 'error');
+                    return;
+                }
+
+                students.push({
+                    name,
+                    admission_number,
+                    email,
+                    grade_level,
+                    password,
+                    gender,
+                });
             }
             
             if (students.length === 0) {
@@ -815,71 +1347,103 @@
         }
     }
 
-    // Edit learner function
-    function editLearner(id, name, admissionNumber, email, gradeLevel) {
-        // Create edit modal
+    function editLearnerById(id) {
+        const learner = learnersData.find(l => l.id === id);
+        if (!learner) {
+            showAlert('Error', 'Learner not found in the current list.', 'error');
+            return;
+        }
+        const name = escapeHtml(learner.name || '');
+        const admissionNumber = escapeHtml(learner.admission_number || '');
+        const email = escapeHtml(learner.email || '');
+        const gradeLevel = escapeHtml(learner.grade_level || '');
+        const guardianEmail = escapeHtml(learner.guardian_email || '');
+        const guardianPhone = escapeHtml(learner.guardian_phone || '');
+        const selClass = learner.classroom_id || '';
+        const selGender = learner.gender && ['female', 'male', 'non_binary', 'prefer_not_to_say', 'other'].includes(learner.gender) ? learner.gender : '';
+
+        const classroomOpts = (window.institutionClassroomsList || []).map(c => {
+            const sel = String(c.id) === String(selClass) ? ' selected' : '';
+            return `<option value="${c.id}"${sel}>${escapeHtml(c.name || '')} (${escapeHtml(c.grade_level || '')})</option>`;
+        }).join('');
+
         const editModal = document.createElement('div');
         editModal.className = 'fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4';
         editModal.id = 'editLearnerModal';
         editModal.innerHTML = `
             <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full relative modal-content flex flex-col max-h-[95vh] sm:max-h-[80vh]">
-                <!-- Sticky Header -->
                 <div class="sticky top-0 bg-white rounded-t-2xl p-4 sm:p-6 pb-3 sm:pb-4 border-b border-gray-100 z-10">
-                    <button class="absolute top-3 right-3 sm:top-4 sm:right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeEditModal(this.closest('.fixed'))">
+                    <button type="button" class="absolute top-3 right-3 sm:top-4 sm:right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all" onclick="closeEditModal(this.closest('.fixed'))">
                         <i class="fas fa-times text-lg"></i>
                     </button>
-                    
                     <div class="text-center pr-8">
                         <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3">
                             <i class="fas fa-edit text-white text-lg sm:text-xl"></i>
                         </div>
-                        <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-1">Edit Learner</h3>
-                        <p class="text-gray-600 text-xs sm:text-sm">Update learner information</p>
+                        <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-1">Edit learner</h3>
+                        <p class="text-gray-600 text-xs sm:text-sm">Update profile, class, and guardian contacts</p>
                     </div>
                 </div>
-                
-                <!-- Scrollable Content -->
                 <div class="flex-1 overflow-y-auto p-4 sm:p-6 pt-3 sm:pt-4">
                     <form id="editLearnerForm" class="space-y-3 sm:space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Full Name <span class="text-red-500">*</span></label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Full name <span class="text-red-500">*</span></label>
                                 <input type="text" id="editLearnerName" class="form-input w-full px-3 py-2.5 sm:py-2 rounded-lg text-sm" value="${name}" required>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Admission Number <span class="text-red-500">*</span></label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Admission number <span class="text-red-500">*</span></label>
                                 <input type="text" id="editLearnerAdmissionNumber" class="form-input w-full px-3 py-2.5 sm:py-2 rounded-lg text-sm" value="${admissionNumber}" required>
                             </div>
                         </div>
-                        
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Email</label>
                                 <input type="email" id="editLearnerEmail" class="form-input w-full px-3 py-2.5 sm:py-2 rounded-lg text-sm" value="${email}">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Grade Level <span class="text-red-500">*</span></label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Grade level <span class="text-red-500">*</span></label>
                                 <select id="editLearnerGradeLevel" class="form-input w-full px-3 py-2.5 sm:py-2 rounded-lg text-sm" required>
                                     <option value="">Select grade level</option>
-                                    <!-- <option value="Grade 1" ${gradeLevel === 'Grade 1' ? 'selected' : ''}>Grade 1</option> -->
-                                    <!-- <option value="Grade 2" ${gradeLevel === 'Grade 2' ? 'selected' : ''}>Grade 2</option> -->
-                                    <!-- <option value="Grade 3" ${gradeLevel === 'Grade 3' ? 'selected' : ''}>Grade 3</option> -->
-                                    <!-- <option value="Grade 4" ${gradeLevel === 'Grade 4' ? 'selected' : ''}>Grade 4</option> -->
-                                    <!-- <option value="Grade 5" ${gradeLevel === 'Grade 5' ? 'selected' : ''}>Grade 5</option> -->
-                                    <!-- <option value="Grade 6" ${gradeLevel === 'Grade 6' ? 'selected' : ''}>Grade 6</option> -->
-                                    <!-- <option value="Grade 7" ${gradeLevel === 'Grade 7' ? 'selected' : ''}>Grade 7</option> -->
-                                    <!-- <option value="Grade 8" ${gradeLevel === 'Grade 8' ? 'selected' : ''}>Grade 8</option> -->
-                                    <option value="Grade 9" ${gradeLevel === 'Grade 9' ? 'selected' : ''}>Grade 9</option>
+                                    ${['Grade 1','Grade 2','Grade 3','Grade 4','Grade 5','Grade 6','Grade 7','Grade 8','Grade 9'].map(g => 
+                                        `<option value="${g}" ${gradeLevel === g ? 'selected' : ''}>${g}</option>`).join('')}
                                 </select>
                             </div>
                         </div>
-                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Gender <span class="text-gray-400">(optional)</span></label>
+                            <select id="editLearnerGender" class="form-input w-full px-3 py-2.5 sm:py-2 rounded-lg text-sm">
+                                <option value="" ${selGender === '' ? 'selected' : ''}>Prefer not to specify</option>
+                                <option value="female" ${selGender === 'female' ? 'selected' : ''}>Female</option>
+                                <option value="male" ${selGender === 'male' ? 'selected' : ''}>Male</option>
+                                <option value="non_binary" ${selGender === 'non_binary' ? 'selected' : ''}>Non-binary</option>
+                                <option value="prefer_not_to_say" ${selGender === 'prefer_not_to_say' ? 'selected' : ''}>Learner prefers not to say</option>
+                                <option value="other" ${selGender === 'other' ? 'selected' : ''}>Other / school category</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Classroom <span class="text-gray-400">(optional)</span></label>
+                            <select id="editLearnerClassroomId" class="form-input w-full px-3 py-2.5 sm:py-2 rounded-lg text-sm">
+                                <option value="">Not assigned</option>
+                                ${classroomOpts}
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Guardian email</label>
+                                <input type="email" id="editLearnerGuardianEmail" class="form-input w-full px-3 py-2.5 sm:py-2 rounded-lg text-sm" value="${guardianEmail}">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Guardian phone</label>
+                                <input type="text" id="editLearnerGuardianPhone" class="form-input w-full px-3 py-2.5 sm:py-2 rounded-lg text-sm" value="${guardianPhone}">
+                            </div>
+                        </div>
                         <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-3 sm:pt-4">
                             <button type="button" onclick="closeEditModal(this.closest('.fixed'))" class="w-full sm:flex-1 px-4 py-2.5 sm:py-2 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all text-sm">
                                 Cancel
                             </button>
                             <button type="submit" class="w-full sm:flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2.5 sm:py-2 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all text-sm">
-                                Update Learner
+                                Update learner
                             </button>
                         </div>
                     </form>
@@ -887,8 +1451,6 @@
             </div>
         `;
         document.body.appendChild(editModal);
-
-        // Add form submission handler
         document.getElementById('editLearnerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             await updateLearner(id);
@@ -914,6 +1476,12 @@
         const admissionNumber = document.getElementById('editLearnerAdmissionNumber').value.trim();
         const email = document.getElementById('editLearnerEmail').value.trim();
         const gradeLevel = document.getElementById('editLearnerGradeLevel').value;
+        const classroomRaw = document.getElementById('editLearnerClassroomId')?.value;
+        const classroom_id = classroomRaw ? parseInt(classroomRaw, 10) : null;
+        const genderRaw = document.getElementById('editLearnerGender')?.value;
+        const gender = genderRaw && genderRaw.length ? genderRaw : null;
+        const guardian_email = document.getElementById('editLearnerGuardianEmail')?.value?.trim() || null;
+        const guardian_phone = document.getElementById('editLearnerGuardianPhone')?.value?.trim() || null;
 
         if (!name || !admissionNumber || !gradeLevel) {
             showAlert('Validation Error', 'Please fill in all required fields.', 'error');
@@ -933,7 +1501,11 @@
                     name: name,
                     admission_number: admissionNumber,
                     email: email || null,
-                    grade_level: gradeLevel
+                    grade_level: gradeLevel,
+                    classroom_id: classroom_id || null,
+                    guardian_email: guardian_email || null,
+                    guardian_phone: guardian_phone || null,
+                    gender: gender,
                 })
             });
 

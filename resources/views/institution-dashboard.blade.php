@@ -743,7 +743,7 @@
     function updateClassInsights(learners) {
         // Defaults required by QA (and kept as fallback)
         const defaults = {
-            avgLevel: 'Approaching Expectation (AE)',
+            avgLevel: 'No attempts yet',
             strongArea: 'Literacy',
             weakArea: 'Numeracy',
             improving: 60,

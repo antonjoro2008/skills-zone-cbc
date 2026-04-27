@@ -331,9 +331,14 @@
         }
         
         if (averageScoreElement && dashboard.assessment_stats) {
+            const completed = dashboard.assessment_stats.completed_attempts || 0;
             const avg = dashboard.assessment_stats.average_score || 0;
-            const c = (typeof window.getCompetencyFromPercent === 'function') ? window.getCompetencyFromPercent(avg) : null;
-            averageScoreElement.textContent = c ? `${c.displayFull} · ${avg}% avg` : `${avg}%`;
+            if (!completed) {
+                averageScoreElement.textContent = 'No attempts yet';
+            } else {
+                const c = (typeof window.getCompetencyFromPercent === 'function') ? window.getCompetencyFromPercent(avg) : null;
+                averageScoreElement.textContent = c ? `${c.displayFull} · ${avg}% avg` : `${avg}%`;
+            }
         }
     }
     

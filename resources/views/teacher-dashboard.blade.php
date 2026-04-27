@@ -243,7 +243,23 @@
         if (typeof showAlert === 'function') {
             showAlert(title, message, type);
         } else {
-            alert(title + ': ' + message);
+            const alertModal = document.createElement('div');
+            alertModal.className = 'fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+            alertModal.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative">
+                    <div class="text-center">
+                        <div class="w-16 h-16 ${type === 'success' ? 'bg-green-100' : type === 'error' ? 'bg-red-100' : 'bg-blue-100'} rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas ${type === 'success' ? 'fa-check text-green-600' : type === 'error' ? 'fa-times text-red-600' : 'fa-info text-blue-600'} text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">${tdEscape(title)}</h3>
+                        <p class="text-gray-600 mb-6">${tdEscape(message)}</p>
+                        <button type="button" class="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white py-3 rounded-xl font-semibold hover:from-teal-700 hover:to-emerald-700 transition-all" onclick="this.closest('.fixed').remove()">
+                            OK
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(alertModal);
         }
     }
 
@@ -262,12 +278,26 @@
             teacherDashboardPayload = data.data || {};
             const ins = teacherDashboardPayload.insights || {};
             const pct = ins.average_percent != null ? ins.average_percent : 0;
-            document.getElementById('tdInsightLevel').textContent = ins.average_level || '—';
-            document.getElementById('tdInsightPercent').textContent = String(pct);
             const imp = ins.learners_improving_percent != null ? ins.learners_improving_percent : 0;
             document.getElementById('tdInsightImproving').textContent = imp + '%';
 
             const students = teacherDashboardPayload.students || [];
+            // If there are no completed attempts yet, don't label the class as "Below Expectation (0%)".
+            // We infer this from local cached history where available.
+            let hasAnyAttempts = false;
+            try {
+                const historyRaw = localStorage.getItem('learner_assessment_history');
+                const history = historyRaw ? JSON.parse(historyRaw) : {};
+                const ids = students.map(s => String(s.id));
+                hasAnyAttempts = ids.some(id => Array.isArray(history?.[id]) && history[id].length > 0);
+            } catch (e) { /* ignore */ }
+
+            document.getElementById('tdInsightLevel').textContent = hasAnyAttempts
+                ? (ins.average_level || '—')
+                : 'No attempts yet';
+            document.getElementById('tdInsightPercent').textContent = hasAnyAttempts
+                ? String(pct)
+                : '—';
             const hasClass = !!teacherDashboardPayload.classroom_id;
             document.getElementById('teacherNoClassBanner').classList.toggle('hidden', hasClass);
             const addBtn = document.getElementById('btnOpenAddLearnerTeacher');

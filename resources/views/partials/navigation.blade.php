@@ -45,10 +45,9 @@
             
             <!-- Mobile menu button and auth buttons -->
             <div class="md:hidden flex items-center space-x-1">
-                <!-- Buy Tokens button hidden for pilot phase -->
-                <!-- <button class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 px-2 py-1.5 rounded-full text-xs font-medium transition-all shadow-lg hover:shadow-xl hover:scale-105" onclick="showBuyTokensModal()" id="buyTokensBtnMobile" style="display:none;">
+                <button class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 px-2 py-1.5 rounded-full text-xs font-medium transition-all shadow-lg hover:shadow-xl hover:scale-105" onclick="showBuyTokensModal()" id="buyTokensBtnMobile" style="display:none;">
                     <i class="fas fa-coins mr-1"></i>Buy Tokens
-                </button> -->
+                </button>
                 <button class="bg-white text-[#8FC340] border border-[#8FC340] hover:bg-[#8FC340]/10 px-2 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105" onclick="showModal('loginModal')" id="loginBtnMobile">
                     <i class="fas fa-sign-in-alt mr-1"></i>Login
                 </button>
@@ -61,10 +60,9 @@
             </div>
             
             <div class="hidden md:flex items-center space-x-4">
-                <!-- Buy Tokens button hidden for pilot phase -->
-                <!-- <button class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 px-6 py-2 rounded-full text-sm font-medium transition-all shadow-lg hover:shadow-xl hover:scale-105" onclick="showBuyTokensModal()" id="buyTokensBtn" style="display:none;">
+                <button class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 px-6 py-2 rounded-full text-sm font-medium transition-all shadow-lg hover:shadow-xl hover:scale-105" onclick="showBuyTokensModal()" id="buyTokensBtn" style="display:none;">
                     <i class="fas fa-coins mr-2"></i>Buy Tokens
-                </button> -->
+                </button>
                 <button class="bg-white text-[#8FC340] border-2 border-[#8FC340] hover:bg-[#8FC340]/10 px-6 py-2 rounded-full text-sm font-medium transition-all hover:scale-105" onclick="showModal('loginModal')" id="loginBtn">
                     <i class="fas fa-sign-in-alt mr-2"></i>Login
                 </button>
@@ -112,6 +110,9 @@
                 <i class="fas fa-user mr-3 text-lg w-6"></i>Profile
             </a>
             <div class="pt-4 border-t border-gray-200 space-y-3">
+                <button type="button" id="buyTokensBtnMenuMobile" onclick="showBuyTokensModal(); toggleMobileMenu();" style="display:none;" class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg hover:shadow-xl">
+                    <i class="fas fa-coins mr-2"></i>Buy Tokens
+                </button>
                 <button type="button" id="sampleReportPdfBtnMobile" onclick="downloadSamplePerformanceReportPdf(); toggleMobileMenu();" style="display:none;" class="w-full inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-indigo-200 bg-white text-indigo-800 hover:bg-indigo-50 px-6 py-3 font-semibold transition-all">
                     <i class="fas fa-file-pdf text-red-600"></i>Sample performance report (PDF)
                 </button>

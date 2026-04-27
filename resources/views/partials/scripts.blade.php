@@ -968,6 +968,7 @@
             const registerBtnMobile = document.getElementById('registerBtnMobile');
             const logoutBtnMobile = document.getElementById('logoutBtnMobile');
             const buyTokensBtnMobile = document.getElementById('buyTokensBtnMobile');
+            const buyTokensBtnMenuMobile = document.getElementById('buyTokensBtnMenuMobile');
             const dashboardLinkMobile = document.getElementById('dashboardLinkMobile');
             const institutionDashboardLinkMobile = document.getElementById('institutionDashboardLinkMobile');
             const teacherDashboardLinkMobile = document.getElementById('teacherDashboardLinkMobile');
@@ -990,7 +991,8 @@
             if (isLoggedIn) {
                 // Check if user is an institutional learner (student with institution_id)
                 const isInstitutionalLearner = currentUser.user_type === 'student' && currentUser.institution_id;
-                const hidePurchasesPilot = isInstitutionalLearner || currentUser.user_type === 'teacher';
+                const hidePurchasesPilot = false;
+                const isLandingPage = window.location && window.location.pathname === '/';
                 
                 // User is logged in
                 if (loginBtn) loginBtn.style.display = 'none';
@@ -999,8 +1001,8 @@
                 if (sampleReportPdfBtn) sampleReportPdfBtn.style.display = 'inline-flex';
                 if (sampleReportPdfBtnMobile) sampleReportPdfBtnMobile.style.display = 'block';
                 
-                // Hide Buy Tokens for institutional learners and pilot phase
-                if (buyTokensBtn) buyTokensBtn.style.display = 'none'; // Hidden for pilot phase
+                // Show Buy Tokens on all pages except landing page
+                if (buyTokensBtn) buyTokensBtn.style.display = isLandingPage ? 'none' : 'inline-flex';
                 if (transactionsLink) transactionsLink.style.display = hidePurchasesPilot ? 'none' : 'block';
                 if (assessmentsLink) assessmentsLink.style.display = 'block';
                 if (profileLink) profileLink.style.display = 'block';
@@ -1009,8 +1011,9 @@
                 if (registerBtnMobile) registerBtnMobile.style.display = 'none';
                 if (logoutBtnMobile) logoutBtnMobile.style.display = 'block';
                 
-                // Hide Buy Tokens for institutional learners and pilot phase (mobile)
-                if (buyTokensBtnMobile) buyTokensBtnMobile.style.display = 'none'; // Hidden for pilot phase
+                // Show Buy Tokens on all pages except landing page (mobile)
+                if (buyTokensBtnMobile) buyTokensBtnMobile.style.display = isLandingPage ? 'none' : 'inline-flex';
+                if (buyTokensBtnMenuMobile) buyTokensBtnMenuMobile.style.display = isLandingPage ? 'none' : 'inline-flex';
                 if (transactionsLinkMobile) transactionsLinkMobile.style.display = hidePurchasesPilot ? 'none' : 'block';
                 if (assessmentsLinkMobile) assessmentsLinkMobile.style.display = 'block';
                 if (profileLinkMobile) profileLinkMobile.style.display = 'block';
@@ -1074,6 +1077,7 @@
                 if (logoutBtnMobile) logoutBtnMobile.style.display = 'none';
                 if (sampleReportPdfBtnMobile) sampleReportPdfBtnMobile.style.display = 'none';
                 if (buyTokensBtnMobile) buyTokensBtnMobile.style.display = 'none';
+                if (buyTokensBtnMenuMobile) buyTokensBtnMenuMobile.style.display = 'none';
                 if (dashboardLinkMobile) dashboardLinkMobile.style.display = 'none';
                 if (institutionDashboardLinkMobile) institutionDashboardLinkMobile.style.display = 'none';
                 if (teacherDashboardLinkMobile) teacherDashboardLinkMobile.style.display = 'none';

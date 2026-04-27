@@ -1587,8 +1587,41 @@
             console.log('Alert modal found:', alertModal);
             
             if (!alertModal) {
-                console.error('Alert modal not found. Falling back to default alert.');
-                alert(`${title}: ${message}`);
+                // If the shared modal isn't in the DOM for any reason, render a lightweight custom modal
+                // (never fall back to the browser's default alert, which looks inconsistent).
+                const fallback = document.createElement('div');
+                fallback.className = 'fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+                const safeTitle = String(title ?? '');
+                const safeMessage = String(message ?? '');
+                const iconWrap =
+                    type === 'success' ? 'from-green-500 to-green-600' :
+                    type === 'error' ? 'from-red-500 to-red-600' :
+                    type === 'info' ? 'from-blue-500 to-blue-600' :
+                    'from-yellow-500 to-orange-500';
+                const icon =
+                    type === 'success' ? 'fa-check-circle' :
+                    type === 'error' ? 'fa-times-circle' :
+                    type === 'info' ? 'fa-info-circle' :
+                    'fa-exclamation-triangle';
+                fallback.innerHTML = `
+                    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r ${iconWrap} rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas ${icon} text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2"></h3>
+                        <p class="text-gray-600 mb-6"></p>
+                        <button type="button" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                            <i class="fas fa-check mr-2"></i>OK
+                        </button>
+                    </div>
+                `;
+                fallback.querySelector('h3').textContent = safeTitle;
+                fallback.querySelector('p').textContent = safeMessage;
+                fallback.querySelector('button').addEventListener('click', () => {
+                    fallback.remove();
+                    if (typeof onConfirm === 'function') onConfirm();
+                });
+                document.body.appendChild(fallback);
                 return;
             }
             
@@ -1606,8 +1639,40 @@
             
             // Check if all required elements exist
             if (!alertTitle || !alertMessage || !alertIcon || !alertContainer) {
-                console.error('Alert modal elements not found. Falling back to default alert.');
-                alert(`${title}: ${message}`);
+                // If the structure has changed, gracefully fall back to an inline custom modal.
+                const fallback = document.createElement('div');
+                fallback.className = 'fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+                const safeTitle = String(title ?? '');
+                const safeMessage = String(message ?? '');
+                const iconWrap =
+                    type === 'success' ? 'from-green-500 to-green-600' :
+                    type === 'error' ? 'from-red-500 to-red-600' :
+                    type === 'info' ? 'from-blue-500 to-blue-600' :
+                    'from-yellow-500 to-orange-500';
+                const icon =
+                    type === 'success' ? 'fa-check-circle' :
+                    type === 'error' ? 'fa-times-circle' :
+                    type === 'info' ? 'fa-info-circle' :
+                    'fa-exclamation-triangle';
+                fallback.innerHTML = `
+                    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r ${iconWrap} rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas ${icon} text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2"></h3>
+                        <p class="text-gray-600 mb-6"></p>
+                        <button type="button" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                            <i class="fas fa-check mr-2"></i>OK
+                        </button>
+                    </div>
+                `;
+                fallback.querySelector('h3').textContent = safeTitle;
+                fallback.querySelector('p').textContent = safeMessage;
+                fallback.querySelector('button').addEventListener('click', () => {
+                    fallback.remove();
+                    if (typeof onConfirm === 'function') onConfirm();
+                });
+                document.body.appendChild(fallback);
                 return;
             }
             

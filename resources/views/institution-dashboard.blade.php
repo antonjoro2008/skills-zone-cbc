@@ -897,7 +897,9 @@
                             <a href="/learner/${learner.id}" class="font-medium text-gray-900 hover:text-blue-700">
                                 ${escapeHtml(learner.name)}
                             </a>
-                            <div class="text-xs text-gray-500">${escapeHtml(learner.admission_number || 'N/A')}</div>
+                            <div class="text-xs text-gray-500">
+                                Admission No (Login ID): ${escapeHtml(learner.admission_number || 'N/A')}
+                            </div>
                         </div>
                     </div>
                 </td>

@@ -566,7 +566,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Gender <span class="text-gray-400">(Optional)</span></label>
                         <select id="learnerGender" class="form-input w-full px-4 py-3 rounded-xl">
-                            <option value="">Prefer not to specify</option>
+                            <option value=""></option>
                             <option value="female">Female</option>
                             <option value="male">Male</option>
                         </select>

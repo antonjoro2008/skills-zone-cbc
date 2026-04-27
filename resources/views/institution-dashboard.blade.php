@@ -1410,7 +1410,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Gender <span class="text-gray-400">(optional)</span></label>
                             <select id="editLearnerGender" class="form-input w-full px-3 py-2.5 sm:py-2 rounded-lg text-sm">
-                                <option value="" ${selGender === '' ? 'selected' : ''}>Prefer not to specify</option>
+                                <option value="" ${selGender === '' ? 'selected' : ''}></option>
                                 <option value="female" ${selGender === 'female' ? 'selected' : ''}>Female</option>
                                 <option value="male" ${selGender === 'male' ? 'selected' : ''}>Male</option>
                             </select>

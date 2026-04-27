@@ -118,9 +118,6 @@
                         <option value="">Prefer not to specify</option>
                         <option value="female">Female</option>
                         <option value="male">Male</option>
-                        <option value="non_binary">Non-binary</option>
-                        <option value="prefer_not_to_say">Learner prefers not to say</option>
-                        <option value="other">Other / school category</option>
                     </select>
                 </div>
                 <div>
@@ -161,9 +158,6 @@
         const m = {
             female: 'Female',
             male: 'Male',
-            non_binary: 'Non-binary',
-            prefer_not_to_say: 'Prefer not to say',
-            other: 'Other',
         };
         return m[code] || '—';
     }

@@ -569,9 +569,6 @@
                             <option value="">Prefer not to specify</option>
                             <option value="female">Female</option>
                             <option value="male">Male</option>
-                            <option value="non_binary">Non-binary</option>
-                            <option value="prefer_not_to_say">Learner prefers not to say</option>
-                            <option value="other">Other / school category</option>
                         </select>
                         <p class="text-xs text-gray-500 mt-1">Used only for aggregate inclusion &amp; CBC reporting; optional under your school policy.</p>
                     </div>
@@ -724,7 +721,7 @@
                             <div class="text-sm text-blue-800">
                                 <p class="font-semibold mb-2">Upload Instructions:</p>
                                 <ul class="list-disc list-inside space-y-1">
-                                    <li>Upload a CSV with headers: <strong>name, admission_number, email, grade_level, password</strong> (required), plus optional <strong>gender</strong> (female, male, non_binary, prefer_not_to_say, other)</li>
+                                    <li>Upload a CSV with headers: <strong>name, admission_number, email, grade_level, password</strong> (required), plus optional <strong>gender</strong> (female, male)</li>
                                     <li>First row must be headers; column order can vary as long as header names match</li>
                                     <li>Maximum 100 learners per upload</li>
                                     <li>Each learner must have a unique admission number</li>

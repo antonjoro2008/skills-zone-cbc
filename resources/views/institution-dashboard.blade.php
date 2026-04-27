@@ -531,9 +531,6 @@
         const m = {
             female: 'Female',
             male: 'Male',
-            non_binary: 'Non-binary',
-            prefer_not_to_say: 'Prefer not to say',
-            other: 'Other',
         };
         return m[code] || '—';
     }
@@ -832,7 +829,7 @@
         const grEl = document.getElementById('institutionGenderReporting');
         if (grEl) {
             if (learners && learners.length) {
-                const allowed = ['female', 'male', 'non_binary', 'prefer_not_to_say', 'other'];
+                const allowed = ['female', 'male'];
                 const withG = learners.filter(l => l.gender && allowed.includes(l.gender)).length;
                 const rate = Math.round((withG / learners.length) * 100);
                 grEl.textContent = `Inclusion data: gender on record for ${withG} of ${learners.length} learners (${rate}%). Complete records improve segmented analytics for stakeholders.`;
@@ -1260,7 +1257,7 @@
             }
             const col = {};
             headers.forEach((h, idx) => { col[h] = idx; });
-            const allowedGender = ['female', 'male', 'non_binary', 'prefer_not_to_say', 'other'];
+            const allowedGender = ['female', 'male'];
 
             const students = [];
             for (let i = 1; i < lines.length; i++) {
@@ -1360,7 +1357,7 @@
         const guardianEmail = escapeHtml(learner.guardian_email || '');
         const guardianPhone = escapeHtml(learner.guardian_phone || '');
         const selClass = learner.classroom_id || '';
-        const selGender = learner.gender && ['female', 'male', 'non_binary', 'prefer_not_to_say', 'other'].includes(learner.gender) ? learner.gender : '';
+        const selGender = learner.gender && ['female', 'male'].includes(learner.gender) ? learner.gender : '';
 
         const classroomOpts = (window.institutionClassroomsList || []).map(c => {
             const sel = String(c.id) === String(selClass) ? ' selected' : '';
@@ -1416,9 +1413,6 @@
                                 <option value="" ${selGender === '' ? 'selected' : ''}>Prefer not to specify</option>
                                 <option value="female" ${selGender === 'female' ? 'selected' : ''}>Female</option>
                                 <option value="male" ${selGender === 'male' ? 'selected' : ''}>Male</option>
-                                <option value="non_binary" ${selGender === 'non_binary' ? 'selected' : ''}>Non-binary</option>
-                                <option value="prefer_not_to_say" ${selGender === 'prefer_not_to_say' ? 'selected' : ''}>Learner prefers not to say</option>
-                                <option value="other" ${selGender === 'other' ? 'selected' : ''}>Other / school category</option>
                             </select>
                         </div>
                         <div>

@@ -313,7 +313,10 @@
                 const g = (s.guardian_email || s.guardian_phone) ? [s.guardian_email, s.guardian_phone].filter(Boolean).join(' · ') : '—';
                 return `<tr class="border-t border-gray-100">
                     <td class="py-3 px-3 font-medium text-gray-900">
-                        <a href="/learner/${s.id}" class="hover:text-teal-700">${tdEscape(s.name)}</a>
+                        <div class="flex flex-col">
+                            <a href="/learner/${s.id}" class="hover:text-teal-700">${tdEscape(s.name)}</a>
+                            <span class="text-xs text-gray-500 mt-0.5">Admission No (Login ID): ${tdEscape(s.admission_number || 'N/A')}</span>
+                        </div>
                     </td>
                     <td class="py-3 px-3 text-gray-600">${tdEscape(s.grade_level || '—')}</td>
                     <td class="py-3 px-3 text-gray-600 text-sm">${tdEscape(formatGenderLabel(s.gender))}</td>

@@ -22,7 +22,7 @@
                             <i class="fas fa-star text-yellow-600 mr-2"></i>
                             <span class="text-sm font-bold" id="heroLearnersBadge"
                                 data-stat-baseline="{{ $platformStatBaselines['learners'] }}">Trusted by
-                                {{ number_format($platformStatBaselines['learners']) }}+ learners across the country</span>
+                                {{ number_format($platformStatBaselines['learners']) }} learners across the country</span>
                         </div>
                         <h1 class="text-4xl md:text-6xl lg:text-5xl font-bold mb-6 leading-tight text-white">
                             Unlocking CBC
@@ -345,7 +345,7 @@
                             data-stat-key="learners"
                             data-stat-baseline="{{ $platformStatBaselines['learners'] }}"
                             class="text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text mb-2 group-hover:scale-110 transition-transform">
-                            {{ number_format($platformStatBaselines['learners']) }}+
+                            {{ number_format($platformStatBaselines['learners']) }}
                         </div>
                         <p class="text-gray-300 font-medium">Learners</p>
                         <div class="w-12 h-1 bg-gradient-to-r from-yellow-400 to-orange-400 mx-auto mt-3 rounded-full">
@@ -356,7 +356,7 @@
                             data-stat-key="active_users"
                             data-stat-baseline="{{ $platformStatBaselines['active_users'] }}"
                             class="text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text mb-2 group-hover:scale-110 transition-transform">
-                            {{ number_format($platformStatBaselines['active_users']) }}+
+                            {{ number_format($platformStatBaselines['active_users']) }}
                         </div>
                         <p class="text-gray-300 font-medium">Active Users</p>
                         <div class="w-12 h-1 bg-gradient-to-r from-green-400 to-blue-400 mx-auto mt-3 rounded-full"></div>
@@ -395,7 +395,7 @@
 
             function formatStatTotal(baseline, apiCount) {
                 const total = parseCount(baseline) + parseCount(apiCount);
-                return total.toLocaleString() + '+';
+                return total.toLocaleString();
             }
 
             function extractPlatformCounts(payload) {

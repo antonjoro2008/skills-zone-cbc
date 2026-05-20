@@ -20,7 +20,9 @@
                         <div
                             class="inline-flex items-center bg-yellow-400 bg-opacity-90 text-gray-900 rounded-full px-4 py-2 mb-6 shadow-lg">
                             <i class="fas fa-star text-yellow-600 mr-2"></i>
-                            <span class="text-sm font-bold">Trusted by 900+ learners across the country</span>
+                            <span class="text-sm font-bold" id="heroLearnersBadge"
+                                data-stat-baseline="{{ $platformStatBaselines['learners'] }}">Trusted by
+                                {{ number_format($platformStatBaselines['learners']) }}+ learners across the country</span>
                         </div>
                         <h1 class="text-4xl md:text-6xl lg:text-5xl font-bold mb-6 leading-tight text-white">
                             Unlocking CBC
@@ -339,18 +341,22 @@
 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                     <div class="stat-counter rounded-2xl p-6 text-center group hover:scale-105 transition-all duration-300">
-                        <div
+                        <div id="statLearners"
+                            data-stat-key="learners"
+                            data-stat-baseline="{{ $platformStatBaselines['learners'] }}"
                             class="text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text mb-2 group-hover:scale-110 transition-transform">
-                            900+
+                            {{ number_format($platformStatBaselines['learners']) }}+
                         </div>
                         <p class="text-gray-300 font-medium">Learners</p>
                         <div class="w-12 h-1 bg-gradient-to-r from-yellow-400 to-orange-400 mx-auto mt-3 rounded-full">
                         </div>
                     </div>
                     <div class="stat-counter rounded-2xl p-6 text-center group hover:scale-105 transition-all duration-300">
-                        <div
+                        <div id="statActiveUsers"
+                            data-stat-key="active_users"
+                            data-stat-baseline="{{ $platformStatBaselines['active_users'] }}"
                             class="text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text mb-2 group-hover:scale-110 transition-transform">
-                            200+
+                            {{ number_format($platformStatBaselines['active_users']) }}+
                         </div>
                         <p class="text-gray-300 font-medium">Active Users</p>
                         <div class="w-12 h-1 bg-gradient-to-r from-green-400 to-blue-400 mx-auto mt-3 rounded-full"></div>
@@ -379,6 +385,86 @@
 
 @section('scripts')
     <script>
+        (function () {
+            const PLATFORM_STAT_BASELINES = @json($platformStatBaselines);
+
+            function parseCount(value) {
+                const n = parseInt(value, 10);
+                return Number.isFinite(n) && n >= 0 ? n : 0;
+            }
+
+            function formatStatTotal(baseline, apiCount) {
+                const total = parseCount(baseline) + parseCount(apiCount);
+                return total.toLocaleString() + '+';
+            }
+
+            function extractPlatformCounts(payload) {
+                const root = payload && typeof payload === 'object' ? payload : {};
+                const data = root.data && typeof root.data === 'object' ? root.data : root;
+
+                return {
+                    learners: data.learners ?? data.total_students ?? data.total_learners ?? 0,
+                    active_users: data.active_users ?? data.active_users_count ?? 0,
+                };
+            }
+
+            function applyPlatformStats(counts) {
+                const learnersTotal = formatStatTotal(
+                    PLATFORM_STAT_BASELINES.learners,
+                    counts.learners,
+                );
+                const activeUsersTotal = formatStatTotal(
+                    PLATFORM_STAT_BASELINES.active_users,
+                    counts.active_users,
+                );
+
+                const statLearners = document.getElementById('statLearners');
+                if (statLearners) {
+                    statLearners.textContent = learnersTotal;
+                }
+
+                const statActiveUsers = document.getElementById('statActiveUsers');
+                if (statActiveUsers) {
+                    statActiveUsers.textContent = activeUsersTotal;
+                }
+
+                const heroBadge = document.getElementById('heroLearnersBadge');
+                if (heroBadge) {
+                    heroBadge.textContent =
+                        'Trusted by ' + learnersTotal + ' learners across the country';
+                }
+            }
+
+            async function loadPlatformStats() {
+                const apiBase =
+                    typeof API_BASE_URL !== 'undefined'
+                        ? API_BASE_URL
+                        : 'https://admin.skillszone.africa';
+
+                try {
+                    const response = await fetch(apiBase + '/api/platform-stats', {
+                        method: 'GET',
+                        headers: { Accept: 'application/json' },
+                    });
+
+                    if (!response.ok) {
+                        return;
+                    }
+
+                    const payload = await response.json();
+                    if (payload.success === false) {
+                        return;
+                    }
+
+                    applyPlatformStats(extractPlatformCounts(payload));
+                } catch (error) {
+                    console.warn('Platform stats unavailable, using baselines.', error);
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', loadPlatformStats);
+        })();
+
         document.addEventListener('DOMContentLoaded', function () {
             // Check if user is logged in
             const user = localStorage.getItem('user');

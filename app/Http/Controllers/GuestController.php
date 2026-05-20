@@ -11,7 +11,9 @@ class GuestController extends Controller
      */
     public function index()
     {
-        return view('index');
+        return view('index', [
+            'platformStatBaselines' => config('platform_stats.baselines'),
+        ]);
     }
 
     /**

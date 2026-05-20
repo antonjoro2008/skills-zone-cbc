@@ -404,7 +404,11 @@
 
                 return {
                     learners: data.learners ?? data.total_students ?? data.total_learners ?? 0,
-                    active_users: data.active_users ?? data.active_users_count ?? 0,
+                    active_users:
+                        data.active_users ??
+                        data.total_users ??
+                        data.active_users_count ??
+                        0,
                 };
             }
 

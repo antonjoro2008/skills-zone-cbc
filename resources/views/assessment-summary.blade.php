@@ -77,10 +77,11 @@
 
             <!-- Category Scores Section (only shown if category_scores exist) -->
             <div id="categoryScoresSection" class="bg-white rounded-3xl shadow-lg p-8 mb-8 hidden">
-                <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2 flex items-center">
                     <i class="fas fa-layer-group text-purple-600 mr-3"></i>
                     Category Performance
                 </h3>
+                <p class="text-sm text-gray-600 mb-6">How your marks are spread across strands in this assessment (shares total 100%). Strand accuracy is shown separately.</p>
                 <div id="categoryScoresContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Category scores will be dynamically inserted here -->
                 </div>
@@ -454,6 +455,40 @@
         ring.style.strokeDashoffset = offset;
     }
 
+    /**
+     * Turn per-strand accuracy (each vs its own question count) into shares that sum to 100%
+     * for this assessment. Uses marks earned per strand; falls back to question count if none scored.
+     */
+    function computeCategorySharePercents(categoryScores) {
+        const scores = categoryScores.map(c => Math.max(0, Number(c.score) || 0));
+        const outOf = categoryScores.map(c => Math.max(0, Number(c.out_of) || 0));
+        const totalScore = scores.reduce((a, b) => a + b, 0);
+        const weights = totalScore > 0 ? scores : (outOf.reduce((a, b) => a + b, 0) > 0 ? outOf : categoryScores.map(() => 1));
+        const totalWeight = weights.reduce((a, b) => a + b, 0);
+
+        const raw = weights.map(w => totalWeight > 0 ? (w / totalWeight) * 100 : 0);
+        const rounded = raw.map(v => Math.round(v * 10) / 10);
+        const drift = Math.round((100 - rounded.reduce((a, b) => a + b, 0)) * 10) / 10;
+        if (rounded.length > 0 && Math.abs(drift) >= 0.1) {
+            let maxIdx = 0;
+            for (let i = 1; i < raw.length; i++) {
+                if (raw[i] > raw[maxIdx]) maxIdx = i;
+            }
+            rounded[maxIdx] = Math.round((rounded[maxIdx] + drift) * 10) / 10;
+        }
+
+        return categoryScores.map((category, i) => {
+            const score = scores[i];
+            const max = outOf[i];
+            const accuracy = max > 0 ? (score / max) * 100 : (Number(category.percentage) || 0);
+            return {
+                ...category,
+                accuracy_percentage: accuracy,
+                share_percentage: rounded[i],
+            };
+        });
+    }
+
     function displayCategoryScores(categoryScores) {
         const categoryScoresSection = document.getElementById('categoryScoresSection');
         const categoryScoresContainer = document.getElementById('categoryScoresContainer');
@@ -467,26 +502,34 @@
         // Show section and clear previous content
         categoryScoresSection.classList.remove('hidden');
         categoryScoresContainer.innerHTML = '';
+
+        const categoriesWithShares = computeCategorySharePercents(categoryScores);
         
         // Create category score cards
-        categoryScores.forEach(category => {
+        categoriesWithShares.forEach(category => {
             const categoryCard = document.createElement('div');
             categoryCard.className = 'bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-200 hover:shadow-lg transition-all duration-300';
+
+            const accuracy = category.accuracy_percentage;
+            const share = category.share_percentage;
             
-            // Determine performance color based on percentage
+            // Color by strand accuracy (not share of total)
             let performanceColor = 'text-red-600';
             let performanceBg = 'bg-red-100';
             let performanceIcon = 'fas fa-exclamation-triangle';
             
-            if (category.percentage >= 80) {
+            if (accuracy >= 80) {
                 performanceColor = 'text-green-600';
                 performanceBg = 'bg-green-100';
                 performanceIcon = 'fas fa-star';
-            } else if (category.percentage >= 60) {
+            } else if (accuracy >= 60) {
                 performanceColor = 'text-yellow-600';
                 performanceBg = 'bg-yellow-100';
                 performanceIcon = 'fas fa-check-circle';
             }
+
+            const barColor = share >= 33 ? '#10B981' : share >= 20 ? '#F59E0B' : '#8B5CF6';
+            const barColorEnd = share >= 33 ? '#059669' : share >= 20 ? '#D97706' : '#6D28D9';
             
             categoryCard.innerHTML = `
                 <div class="flex items-center justify-between mb-4">
@@ -496,29 +539,27 @@
                         </div>
                         <div>
                             <h4 class="text-lg font-bold text-gray-900">${category.category_tag}</h4>
-                            <p class="text-sm text-gray-600">Category Performance</p>
+                            <p class="text-sm text-gray-600">Share of marks in this assessment</p>
                         </div>
                     </div>
                     <div class="text-right">
-                        <div class="text-2xl font-bold ${performanceColor}">${category.percentage.toFixed(1)}%</div>
-                        <div class="text-sm text-gray-600">${category.score}/${category.out_of}</div>
+                        <div class="text-2xl font-bold text-purple-700">${share.toFixed(1)}%</div>
+                        <div class="text-sm text-gray-600">${category.score}/${category.out_of} · ${accuracy.toFixed(1)}% accuracy</div>
                     </div>
                 </div>
                 
-                <!-- Progress Bar -->
+                <!-- Progress Bar (share of 100% across strands) -->
                 <div class="w-full bg-gray-200 rounded-full h-3 mb-3">
                     <div class="h-3 rounded-full transition-all duration-1000 ease-out" 
-                         style="width: ${category.percentage}%; background: linear-gradient(90deg, 
-                         ${category.percentage >= 80 ? '#10B981' : category.percentage >= 60 ? '#F59E0B' : '#EF4444'} 0%, 
-                         ${category.percentage >= 80 ? '#059669' : category.percentage >= 60 ? '#D97706' : '#DC2626'} 100%);">
+                         style="width: ${Math.min(100, share)}%; background: linear-gradient(90deg, ${barColor} 0%, ${barColorEnd} 100%);">
                     </div>
                 </div>
                 
                 <div class="text-sm text-gray-600">
                     ${typeof window.getCompetencyFromPercent === 'function'
                         ? (() => {
-                            const cc = window.getCompetencyFromPercent(category.percentage);
-                            return cc.displayFull + ' — ' + cc.feedback;
+                            const cc = window.getCompetencyFromPercent(accuracy);
+                            return cc.displayFull + ' on this strand — ' + cc.feedback;
                         })()
                         : 'Review this strand with your teacher.'}
                 </div>

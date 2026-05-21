@@ -153,9 +153,28 @@
             return `${c.displayFull} · ${p.toFixed(1)}% · ${c.feedback}`;
         }
 
+        /** Tailwind text classes for CBE band (BE red · AE amber · ME green · EE emerald). */
+        function getCompetencyColorClasses(code) {
+            const map = {
+                BE: 'text-red-700',
+                AE: 'text-amber-700',
+                ME: 'text-green-700',
+                EE: 'text-emerald-700',
+            };
+            return map[code] || 'text-slate-600';
+        }
+
+        function applyCompetencyLineStyle(element, code, sizeClass) {
+            if (!element) return;
+            const size = sizeClass || 'text-sm leading-relaxed font-medium';
+            element.className = size + ' ' + getCompetencyColorClasses(code);
+        }
+
         // Expose helpers for page scripts
         window.getCompetencyFromPercent = getCompetencyFromPercent;
         window.formatCompetencyLevel = formatCompetencyLevel;
+        window.getCompetencyColorClasses = getCompetencyColorClasses;
+        window.applyCompetencyLineStyle = applyCompetencyLineStyle;
 
         // Token Balance Functions
         async function fetchTokenBalance() {

@@ -400,11 +400,28 @@
         const competencyEl = document.getElementById('competencyLabelSummary');
         if (competencyEl && competency) {
             competencyEl.textContent = `${competency.displayFull} · ${percentage.toFixed(1)}% · ${competency.feedback}`;
+            if (typeof window.applyCompetencyLineStyle === 'function') {
+                window.applyCompetencyLineStyle(competencyEl, competency.code);
+            } else {
+                competencyEl.className = 'text-sm leading-relaxed font-medium ' + (competency.code === 'BE' ? 'text-red-700' : competency.code === 'AE' ? 'text-amber-700' : competency.code === 'ME' ? 'text-green-700' : competency.code === 'EE' ? 'text-emerald-700' : 'text-slate-600');
+            }
+        } else if (competencyEl) {
+            competencyEl.className = 'text-sm text-slate-600 leading-relaxed';
         }
 
-        document.getElementById('scoreDescription').textContent = competency
-            ? window.formatCompetencyLevel(percentage)
-            : getScoreDescription(percentage);
+        const scoreDescEl = document.getElementById('scoreDescription');
+        if (scoreDescEl) {
+            scoreDescEl.textContent = competency
+                ? competency.displayFull
+                : getScoreDescription(percentage);
+            if (competency && typeof window.applyCompetencyLineStyle === 'function') {
+                window.applyCompetencyLineStyle(scoreDescEl, competency.code, 'text-lg font-semibold');
+            } else if (competency) {
+                scoreDescEl.className = 'text-lg font-semibold ' + (typeof window.getCompetencyColorClasses === 'function'
+                    ? window.getCompetencyColorClasses(competency.code)
+                    : 'text-indigo-800');
+            }
+        }
         document.getElementById('scoreDetails').textContent = `You scored ${summary.correct_answers || 0} out of ${summary.auto_marked_questions || 0} auto-marked questions`;
         
         // Update breakdown

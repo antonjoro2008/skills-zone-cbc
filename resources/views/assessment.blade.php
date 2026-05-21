@@ -1675,16 +1675,28 @@
         const competencyLabelEl = document.getElementById('competencyLabel');
         if (competencyLabelEl && competency) {
             competencyLabelEl.textContent = `${competency.displayFull} · ${score}%`;
+            if (typeof window.applyCompetencyLineStyle === 'function') {
+                window.applyCompetencyLineStyle(competencyLabelEl, competency.code, 'text-gray-700 font-semibold');
+            }
         }
 
         const feedbackMessageEl = document.getElementById('resultFeedbackMessage');
         if (feedbackMessageEl && competency) {
             feedbackMessageEl.textContent = competency.feedback;
+            if (typeof window.applyCompetencyLineStyle === 'function') {
+                window.applyCompetencyLineStyle(feedbackMessageEl, competency.code, 'text-sm leading-relaxed');
+            }
         }
 
-        document.getElementById('scoreDescription').textContent = competency
-            ? window.formatCompetencyLevel(score)
-            : getScoreDescription(score);
+        const scoreDescEl = document.getElementById('scoreDescription');
+        if (scoreDescEl) {
+            scoreDescEl.textContent = competency
+                ? `${competency.displayFull} · ${score}% · ${competency.feedback}`
+                : getScoreDescription(score);
+            if (competency && typeof window.applyCompetencyLineStyle === 'function') {
+                window.applyCompetencyLineStyle(scoreDescEl, competency.code, 'text-base font-medium');
+            }
+        }
 
         // Update breakdown
         document.getElementById('correctAnswers').textContent = results.correct_count || 0;

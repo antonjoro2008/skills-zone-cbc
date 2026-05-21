@@ -83,7 +83,22 @@
                 </h3>
                 <p class="text-sm text-gray-600 mb-6">How your marks are spread across strands in this assessment (shares total 100%). Strand accuracy is shown separately.</p>
                 <div id="categoryScoresContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Category scores will be dynamically inserted here -->
+                    <!-- Per-strand accuracy cards -->
+                </div>
+
+                <div id="categoryContributionBlock" class="mt-10 pt-8 border-t border-gray-200 hidden">
+                    <h4 class="text-xl font-bold text-gray-900 mb-2 flex items-center">
+                        <i class="fas fa-chart-pie text-teal-600 mr-2"></i>
+                        Overall score by subject
+                    </h4>
+                    <p class="text-sm text-gray-600 mb-2">
+                        How your total score splits across subjects. These percentage points add up to your overall result
+                        (<span id="categoryContributionOverallLabel" class="font-semibold text-gray-900">—</span>).
+                    </p>
+                    <p class="text-xs text-gray-500 mb-6">Not a grade out of 100% per subject—only your share of the final score.</p>
+                    <div id="categoryContributionContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Contribution cards -->
+                    </div>
                 </div>
             </div>
 
@@ -217,6 +232,8 @@
 </style>
 
 <script>
+    const configuredAttemptId = @json($attemptId ?? null);
+    const legacyAssessmentId = @json($legacyAssessmentId ?? null);
     let assessmentResults = null;
     let allQuestions = [];
     
@@ -284,34 +301,53 @@
         window.location.href = '/assessments';
     }
 
-    function loadAssessmentResults() {
-        // Get results from localStorage
-        const resultsData = localStorage.getItem('assessmentResults');
-        
-        // Debug: Log available data
-        console.log('=== ASSESSMENT RESULTS DEBUG ===');
-        console.log('Raw results data:', resultsData);
-        if (resultsData) {
-            const parsed = JSON.parse(resultsData);
-            console.log('Parsed results:', parsed);
-            console.log('Submission data:', parsed.submission_data);
-            console.log('Assessment data:', parsed.assessment);
+    async function loadAssessmentResultsFromApi(attemptId) {
+        if (!attemptId || typeof DashboardApi === 'undefined') return false;
+        try {
+            const result = await DashboardApi.fetchAttemptSummary(attemptId);
+            if (!result.success || !result.data) {
+                showAlert('Error', result.message || 'Could not load attempt summary.', 'error');
+                return false;
+            }
+            assessmentResults = result.data;
+            try {
+                localStorage.setItem('assessmentResults', JSON.stringify(result.data));
+            } catch (e) { /* ignore */ }
+            displayResults();
+            return true;
+        } catch (error) {
+            console.error('Error loading attempt summary:', error);
+            return false;
         }
-        console.log('=== END ASSESSMENT RESULTS DEBUG ===');
-        if (!resultsData) {
-            showAlert('Error', 'No assessment results found. Redirecting to your transactions page.', 'error');
-            window.location.href = '/transactions';
+    }
+
+    async function loadAssessmentResults() {
+        if (configuredAttemptId) {
+            const ok = await loadAssessmentResultsFromApi(configuredAttemptId);
+            if (!ok) {
+                window.location.href = '/dashboard';
+            }
             return;
         }
 
-        try {
-            assessmentResults = JSON.parse(resultsData);
-            displayResults();
-        } catch (error) {
-            console.error('Error parsing assessment results:', error);
-            showAlert('Error', 'Failed to load assessment results. Redirecting to your transactions page.', 'error');
-            window.location.href = '/transactions';
+        const resultsData = localStorage.getItem('assessmentResults');
+        if (resultsData) {
+            try {
+                const parsed = JSON.parse(resultsData);
+                if (parsed.attempt_id && typeof DashboardApi !== 'undefined') {
+                    const ok = await loadAssessmentResultsFromApi(parsed.attempt_id);
+                    if (ok) return;
+                }
+                assessmentResults = parsed;
+                displayResults();
+                return;
+            } catch (error) {
+                console.error('Error parsing assessment results:', error);
+            }
         }
+
+        showAlert('Error', 'No assessment results found. Open a past attempt from your dashboard history.', 'error');
+        window.location.href = '/dashboard';
     }
 
     function displayResults() {
@@ -416,7 +452,7 @@
         animateScoreRing(percentage);
 
         // Handle category scores if they exist
-        displayCategoryScores(assessmentResults.category_scores || []);
+        displayCategoryScores(assessmentResults.category_scores || [], percentage);
 
         // Generate question reviews
         generateQuestionReviews(assessmentResults.feedback || []);
@@ -489,23 +525,54 @@
         });
     }
 
-    function displayCategoryScores(categoryScores) {
+    /**
+     * Points each subject contributed to the overall % (sum equals overall score).
+     * e.g. 75% total → 35% Chemistry + 20% Physics + 20% Biology (+ remainder).
+     */
+    function computeCategoryContributionPercents(categoryScores, overallPercent) {
+        const scores = categoryScores.map(c => Math.max(0, Number(c.score) || 0));
+        const outOf = categoryScores.map(c => Math.max(0, Number(c.out_of) || 0));
+        const totalOutOf = outOf.reduce((a, b) => a + b, 0);
+        const totalScore = scores.reduce((a, b) => a + b, 0);
+        const computedOverall = totalOutOf > 0 ? (totalScore / totalOutOf) * 100 : 0;
+        const targetOverall = (typeof overallPercent === 'number' && overallPercent >= 0)
+            ? overallPercent
+            : computedOverall;
+
+        const raw = scores.map(s => totalOutOf > 0 ? (s / totalOutOf) * 100 : 0);
+        const rounded = raw.map(v => Math.round(v * 10) / 10);
+        const drift = Math.round((targetOverall - rounded.reduce((a, b) => a + b, 0)) * 10) / 10;
+        if (rounded.length > 0 && Math.abs(drift) >= 0.1) {
+            let maxIdx = 0;
+            for (let i = 1; i < raw.length; i++) {
+                if (raw[i] > raw[maxIdx]) maxIdx = i;
+            }
+            rounded[maxIdx] = Math.round((rounded[maxIdx] + drift) * 10) / 10;
+        }
+
+        return categoryScores.map((category, i) => ({
+            ...category,
+            contribution_percentage: Math.max(0, rounded[i]),
+        }));
+    }
+
+    function displayCategoryScores(categoryScores, overallPercent) {
         const categoryScoresSection = document.getElementById('categoryScoresSection');
         const categoryScoresContainer = document.getElementById('categoryScoresContainer');
+        const contributionBlock = document.getElementById('categoryContributionBlock');
+        const contributionContainer = document.getElementById('categoryContributionContainer');
         
-        // Hide section if no category scores
         if (!categoryScores || categoryScores.length === 0) {
             categoryScoresSection.classList.add('hidden');
+            if (contributionBlock) contributionBlock.classList.add('hidden');
             return;
         }
         
-        // Show section and clear previous content
         categoryScoresSection.classList.remove('hidden');
         categoryScoresContainer.innerHTML = '';
 
         const categoriesWithShares = computeCategorySharePercents(categoryScores);
         
-        // Create category score cards
         categoriesWithShares.forEach(category => {
             const categoryCard = document.createElement('div');
             categoryCard.className = 'bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-200 hover:shadow-lg transition-all duration-300';
@@ -513,7 +580,6 @@
             const accuracy = category.accuracy_percentage;
             const share = category.share_percentage;
             
-            // Color by strand accuracy (not share of total)
             let performanceColor = 'text-red-600';
             let performanceBg = 'bg-red-100';
             let performanceIcon = 'fas fa-exclamation-triangle';
@@ -548,7 +614,6 @@
                     </div>
                 </div>
                 
-                <!-- Progress Bar (share of 100% across strands) -->
                 <div class="w-full bg-gray-200 rounded-full h-3 mb-3">
                     <div class="h-3 rounded-full transition-all duration-1000 ease-out" 
                          style="width: ${Math.min(100, share)}%; background: linear-gradient(90deg, ${barColor} 0%, ${barColorEnd} 100%);">
@@ -567,6 +632,87 @@
             
             categoryScoresContainer.appendChild(categoryCard);
         });
+
+        displayCategoryContributionScores(categoryScores, overallPercent);
+    }
+
+    function displayCategoryContributionScores(categoryScores, overallPercent) {
+        const contributionBlock = document.getElementById('categoryContributionBlock');
+        const contributionContainer = document.getElementById('categoryContributionContainer');
+        const overallLabel = document.getElementById('categoryContributionOverallLabel');
+
+        if (!contributionBlock || !contributionContainer) return;
+
+        if (!categoryScores || categoryScores.length < 2) {
+            contributionBlock.classList.add('hidden');
+            return;
+        }
+
+        const categoriesWithContribution = computeCategoryContributionPercents(categoryScores, overallPercent);
+        const totalContribution = categoriesWithContribution.reduce(
+            (sum, c) => sum + (c.contribution_percentage || 0), 0
+        );
+        const displayOverall = (typeof overallPercent === 'number' && overallPercent >= 0)
+            ? overallPercent
+            : totalContribution;
+
+        contributionBlock.classList.remove('hidden');
+        contributionContainer.innerHTML = '';
+        if (overallLabel) {
+            overallLabel.textContent = displayOverall.toFixed(1) + '%';
+        }
+
+        const palette = [
+            ['#0D9488', '#14B8A6'],
+            ['#2563EB', '#3B82F6'],
+            ['#7C3AED', '#8B5CF6'],
+            ['#DB2777', '#EC4899'],
+            ['#D97706', '#F59E0B'],
+            ['#059669', '#10B981'],
+        ];
+
+        categoriesWithContribution.forEach((category, index) => {
+            const contribution = category.contribution_percentage || 0;
+            const [barColor, barColorEnd] = palette[index % palette.length];
+            const marksLabel = `${category.score}/${category.out_of} marks earned`;
+
+            const card = document.createElement('div');
+            card.className = 'bg-gradient-to-br from-teal-50 to-slate-50 rounded-2xl p-6 border border-teal-200 hover:shadow-lg transition-all duration-300';
+
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h4 class="text-lg font-bold text-gray-900">${category.category_tag}</h4>
+                        <p class="text-sm text-gray-600">Share of your overall score</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-teal-700">${contribution.toFixed(1)}%</div>
+                        <div class="text-sm text-gray-500">${marksLabel}</div>
+                    </div>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3 mb-2">
+                    <div class="h-3 rounded-full transition-all duration-1000 ease-out"
+                         style="width: ${Math.min(100, contribution)}%; background: linear-gradient(90deg, ${barColor} 0%, ${barColorEnd} 100%);">
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500">
+                    ${contribution.toFixed(1)} percentage point${contribution === 1 ? '' : 's'} toward ${displayOverall.toFixed(1)}% overall
+                </p>
+            `;
+
+            contributionContainer.appendChild(card);
+        });
+
+        const sumNote = document.createElement('p');
+        sumNote.className = 'text-sm text-gray-600 mt-4 col-span-full';
+        sumNote.textContent = 'Subject shares total '
+            + totalContribution.toFixed(1)
+            + '% (your overall score'
+            + (Math.abs(totalContribution - displayOverall) >= 0.2
+                ? '; rounded for display'
+                : '')
+            + ').';
+        contributionContainer.appendChild(sumNote);
     }
 
     function generateQuestionReviews(feedback) {

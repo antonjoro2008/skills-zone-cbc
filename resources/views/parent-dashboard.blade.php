@@ -93,6 +93,14 @@
             <ul id="parentActionItems" class="list-disc list-inside space-y-2 text-gray-700"></ul>
         </div>
 
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100">
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Recent assessment attempts</h3>
+            <p class="text-sm text-gray-600 mb-4">Completed attempts across your linked children. Open any summary again.</p>
+            <div id="parentAttemptHistory" class="space-y-3">
+                <p class="text-gray-500 text-sm"><i class="fas fa-spinner fa-spin mr-2"></i>Loading…</p>
+            </div>
+        </div>
+
         <!-- Learners Table -->
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200">
@@ -256,9 +264,27 @@
                     } catch (e) { /* ignore */ }
                 }
                 renderLearnersTable(learnersData);
+                await loadParentAttemptHistory();
             }
         } catch (error) {
             console.error('Error refreshing parent analytics:', error);
+        }
+    }
+
+    async function loadParentAttemptHistory() {
+        const container = document.getElementById('parentAttemptHistory');
+        if (!container || typeof DashboardApi === 'undefined') return;
+        try {
+            const result = await DashboardApi.fetchAttemptHistory();
+            if (result.success && result.data && Array.isArray(result.data.attempts)) {
+                const attempts = DashboardApi.mapStudentHistory(result.data.attempts);
+                DashboardApi.renderAttemptHistoryList(container, attempts);
+            } else {
+                container.innerHTML = '<p class="text-sm text-gray-500">No completed attempts yet for your linked learners.</p>';
+            }
+        } catch (error) {
+            console.error('Error loading parent attempt history:', error);
+            container.innerHTML = '<p class="text-sm text-gray-500">Could not load attempt history.</p>';
         }
     }
 
@@ -780,6 +806,8 @@
         
         loadCurrentUser();
         loadParentDashboard().then(function () {
+            return refreshParentAnalytics();
+        }).then(function () {
             return loadLearners();
         });
     });

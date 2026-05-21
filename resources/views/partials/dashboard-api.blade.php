@@ -53,17 +53,73 @@
         }
     }
 
+    function attemptSummaryUrl(attemptId) {
+        return attemptId ? '/attempt-summary/' + encodeURIComponent(attemptId) : '#';
+    }
+
     function mapStudentHistory(entries) {
         return (entries || []).map(function (item) {
             return {
+                attempt_id: item.attempt_id ?? null,
+                assessment_id: item.assessment_id ?? null,
                 assessment_title: item.assessment_name || item.assessment_title || item.title || 'Assessment',
                 title: item.assessment_name || item.title,
-                score_percent: item.score_percent ?? item.percentage ?? item.score ?? 0,
+                score_percent: item.score_percent ?? item.percentage ?? item.score ?? item.percent ?? 0,
                 score: item.score_percent ?? item.score ?? 0,
                 assessed_at: item.date_taken || item.completed_at || item.assessed_at,
                 subject: item.subject || item.subject_name || null,
+                competency_level: item.competency_level || null,
+                status: item.status || 'completed',
             };
         });
+    }
+
+    function renderAttemptHistoryList(container, attempts, options) {
+        if (!container) return;
+        const opts = options || {};
+        const items = (attempts || []).filter(function (a) {
+            return opts.includeInProgress || a.status !== 'in_progress';
+        });
+
+        if (!items.length) {
+            container.innerHTML = opts.emptyHtml || (
+                '<div class="text-center text-gray-500 py-8">' +
+                '<i class="fas fa-clipboard-list text-3xl mb-3"></i>' +
+                '<p>No completed attempts yet.</p></div>'
+            );
+            return;
+        }
+
+        container.innerHTML = items.map(function (item) {
+            const p = item.score_percent ?? item.score ?? 0;
+            const title = escapeHtml(item.assessment_title || item.title || 'Assessment');
+            const when = item.assessed_at || item.completed_at || item.date_taken;
+            const whenStr = when ? new Date(when).toLocaleString() : '—';
+            const level = item.competency_level
+                ? escapeHtml(item.competency_level)
+                : (p + '%');
+            const href = item.attempt_id && item.status === 'completed'
+                ? attemptSummaryUrl(item.attempt_id)
+                : null;
+            const sub = item.subject ? escapeHtml(item.subject) : '';
+            const student = item.student_name ? '<span class="text-xs text-gray-500 block">' + escapeHtml(item.student_name) + '</span>' : '';
+
+            return (
+                '<div class="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:bg-gray-50 transition-all gap-4">' +
+                '<div class="min-w-0 flex-1">' +
+                '<p class="font-semibold text-gray-900 truncate">' + title + '</p>' +
+                student +
+                '<p class="text-sm text-gray-600">' + whenStr + (sub ? ' · ' + sub : '') + '</p>' +
+                '</div>' +
+                '<div class="text-right shrink-0">' +
+                '<p class="text-xl font-extrabold text-gray-900">' + (item.status === 'completed' ? p + '%' : 'In progress') + '</p>' +
+                '<p class="text-xs font-semibold text-indigo-800 max-w-[10rem] ml-auto leading-tight">' + level + '</p>' +
+                (href
+                    ? '<a href="' + href + '" class="inline-block mt-2 text-sm font-semibold text-blue-600 hover:underline">View summary</a>'
+                    : '') +
+                '</div></div>'
+            );
+        }).join('');
     }
 
     function dashboardBackUrl(userType) {
@@ -137,6 +193,20 @@
                             ? '<p class="text-xs text-amber-700 mt-2">' + escapeHtml(child.link_hint) + '</p>'
                             : '') +
                         '</div>' +
+                        (function () {
+                            const recent = (child.recent_assessments || []).filter(function (r) {
+                                return r.attempt_id;
+                            });
+                            if (!recent.length) return '';
+                            return '<div class="mt-4 pt-4 border-t border-gray-100"><p class="text-xs font-semibold text-gray-500 uppercase mb-2">Recent attempts</p>' +
+                                recent.map(function (r) {
+                                    const href = attemptSummaryUrl(r.attempt_id);
+                                    const when = r.date_taken ? new Date(r.date_taken).toLocaleDateString() : '';
+                                    return '<a href="' + href + '" class="block text-sm text-blue-600 hover:underline py-1">' +
+                                        escapeHtml(r.assessment_name || 'Assessment') + ' · ' + (r.score_percent ?? 0) + '%' +
+                                        (when ? ' · ' + when : '') + '</a>';
+                                }).join('') + '</div>';
+                        })() +
                         (progressHref
                             ? '<a href="' + progressHref + '" class="mt-4 inline-flex items-center justify-center rounded-xl bg-blue-600 text-white text-sm font-semibold px-4 py-2 hover:bg-blue-700">View progress</a>'
                             : '') +
@@ -265,6 +335,15 @@
         fetchTeacherDashboard: function () {
             return request('/api/teacher/dashboard');
         },
+        fetchAttemptHistory: function (studentId) {
+            const q = studentId ? '?student_id=' + encodeURIComponent(studentId) + '&per_page=50' : '?per_page=50';
+            return request('/api/assessment-attempts' + q);
+        },
+        fetchAttemptSummary: function (attemptId) {
+            return request('/api/assessment-attempts/' + encodeURIComponent(attemptId));
+        },
+        attemptSummaryUrl: attemptSummaryUrl,
+        renderAttemptHistoryList: renderAttemptHistoryList,
     };
 })();
 </script>

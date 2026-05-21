@@ -80,9 +80,9 @@
         </div>
         
         <!-- Recent Activity -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <div class="bg-white rounded-3xl shadow-lg p-8">
-                <h3 class="text-xl font-bold text-gray-900 mb-6">Recent Assessments</h3>
+                <h3 class="text-xl font-bold text-gray-900 mb-6">Available Assessments</h3>
                 <div class="space-y-4" id="recentAssessmentsContainer">
                     <!-- Dynamic content will be loaded here -->
                     <div class="text-center text-gray-500 py-8" id="loadingAssessments">
@@ -116,6 +116,17 @@
                         <i class="fas fa-history mr-2"></i>
                         View History
                     </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-lg p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Past assessment attempts</h3>
+            <p class="text-sm text-gray-600 mb-6">Open any completed attempt to view its full summary again.</p>
+            <div class="space-y-4" id="pastAttemptsContainer">
+                <div class="text-center text-gray-500 py-8">
+                    <i class="fas fa-spinner fa-spin text-3xl mb-3"></i>
+                    <p>Loading attempt history…</p>
                 </div>
             </div>
         </div>
@@ -276,7 +287,9 @@
 
                 loadStudentDashboardFromApi().then(function () {
                     refreshStudentAnalytics();
+                    loadPastAttempts();
                 });
+                loadPastAttempts();
                 
             } catch (e) {
                 console.error('Error parsing stored data:', e);
@@ -333,9 +346,29 @@
                 }
                 localStorage.setItem('dashboard', JSON.stringify(dash));
                 updateDashboardStats(dash);
+                if (result.data.assessment_history && result.data.assessment_history.length) {
+                    const container = document.getElementById('pastAttemptsContainer');
+                    const attempts = DashboardApi.mapStudentHistory(result.data.assessment_history);
+                    DashboardApi.renderAttemptHistoryList(container, attempts);
+                }
             }
         } catch (error) {
             console.error('Error refreshing student analytics:', error);
+        }
+    }
+
+    async function loadPastAttempts() {
+        const container = document.getElementById('pastAttemptsContainer');
+        if (!container || typeof DashboardApi === 'undefined') return;
+        try {
+            const result = await DashboardApi.fetchAttemptHistory();
+            if (result.success && result.data && Array.isArray(result.data.attempts)) {
+                const attempts = DashboardApi.mapStudentHistory(result.data.attempts);
+                DashboardApi.renderAttemptHistoryList(container, attempts);
+            }
+        } catch (error) {
+            console.error('Error loading attempt history:', error);
+            container.innerHTML = '<p class="text-sm text-gray-500 text-center py-6">Could not load attempt history.</p>';
         }
     }
 

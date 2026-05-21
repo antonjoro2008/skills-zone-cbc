@@ -1627,7 +1627,10 @@
                 }
                 
                 // Redirect to summary page
-                window.location.href = `/assessment-summary/${currentAssessment.id}`;
+                const attemptId = data.data?.attempt_id;
+                window.location.href = attemptId
+                    ? `/attempt-summary/${attemptId}`
+                    : `/assessment-summary/${currentAssessment.id}`;
             } else {
                 showAssessmentAlert('Error', data.message || 'Failed to submit assessment', 'error');
                 resetSubmissionState();

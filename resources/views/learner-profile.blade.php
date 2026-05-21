@@ -150,16 +150,20 @@
             list.innerHTML = sorted.slice().reverse().map(it => {
                 const p = it.score_percent ?? it.score ?? 0;
                 const c = (typeof window.getCompetencyFromPercent === 'function') ? window.getCompetencyFromPercent(p) : null;
+                const summaryLink = it.attempt_id && typeof DashboardApi !== 'undefined'
+                    ? `<a href="${DashboardApi.attemptSummaryUrl(it.attempt_id)}" class="inline-block mt-2 text-sm font-semibold text-blue-600 hover:underline">View summary</a>`
+                    : '';
                 return `
-                    <div class="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:bg-gray-50 transition-all">
+                    <div class="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:bg-gray-50 transition-all gap-4">
                         <div>
                             <p class="font-semibold text-gray-900">${it.assessment_title || it.title || 'Assessment'}</p>
                             <p class="text-sm text-gray-600">${formatDateTime(it.assessed_at)}</p>
                             ${c ? `<p class="text-sm text-gray-700 mt-1">${c.displayFull} · ${c.feedback}</p>` : ''}
                         </div>
-                        <div class="text-right">
+                        <div class="text-right shrink-0">
                             <p class="text-xl font-extrabold text-gray-900">${p}%</p>
                             ${c ? `<p class="text-xs font-semibold text-indigo-800 max-w-[10rem] ml-auto leading-tight">${c.displayFull}</p>` : ''}
+                            ${summaryLink}
                         </div>
                     </div>
                 `;
@@ -224,6 +228,7 @@
         }
 
         if (await loadLearnerFromApi()) {
+            loadLearnerAttemptHistory(learnerId);
             return;
         }
 
@@ -233,6 +238,20 @@
         const learner = learners.find(l => String(l.id) === String(learnerId));
         const history = getLearnerAssessmentsFromLocal(learnerId);
         render(learner, history);
+    }
+
+    async function loadLearnerAttemptHistory(studentId) {
+        const list = document.getElementById('assessmentsList');
+        if (!list || typeof DashboardApi === 'undefined') return;
+        try {
+            const result = await DashboardApi.fetchAttemptHistory(studentId);
+            if (result.success && result.data && Array.isArray(result.data.attempts) && result.data.attempts.length) {
+                const attempts = DashboardApi.mapStudentHistory(result.data.attempts);
+                DashboardApi.renderAttemptHistoryList(list, attempts);
+            }
+        } catch (error) {
+            console.error('Error loading learner attempt history:', error);
+        }
     }
 
     document.addEventListener('DOMContentLoaded', loadLearner);

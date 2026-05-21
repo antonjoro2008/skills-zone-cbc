@@ -64,3 +64,4 @@ Route::get('/profile', [GuestController::class, 'profile'])->name('profile');
 // Protected assessment routes - redirect to home if not authenticated
 Route::get('/assessment/{id}', [GuestController::class, 'assessment'])->name('assessment');
 Route::get('/assessment-summary/{id}', [GuestController::class, 'assessmentSummary'])->name('assessment-summary');
+Route::get('/attempt-summary/{attemptId}', [GuestController::class, 'attemptSummary'])->name('attempt-summary');

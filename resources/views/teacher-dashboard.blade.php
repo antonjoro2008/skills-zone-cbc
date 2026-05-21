@@ -52,6 +52,14 @@
         <ul id="tdInclusionNotes" class="mt-6 text-xs text-gray-500 space-y-1 list-disc list-inside"></ul>
     </div>
 
+    <div class="bg-white rounded-3xl shadow-lg p-6 md:p-8 border border-gray-100 mb-8">
+        <h2 class="text-xl font-bold text-gray-900 mb-2">Recent class attempts</h2>
+        <p class="text-sm text-gray-600 mb-4">Completed attempts by learners in your class. Open any summary.</p>
+        <div id="teacherAttemptHistory" class="space-y-3">
+            <p class="text-gray-500 text-sm"><i class="fas fa-spinner fa-spin mr-2"></i>Loading…</p>
+        </div>
+    </div>
+
     <div class="bg-white rounded-3xl shadow-lg p-6 md:p-8 border border-gray-100">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
@@ -321,6 +329,23 @@
         }
     }
 
+    async function loadTeacherAttemptHistory() {
+        const container = document.getElementById('teacherAttemptHistory');
+        if (!container || typeof DashboardApi === 'undefined') return;
+        try {
+            const result = await DashboardApi.fetchAttemptHistory();
+            if (result.success && result.data && Array.isArray(result.data.attempts)) {
+                const attempts = DashboardApi.mapStudentHistory(result.data.attempts);
+                DashboardApi.renderAttemptHistoryList(container, attempts);
+            } else {
+                container.innerHTML = '<p class="text-sm text-gray-500">No completed attempts in your class yet.</p>';
+            }
+        } catch (e) {
+            console.error('Teacher attempt history failed:', e);
+            container.innerHTML = '<p class="text-sm text-gray-500">Could not load attempt history.</p>';
+        }
+    }
+
     async function loadTeacherDashboard() {
         const tbody = document.getElementById('teacherStudentsBody');
         try {
@@ -463,6 +488,7 @@
         document.getElementById('teacherClassLabel').textContent = label;
         loadTeacherDashboard();
         refreshTeacherAnalytics();
+        loadTeacherAttemptHistory();
         if (typeof updateAuthState === 'function') updateAuthState();
     });
 })();

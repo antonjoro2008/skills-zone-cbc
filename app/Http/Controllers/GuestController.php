@@ -195,9 +195,21 @@ class GuestController extends Controller
      */
     public function assessmentSummary($id)
     {
-        // Authentication is handled client-side via localStorage
-        // Server-side check removed to prevent false redirects
-        return view('assessment-summary');
+        return view('assessment-summary', [
+            'attemptId' => null,
+            'legacyAssessmentId' => $id,
+        ]);
+    }
+
+    /**
+     * View summary for a completed attempt (historical or fresh).
+     */
+    public function attemptSummary($attemptId)
+    {
+        return view('assessment-summary', [
+            'attemptId' => (int) $attemptId,
+            'legacyAssessmentId' => null,
+        ]);
     }
 
     /**

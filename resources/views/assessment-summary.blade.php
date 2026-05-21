@@ -75,22 +75,13 @@
                 </div>
             </div>
 
-            <!-- Category Scores Section (only shown if category_scores exist) -->
+            <!-- Category / subject breakdown (only shown if category_scores exist) -->
             <div id="categoryScoresSection" class="bg-white rounded-3xl shadow-lg p-8 mb-8 hidden">
-                <h3 class="text-2xl font-bold text-gray-900 mb-2 flex items-center">
-                    <i class="fas fa-layer-group text-purple-600 mr-3"></i>
-                    Category Performance
-                </h3>
-                <p class="text-sm text-gray-600 mb-6">How your marks are spread across strands in this assessment (shares total 100%). Strand accuracy is shown separately.</p>
-                <div id="categoryScoresContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Per-strand accuracy cards -->
-                </div>
-
-                <div id="categoryContributionBlock" class="mt-10 pt-8 border-t border-gray-200 hidden">
-                    <h4 class="text-xl font-bold text-gray-900 mb-2 flex items-center">
-                        <i class="fas fa-chart-pie text-teal-600 mr-2"></i>
+                <div id="categoryContributionBlock" class="hidden">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2 flex items-center">
+                        <i class="fas fa-chart-pie text-teal-600 mr-3"></i>
                         Overall score by subject
-                    </h4>
+                    </h3>
                     <p class="text-sm text-gray-600 mb-2">
                         How your total score splits across subjects. These percentage points add up to your overall result
                         (<span id="categoryContributionOverallLabel" class="font-semibold text-gray-900">—</span>).
@@ -98,6 +89,17 @@
                     <p class="text-xs text-gray-500 mb-6">Not a grade out of 100% per subject—only your share of the final score.</p>
                     <div id="categoryContributionContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <!-- Contribution cards -->
+                    </div>
+                </div>
+
+                <div id="categoryPerformanceBlock" class="mt-10 pt-8 border-t border-gray-200">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2 flex items-center">
+                        <i class="fas fa-layer-group text-purple-600 mr-3"></i>
+                        Category Performance
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-6">How you performed in each subject strand (each shown as % correct out of 100% for that strand only).</p>
+                    <div id="categoryScoresContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Per-strand accuracy cards -->
                     </div>
                 </div>
             </div>
@@ -521,40 +523,6 @@
     }
 
     /**
-     * Turn per-strand accuracy (each vs its own question count) into shares that sum to 100%
-     * for this assessment. Uses marks earned per strand; falls back to question count if none scored.
-     */
-    function computeCategorySharePercents(categoryScores) {
-        const scores = categoryScores.map(c => Math.max(0, Number(c.score) || 0));
-        const outOf = categoryScores.map(c => Math.max(0, Number(c.out_of) || 0));
-        const totalScore = scores.reduce((a, b) => a + b, 0);
-        const weights = totalScore > 0 ? scores : (outOf.reduce((a, b) => a + b, 0) > 0 ? outOf : categoryScores.map(() => 1));
-        const totalWeight = weights.reduce((a, b) => a + b, 0);
-
-        const raw = weights.map(w => totalWeight > 0 ? (w / totalWeight) * 100 : 0);
-        const rounded = raw.map(v => Math.round(v * 10) / 10);
-        const drift = Math.round((100 - rounded.reduce((a, b) => a + b, 0)) * 10) / 10;
-        if (rounded.length > 0 && Math.abs(drift) >= 0.1) {
-            let maxIdx = 0;
-            for (let i = 1; i < raw.length; i++) {
-                if (raw[i] > raw[maxIdx]) maxIdx = i;
-            }
-            rounded[maxIdx] = Math.round((rounded[maxIdx] + drift) * 10) / 10;
-        }
-
-        return categoryScores.map((category, i) => {
-            const score = scores[i];
-            const max = outOf[i];
-            const accuracy = max > 0 ? (score / max) * 100 : (Number(category.percentage) || 0);
-            return {
-                ...category,
-                accuracy_percentage: accuracy,
-                share_percentage: rounded[i],
-            };
-        });
-    }
-
-    /**
      * Points each subject contributed to the overall % (sum equals category-based overall).
      * e.g. 50% total → 10% Chemistry + 30% Biology + 10% Physics.
      */
@@ -597,14 +565,17 @@
         categoryScoresSection.classList.remove('hidden');
         categoryScoresContainer.innerHTML = '';
 
-        const categoriesWithShares = computeCategorySharePercents(categoryScores);
-        
-        categoriesWithShares.forEach(category => {
+        displayCategoryContributionScores(categoryScores);
+
+        categoryScores.forEach(category => {
+            const score = Math.max(0, Number(category.score) || 0);
+            const outOf = Math.max(0, Number(category.out_of) || 0);
+            const accuracy = outOf > 0
+                ? (score / outOf) * 100
+                : (Number(category.percentage) || 0);
+
             const categoryCard = document.createElement('div');
             categoryCard.className = 'bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-200 hover:shadow-lg transition-all duration-300';
-
-            const accuracy = category.accuracy_percentage;
-            const share = category.share_percentage;
             
             let performanceColor = 'text-red-600';
             let performanceBg = 'bg-red-100';
@@ -620,8 +591,8 @@
                 performanceIcon = 'fas fa-check-circle';
             }
 
-            const barColor = share >= 33 ? '#10B981' : share >= 20 ? '#F59E0B' : '#8B5CF6';
-            const barColorEnd = share >= 33 ? '#059669' : share >= 20 ? '#D97706' : '#6D28D9';
+            const barColor = accuracy >= 80 ? '#10B981' : accuracy >= 60 ? '#F59E0B' : '#EF4444';
+            const barColorEnd = accuracy >= 80 ? '#059669' : accuracy >= 60 ? '#D97706' : '#DC2626';
             
             categoryCard.innerHTML = `
                 <div class="flex items-center justify-between mb-4">
@@ -631,18 +602,18 @@
                         </div>
                         <div>
                             <h4 class="text-lg font-bold text-gray-900">${category.category_tag}</h4>
-                            <p class="text-sm text-gray-600">Share of marks in this assessment</p>
+                            <p class="text-sm text-gray-600">Out of 100% in this strand</p>
                         </div>
                     </div>
                     <div class="text-right">
-                        <div class="text-2xl font-bold text-purple-700">${share.toFixed(1)}%</div>
-                        <div class="text-sm text-gray-600">${category.score}/${category.out_of} · ${accuracy.toFixed(1)}% accuracy</div>
+                        <div class="text-2xl font-bold text-purple-700">${accuracy.toFixed(1)}%</div>
+                        <div class="text-sm text-gray-600">${score}/${outOf} marks</div>
                     </div>
                 </div>
                 
                 <div class="w-full bg-gray-200 rounded-full h-3 mb-3">
                     <div class="h-3 rounded-full transition-all duration-1000 ease-out" 
-                         style="width: ${Math.min(100, share)}%; background: linear-gradient(90deg, ${barColor} 0%, ${barColorEnd} 100%);">
+                         style="width: ${Math.min(100, accuracy)}%; background: linear-gradient(90deg, ${barColor} 0%, ${barColorEnd} 100%);">
                     </div>
                 </div>
                 
@@ -658,8 +629,6 @@
             
             categoryScoresContainer.appendChild(categoryCard);
         });
-
-        displayCategoryContributionScores(categoryScores);
     }
 
     function displayCategoryContributionScores(categoryScores) {
@@ -669,9 +638,18 @@
 
         if (!contributionBlock || !contributionContainer) return;
 
+        const performanceBlock = document.getElementById('categoryPerformanceBlock');
+
         if (!categoryScores || categoryScores.length < 2) {
             contributionBlock.classList.add('hidden');
+            if (performanceBlock) {
+                performanceBlock.classList.remove('mt-10', 'pt-8', 'border-t', 'border-gray-200');
+            }
             return;
+        }
+
+        if (performanceBlock) {
+            performanceBlock.classList.add('mt-10', 'pt-8', 'border-t', 'border-gray-200');
         }
 
         const categoryTotals = computeCategoryMarkTotals(categoryScores);

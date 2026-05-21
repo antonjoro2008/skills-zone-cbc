@@ -21,9 +21,9 @@
             <!-- Score Overview -->
             <div class="bg-white rounded-3xl shadow-lg p-8 mb-8">
                 <div class="text-center mb-8">
-                    <p id="assessmentSubjectHeading" class="text-2xl md:text-3xl font-bold text-gray-900 mb-6 leading-snug">
+                    <h2 id="assessmentSubjectHeading" class="text-2xl md:text-3xl font-bold text-slate-900 mb-6 leading-snug tracking-tight">
                         Loading subject…
-                    </p>
+                    </h2>
                     <div class="relative inline-block">
                         <div class="w-32 h-32 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
                             <div class="text-center">
@@ -40,9 +40,11 @@
                                     id="scoreRing"></circle>
                         </svg>
                     </div>
-                    <h2 class="text-3xl font-bold text-gray-900 mb-2" id="scoreDescription">Great job!</h2>
-                    <p class="text-gray-600" id="scoreDetails">You answered questions correctly</p>
-                    <p class="text-gray-800 font-semibold mt-3" id="competencyLabelSummary"></p>
+                    <div class="mt-5 max-w-lg mx-auto space-y-2">
+                        <p class="text-lg font-semibold text-indigo-800" id="scoreDescription">Great job!</p>
+                        <p class="text-sm text-gray-500" id="scoreDetails">You answered questions correctly</p>
+                        <p class="text-sm text-slate-600 leading-relaxed" id="competencyLabelSummary"></p>
+                    </div>
                 </div>
 
                 <!-- Score Breakdown Grid -->
@@ -366,7 +368,7 @@
         const subjectHeading = formatAssessmentSubjectHeading(assessmentResults, categoryScores);
         const subjectHeadingEl = document.getElementById('assessmentSubjectHeading');
         if (subjectHeadingEl) {
-            subjectHeadingEl.textContent = subjectHeading;
+            renderAssessmentSubjectHeading(subjectHeadingEl, assessmentResults, categoryScores);
         }
         document.getElementById('assessmentTitle').textContent = subjectHeading;
         document.getElementById('assessmentId').textContent = assessmentResults.assessment_id || '-';
@@ -508,7 +510,7 @@
         ring.style.strokeDashoffset = offset;
     }
 
-    function formatAssessmentSubjectHeading(results, categoryScores) {
+    function getAssessmentSubjectParts(results, categoryScores) {
         const assessment = results.assessment || {};
         let subjectName = assessment.subject || null;
         if (typeof subjectName === 'object' && subjectName !== null) {
@@ -524,12 +526,36 @@
         const tags = (categoryScores || [])
             .map(function (c) { return c.category_tag; })
             .filter(function (tag) { return tag && String(tag).trim(); });
-        const uniqueTags = [...new Set(tags)];
+        const categories = [...new Set(tags)];
 
-        if (uniqueTags.length > 0) {
-            return subjectName + ' (' + uniqueTags.join(', ') + ')';
+        return { subjectName, categories };
+    }
+
+    function formatAssessmentSubjectHeading(results, categoryScores) {
+        const parts = getAssessmentSubjectParts(results, categoryScores);
+        if (parts.categories.length > 0) {
+            return parts.subjectName + ' (' + parts.categories.join(', ') + ')';
         }
-        return subjectName;
+        return parts.subjectName;
+    }
+
+    function renderAssessmentSubjectHeading(element, results, categoryScores) {
+        const parts = getAssessmentSubjectParts(results, categoryScores);
+        if (parts.categories.length > 0) {
+            element.innerHTML = escapeAssessmentSummaryHtml(parts.subjectName)
+                + ' <span class="font-semibold text-indigo-700/90">('
+                + parts.categories.map(escapeAssessmentSummaryHtml).join(', ')
+                + ')</span>';
+        } else {
+            element.textContent = parts.subjectName;
+        }
+    }
+
+    function escapeAssessmentSummaryHtml(text) {
+        if (text == null) return '';
+        const div = document.createElement('div');
+        div.textContent = String(text);
+        return div.innerHTML;
     }
 
     function computeCategoryMarkTotals(categoryScores) {

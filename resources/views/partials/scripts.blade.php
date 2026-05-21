@@ -1914,3 +1914,5 @@
         }
         window.downloadSamplePerformanceReportPdf = downloadSamplePerformanceReportPdf;
     </script>
+
+    @include('partials.dashboard-api')

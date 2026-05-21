@@ -257,59 +257,35 @@
         }
     }
 
-    async function loadTeacherDashboard() {
+    function renderTeacherDashboardPayload(payload) {
+        teacherDashboardPayload = payload || {};
+        if (typeof DashboardApi !== 'undefined') {
+            DashboardApi.applyTeacherInsights(teacherDashboardPayload);
+        }
+
+        const students = teacherDashboardPayload.students || [];
+        const hasClass = !!(
+            teacherDashboardPayload.classroom_id ||
+            teacherDashboardPayload.classroom?.id
+        );
+        document.getElementById('teacherNoClassBanner').classList.toggle('hidden', hasClass);
+        const addBtn = document.getElementById('btnOpenAddLearnerTeacher');
+        if (addBtn) addBtn.disabled = !hasClass;
+
+        if (hasClass && teacherDashboardPayload.inclusion_metrics) {
+            renderTdInclusion(teacherDashboardPayload.inclusion_metrics);
+        } else {
+            const pnl = document.getElementById('tdInclusionPanel');
+            if (pnl) pnl.classList.add('hidden');
+        }
+
         const tbody = document.getElementById('teacherStudentsBody');
-        const token = localStorage.getItem('token');
-        try {
-            const res = await fetch(`${API_BASE_URL}/api/teacher/dashboard`, {
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-            });
-            const data = await res.json();
-            if (!data.success) {
-                if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-red-600">' + tdEscape(data.message || 'Could not load') + '</td></tr>';
-                return;
-            }
-            teacherDashboardPayload = data.data || {};
-            const ins = teacherDashboardPayload.insights || {};
-            const pct = ins.average_percent != null ? ins.average_percent : 0;
-            const imp = ins.learners_improving_percent != null ? ins.learners_improving_percent : 0;
-            document.getElementById('tdInsightImproving').textContent = imp + '%';
-
-            const students = teacherDashboardPayload.students || [];
-            // If there are no completed attempts yet, don't label the class as "Below Expectation (0%)".
-            // We infer this from local cached history where available.
-            let hasAnyAttempts = false;
-            try {
-                const historyRaw = localStorage.getItem('learner_assessment_history');
-                const history = historyRaw ? JSON.parse(historyRaw) : {};
-                const ids = students.map(s => String(s.id));
-                hasAnyAttempts = ids.some(id => Array.isArray(history?.[id]) && history[id].length > 0);
-            } catch (e) { /* ignore */ }
-
-            document.getElementById('tdInsightLevel').textContent = hasAnyAttempts
-                ? (ins.average_level || '—')
-                : 'No attempts yet';
-            document.getElementById('tdInsightPercent').textContent = hasAnyAttempts
-                ? String(pct)
-                : '—';
-            const hasClass = !!teacherDashboardPayload.classroom_id;
-            document.getElementById('teacherNoClassBanner').classList.toggle('hidden', hasClass);
-            const addBtn = document.getElementById('btnOpenAddLearnerTeacher');
-            if (addBtn) addBtn.disabled = !hasClass;
-
-            if (hasClass && teacherDashboardPayload.inclusion_metrics) {
-                renderTdInclusion(teacherDashboardPayload.inclusion_metrics);
-            } else {
-                const pnl = document.getElementById('tdInclusionPanel');
-                if (pnl) pnl.classList.add('hidden');
-            }
-
-            if (!tbody) return;
-            if (students.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="py-10 px-3 text-center text-gray-500">No learners in this class yet.</td></tr>';
-                return;
-            }
-            tbody.innerHTML = students.map(s => {
+        if (!tbody) return;
+        if (students.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="py-10 px-3 text-center text-gray-500">No learners in this class yet.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = students.map(s => {
                 const g = (s.guardian_email || s.guardian_phone) ? [s.guardian_email, s.guardian_phone].filter(Boolean).join(' · ') : '—';
                 return `<tr class="border-t border-gray-100">
                     <td class="py-3 px-3 font-medium text-gray-900">
@@ -327,6 +303,41 @@
                     </td>
                 </tr>`;
             }).join('');
+    }
+
+    async function refreshTeacherAnalytics() {
+        if (typeof DashboardApi === 'undefined') return;
+        try {
+            const result = await DashboardApi.fetchAnalytics();
+            if (result.success && result.data) {
+                teacherDashboardPayload = Object.assign({}, teacherDashboardPayload || {}, result.data);
+                DashboardApi.applyTeacherInsights(result.data);
+                if (result.data.inclusion_metrics) {
+                    renderTdInclusion(result.data.inclusion_metrics);
+                }
+            }
+        } catch (e) {
+            console.error('Teacher analytics refresh failed:', e);
+        }
+    }
+
+    async function loadTeacherDashboard() {
+        const tbody = document.getElementById('teacherStudentsBody');
+        try {
+            const fetcher = typeof DashboardApi !== 'undefined'
+                ? DashboardApi.fetchTeacherDashboard.bind(DashboardApi)
+                : function () {
+                    const token = localStorage.getItem('token');
+                    return fetch(`${API_BASE_URL}/api/teacher/dashboard`, {
+                        headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+                    }).then(r => r.json());
+                };
+            const data = await fetcher();
+            if (!data.success) {
+                if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-red-600">' + tdEscape(data.message || 'Could not load') + '</td></tr>';
+                return;
+            }
+            renderTeacherDashboardPayload(data.data || {});
         } catch (e) {
             console.error(e);
             if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-red-600">Network error</td></tr>';
@@ -336,7 +347,7 @@
     window.openTeacherAddLearnerModal = function () {
         const m = document.getElementById('teacherAddLearnerModal');
         if (!m) return;
-        if (!teacherDashboardPayload || !teacherDashboardPayload.classroom_id) {
+        if (!teacherDashboardPayload || !(teacherDashboardPayload.classroom_id || teacherDashboardPayload.classroom?.id)) {
             showTdAlert('Not ready', 'You need a classroom assignment before adding learners.', 'warning');
             return;
         }
@@ -451,6 +462,7 @@
             : (u.classroom_id ? 'Classroom #' + u.classroom_id : 'Not assigned');
         document.getElementById('teacherClassLabel').textContent = label;
         loadTeacherDashboard();
+        refreshTeacherAnalytics();
         if (typeof updateAuthState === 'function') updateAuthState();
     });
 })();

@@ -414,19 +414,61 @@
     
     async function loadDashboardData() {
         try {
-            // For now, we'll use the user data from localStorage to populate dashboard stats
-            // The dashboard data is already available from the login response
-            const dashboardData = localStorage.getItem('dashboard');
-            if (dashboardData) {
-                const dashboard = JSON.parse(dashboardData);
-                updateDashboardStats(dashboard);
-            } else {
-                // Set default values if no dashboard data is available
-                setDefaultDashboardStats();
+            if (typeof DashboardApi === 'undefined') {
+                hydrateDashboardFromCache();
+                return;
             }
+            const result = await DashboardApi.fetchMain();
+            if (result.success && result.data) {
+                DashboardApi.persistMain(result.data);
+                updateDashboardStats(result.data);
+                if (result.data.analytics) {
+                    DashboardApi.applyInstitutionAnalytics(result.data.analytics);
+                }
+                displayInstitutionInfo();
+                return;
+            }
+            hydrateDashboardFromCache();
         } catch (error) {
             console.error('Error loading dashboard:', error);
+            hydrateDashboardFromCache();
+        }
+    }
+
+    function hydrateDashboardFromCache() {
+        const dashboardData = localStorage.getItem('dashboard');
+        if (dashboardData) {
+            try {
+                const dashboard = JSON.parse(dashboardData);
+                updateDashboardStats(dashboard);
+                if (dashboard.analytics) {
+                    DashboardApi?.applyInstitutionAnalytics(dashboard.analytics);
+                }
+            } catch (e) {
+                setDefaultDashboardStats();
+            }
+        } else {
             setDefaultDashboardStats();
+        }
+    }
+
+    async function refreshDashboardAnalytics() {
+        if (typeof DashboardApi === 'undefined') return;
+        try {
+            const result = await DashboardApi.fetchAnalytics();
+            if (result.success && result.data) {
+                DashboardApi.applyInstitutionAnalytics(result.data);
+                const cached = localStorage.getItem('dashboard');
+                if (cached) {
+                    try {
+                        const dash = JSON.parse(cached);
+                        dash.analytics = result.data;
+                        localStorage.setItem('dashboard', JSON.stringify(dash));
+                    } catch (e) { /* ignore */ }
+                }
+            }
+        } catch (error) {
+            console.error('Error refreshing analytics:', error);
         }
     }
     
@@ -738,6 +780,18 @@
     }
 
     function updateClassInsights(learners) {
+        // Prefer live analytics from /api/dashboard when already loaded
+        try {
+            const cached = localStorage.getItem('dashboard');
+            if (cached && typeof DashboardApi !== 'undefined') {
+                const dash = JSON.parse(cached);
+                if (dash.analytics) {
+                    DashboardApi.applyInstitutionAnalytics(dash.analytics);
+                    return;
+                }
+            }
+        } catch (e) { /* fall through to local history */ }
+
         // Defaults required by QA (and kept as fallback)
         const defaults = {
             avgLevel: 'No attempts yet',
@@ -856,19 +910,23 @@
     }
     
     function updateDashboardStats(data) {
-        // Handle the actual dashboard data structure from login response
-        // The dashboard data contains token_balance and assessment_stats
         const tokenBalance = data.token_balance || 0;
         const assessmentStats = data.assessment_stats || {};
-        
-        // Set token balance
+        const summary = data.analytics?.summary || {};
+
         document.getElementById('totalTokens').textContent = tokenBalance;
-        
-        // For now, set default values for learner stats since they're not in the dashboard data
-        // These will be updated when learners are loaded
-        document.getElementById('totalLearners').textContent = '0';
-        document.getElementById('activeLearners').textContent = '0';
-        document.getElementById('averageTokens').textContent = '0';
+
+        const totalLearners = summary.learners;
+        if (totalLearners != null) {
+            document.getElementById('totalLearners').textContent = totalLearners;
+            const active = summary.distinct_learners_active_last_30_days;
+            if (active != null) {
+                document.getElementById('activeLearners').textContent = active;
+            }
+            const total = Number(totalLearners) || 0;
+            document.getElementById('averageTokens').textContent =
+                total > 0 ? Math.round(tokenBalance / total) : '0';
+        }
     }
     
     function renderLearnersTable(learners) {
@@ -947,6 +1005,7 @@
     function refreshLearners() {
         loadLearners();
         loadDashboardData();
+        refreshDashboardAnalytics();
     }
     
     function showError(message) {

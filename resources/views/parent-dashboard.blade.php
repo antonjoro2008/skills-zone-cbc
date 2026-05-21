@@ -38,6 +38,10 @@
                 <i class="fas fa-plus"></i>
                 <span>Add Learner</span>
             </button>
+            <button type="button" onclick="refreshParentDashboard()" class="bg-white border-2 border-blue-600 text-blue-600 px-6 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-all flex items-center space-x-2">
+                <i class="fas fa-sync-alt"></i>
+                <span>Refresh dashboard</span>
+            </button>
             <!-- Payment / tokens intentionally hidden during pilot (enable later) -->
             <!--
             <button onclick="showBuyTokensModal()" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all flex items-center space-x-2">
@@ -45,6 +49,48 @@
                 <span>Buy Tokens</span>
             </button>
             -->
+        </div>
+
+        <!-- Household overview (/api/dashboard + /api/dashboard/analytics) -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8" id="parentOverviewCards">
+            <div class="bg-white rounded-2xl shadow-lg p-5 border border-gray-100">
+                <p class="text-xs text-gray-500 mb-1">Registered learners</p>
+                <p class="text-2xl font-extrabold text-gray-900" id="parentLearnerCount">—</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-5 border border-gray-100">
+                <p class="text-xs text-gray-500 mb-1">Linked accounts</p>
+                <p class="text-2xl font-extrabold text-gray-900" id="parentLinkedCount">—</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-5 border border-gray-100">
+                <p class="text-xs text-gray-500 mb-1">Completed attempts</p>
+                <p class="text-2xl font-extrabold text-gray-900" id="parentCompletedAttempts">—</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-5 border border-gray-100">
+                <p class="text-xs text-gray-500 mb-1">Household average</p>
+                <p class="text-2xl font-extrabold text-gray-900" id="parentHouseholdAverage">—</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-5 border border-gray-100">
+                <p class="text-xs text-gray-500 mb-1">Household CBE level</p>
+                <p class="text-lg font-bold text-gray-900 leading-tight" id="parentHouseholdLevel">—</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-5 border border-gray-100">
+                <p class="text-xs text-gray-500 mb-1">Learners improving</p>
+                <p class="text-2xl font-extrabold text-gray-900" id="parentImprovingPercent">—</p>
+            </div>
+        </div>
+
+        <p class="text-sm text-gray-600 mb-6" id="parentDashboardNote">Loading insights…</p>
+
+        <div class="mb-8">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Your children’s progress</h2>
+            <div id="parentChildrenCards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <p class="text-gray-500 text-sm col-span-full"><i class="fas fa-spinner fa-spin mr-2"></i>Loading…</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-blue-100">
+            <h3 class="text-lg font-bold text-gray-900 mb-3">Suggested next steps</h3>
+            <ul id="parentActionItems" class="list-disc list-inside space-y-2 text-gray-700"></ul>
         </div>
 
         <!-- Learners Table -->
@@ -65,14 +111,15 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade Level</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Added Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Added</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="learnersTableBody" class="bg-white divide-y divide-gray-200">
                         <tr>
-                            <td colspan="4" class="px-6 py-12 text-center text-gray-500">
+                            <td colspan="5" class="px-6 py-12 text-center text-gray-500">
                                 <div class="flex flex-col items-center">
                                     <i class="fas fa-users text-4xl text-gray-300 mb-4"></i>
                                     <p class="text-lg font-medium">No learners found</p>
@@ -147,8 +194,78 @@
     function displayParentInfo() {
         if (window.currentUser) {
             document.getElementById('parentName').textContent = window.currentUser.name;
+        }
+        const cached = localStorage.getItem('dashboard');
+        if (cached) {
+            try {
+                const dash = JSON.parse(cached);
+                if (dash.token_balance != null) {
+                    document.getElementById('tokenBalance').textContent = dash.token_balance;
+                }
+            } catch (e) { /* ignore */ }
+        } else if (window.currentUser) {
             document.getElementById('tokenBalance').textContent = window.currentUser.wallet?.balance || 0;
         }
+    }
+
+    function applyParentDashboard(data) {
+        if (!data) return;
+        if (data.token_balance != null) {
+            document.getElementById('tokenBalance').textContent = data.token_balance;
+        }
+        if (data.analytics && typeof DashboardApi !== 'undefined') {
+            DashboardApi.applyParentAnalytics(data.analytics);
+        }
+    }
+
+    async function loadParentDashboard() {
+        if (typeof DashboardApi === 'undefined') return;
+        try {
+            const result = await DashboardApi.fetchMain();
+            if (result.success && result.data) {
+                DashboardApi.persistMain(result.data);
+                applyParentDashboard(result.data);
+                if (result.data.analytics) {
+                    renderLearnersTable(learnersData);
+                }
+                return;
+            }
+        } catch (error) {
+            console.error('Error loading parent dashboard:', error);
+        }
+        const cached = localStorage.getItem('dashboard');
+        if (cached) {
+            try {
+                applyParentDashboard(JSON.parse(cached));
+            } catch (e) { /* ignore */ }
+        }
+    }
+
+    async function refreshParentAnalytics() {
+        if (typeof DashboardApi === 'undefined') return;
+        try {
+            const result = await DashboardApi.fetchAnalytics();
+            if (result.success && result.data) {
+                DashboardApi.applyParentAnalytics(result.data);
+                const cached = localStorage.getItem('dashboard');
+                if (cached) {
+                    try {
+                        const dash = JSON.parse(cached);
+                        dash.analytics = result.data;
+                        localStorage.setItem('dashboard', JSON.stringify(dash));
+                    } catch (e) { /* ignore */ }
+                }
+                renderLearnersTable(learnersData);
+            }
+        } catch (error) {
+            console.error('Error refreshing parent analytics:', error);
+        }
+    }
+
+    async function refreshParentDashboard() {
+        await loadParentDashboard();
+        await refreshParentAnalytics();
+        await loadLearners();
     }
 
     // Load learners from API
@@ -188,13 +305,21 @@
         }
     }
 
+    function parentEscapeHtml(text) {
+        if (text == null) return '';
+        const div = document.createElement('div');
+        div.textContent = String(text);
+        return div.innerHTML;
+    }
+
     function renderLearnersTable(learners) {
         const tbody = document.getElementById('learnersTableBody');
-        
+        const analyticsMap = window.parentAnalyticsByLearnerId || {};
+
         if (learners.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="4" class="px-6 py-12 text-center text-gray-500">
+                    <td colspan="5" class="px-6 py-12 text-center text-gray-500">
                         <div class="flex flex-col items-center">
                             <i class="fas fa-users text-4xl text-gray-300 mb-4"></i>
                             <p class="text-lg font-medium">No learners found</p>
@@ -206,36 +331,46 @@
             return;
         }
 
-        tbody.innerHTML = learners.map(learner => `
+        tbody.innerHTML = learners.map(learner => {
+            const a = analyticsMap[learner.id] || {};
+            const summary = a.summary || {};
+            const linked = a.linked;
+            const progressCell = linked
+                ? `<span class="text-sm font-medium text-gray-900">${parentEscapeHtml(summary.competency_level || '—')}</span>
+                   <span class="block text-xs text-gray-500">${summary.average_percent != null ? summary.average_percent + '% avg · ' : ''}${summary.completed_attempts ?? 0} attempts</span>`
+                : `<span class="text-xs text-amber-700">Not linked — add guardian contact on student account</span>`;
+            const progressLink = a.student_user_id
+                ? `<a href="/learner/${a.student_user_id}" class="text-blue-600 hover:underline text-sm font-semibold ml-2">View</a>`
+                : '';
+            const safeName = parentEscapeHtml(learner.name).replace(/'/g, "\\'");
+            return `
             <tr class="hover:bg-gray-50">
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
                         <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
-                            ${learner.name.charAt(0).toUpperCase()}
+                            ${parentEscapeHtml(learner.name).charAt(0).toUpperCase()}
                         </div>
                         <div class="ml-4">
-                            <div class="text-sm font-medium text-gray-900">${learner.name}</div>
+                            <div class="text-sm font-medium text-gray-900">${parentEscapeHtml(learner.name)}</div>
                         </div>
                     </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        ${learner.grade_level}
+                        ${parentEscapeHtml(learner.grade_level || '—')}
                     </span>
                 </td>
+                <td class="px-6 py-4 whitespace-nowrap">${progressCell}${progressLink}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    ${new Date(learner.created_at).toLocaleDateString()}
+                    ${learner.created_at ? new Date(learner.created_at).toLocaleDateString() : '—'}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button onclick="showParentAlert('Feature Coming Soon', 'Learner management features will be available soon.', 'info')" class="text-blue-600 hover:text-blue-900 mr-3">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                    <button onclick="deleteLearner(${learner.id}, '${learner.name}')" class="text-red-600 hover:text-red-900">
+                    <button onclick="deleteLearner(${learner.id}, '${safeName}')" class="text-red-600 hover:text-red-900">
                         <i class="fas fa-trash"></i> Remove
                     </button>
                 </td>
-            </tr>
-        `).join('');
+            </tr>`;
+        }).join('');
     }
 
     // Search functionality
@@ -644,7 +779,9 @@
         }
         
         loadCurrentUser();
-        loadLearners();
+        loadParentDashboard().then(function () {
+            return loadLearners();
+        });
     });
     
     function checkAuthentication() {

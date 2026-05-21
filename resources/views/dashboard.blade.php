@@ -266,14 +266,17 @@
                     buyTokensBtn.style.display = 'none';
                 }
                 
-                // Update dashboard statistics
+                // Update dashboard statistics (local cache first; API refresh below)
                 if (dashboard) {
                     updateDashboardStats(dashboard);
                     updateRecentAssessments(dashboard.recent_assessments || []);
                 } else {
-                    // Set default values if no dashboard data
                     setDefaultDashboardValues();
                 }
+
+                loadStudentDashboardFromApi().then(function () {
+                    refreshStudentAnalytics();
+                });
                 
             } catch (e) {
                 console.error('Error parsing stored data:', e);
@@ -294,6 +297,48 @@
         }
     });
     
+    async function loadStudentDashboardFromApi() {
+        if (typeof DashboardApi === 'undefined') return;
+        try {
+            const result = await DashboardApi.fetchMain();
+            if (!result.success || !result.data) return;
+            DashboardApi.persistMain(result.data);
+            const payload = result.data;
+            if (payload.user) {
+                updateUserInfo(payload.user);
+            }
+            updateDashboardStats(payload);
+            updateRecentAssessments(payload.recent_assessments || []);
+        } catch (error) {
+            console.error('Error loading student dashboard:', error);
+        }
+    }
+
+    async function refreshStudentAnalytics() {
+        if (typeof DashboardApi === 'undefined') return;
+        try {
+            const result = await DashboardApi.fetchAnalytics();
+            if (result.success && result.data) {
+                const cached = localStorage.getItem('dashboard');
+                let dash = cached ? JSON.parse(cached) : {};
+                dash.analytics = result.data;
+                if (result.data.overview) {
+                    dash.assessment_stats = dash.assessment_stats || {};
+                    dash.assessment_stats.completed_attempts =
+                        result.data.overview.total_completed_attempts ??
+                        dash.assessment_stats.completed_attempts;
+                    dash.assessment_stats.average_score =
+                        result.data.overview.average_percent ??
+                        dash.assessment_stats.average_score;
+                }
+                localStorage.setItem('dashboard', JSON.stringify(dash));
+                updateDashboardStats(dash);
+            }
+        } catch (error) {
+            console.error('Error refreshing student analytics:', error);
+        }
+    }
+
     function updateUserInfo(user) {
         const userNameElement = document.getElementById('userName');
         const userGradeLevelElement = document.getElementById('userGradeLevel');

@@ -40,8 +40,8 @@
                 </div>
 
                 <div class="mt-6">
-                    <a href="{{ route('institution-dashboard') }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold">
-                        <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+                    <a id="learnerBackLink" href="{{ route('dashboard') }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold">
+                        <i class="fas fa-arrow-left mr-2"></i><span id="learnerBackLabel">Back to Dashboard</span>
                     </a>
                 </div>
             </div>
@@ -167,8 +167,67 @@
         }
     }
 
+    function setupBackNavigation() {
+        const link = document.getElementById('learnerBackLink');
+        const label = document.getElementById('learnerBackLabel');
+        if (!link) return;
+        let userType = null;
+        try {
+            const user = safeParse(localStorage.getItem('user'), null);
+            userType = user?.user_type;
+        } catch (e) { /* ignore */ }
+        if (typeof DashboardApi !== 'undefined') {
+            link.href = DashboardApi.dashboardBackUrl(userType);
+        }
+        const labels = {
+            institution: 'Back to Institution Dashboard',
+            teacher: 'Back to Teacher Hub',
+            parent: 'Back to Parent Dashboard',
+            student: 'Back to My Dashboard',
+        };
+        if (label) {
+            label.textContent = labels[userType] || 'Back to Dashboard';
+        }
+    }
+
+    async function loadLearnerFromApi() {
+        if (typeof DashboardApi === 'undefined') return false;
+        const token = localStorage.getItem('token');
+        if (!token) return false;
+        try {
+            const result = await DashboardApi.fetchStudentAnalytics(learnerId);
+            if (!result.success || !result.data) return false;
+            const profile = result.data.profile || {};
+            const learner = {
+                id: profile.student_id || learnerId,
+                name: profile.name,
+                grade_level: profile.grade_level,
+            };
+            const history = DashboardApi.mapStudentHistory(
+                result.data.assessment_history || result.data.recent_performance || [],
+            );
+            render(learner, history);
+            return true;
+        } catch (error) {
+            console.error('Error loading learner analytics:', error);
+            return false;
+        }
+    }
+
     async function loadLearner() {
-        // Best effort: if institution dashboard already fetched learners, store them for profile use
+        setupBackNavigation();
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/login?return=' + encodeURIComponent(window.location.pathname);
+            return;
+        }
+
+        if (await loadLearnerFromApi()) {
+            return;
+        }
+
+        // Fallback: cached roster + local assessment history
         const cached = localStorage.getItem('cached_institution_learners');
         const learners = cached ? safeParse(cached, []) : [];
         const learner = learners.find(l => String(l.id) === String(learnerId));

@@ -1584,8 +1584,15 @@
             const data = await response.json();
 
             if (data.success) {
-                // Store results first
-                localStorage.setItem('assessmentResults', JSON.stringify(data.data));
+                const enrichedResults = Object.assign({}, data.data, {
+                    assessment_id: data.data.assessment_id || currentAssessment?.id,
+                    assessment: data.data.assessment || {
+                        id: currentAssessment?.id,
+                        title: currentAssessment?.title,
+                        subject: currentAssessment?.subject?.name || currentAssessment?.subject || null,
+                    },
+                });
+                localStorage.setItem('assessmentResults', JSON.stringify(enrichedResults));
 
                 // Store lightweight learner progress history for dashboards/analytics
                 try {

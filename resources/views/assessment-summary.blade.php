@@ -21,6 +21,9 @@
             <!-- Score Overview -->
             <div class="bg-white rounded-3xl shadow-lg p-8 mb-8">
                 <div class="text-center mb-8">
+                    <p id="assessmentSubjectHeading" class="text-2xl md:text-3xl font-bold text-gray-900 mb-6 leading-snug">
+                        Loading subject…
+                    </p>
                     <div class="relative inline-block">
                         <div class="w-32 h-32 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
                             <div class="text-center">
@@ -359,7 +362,13 @@
         document.getElementById('loadingOverlay').classList.add('hidden');
 
         // Update basic info
-        document.getElementById('assessmentTitle').textContent = 'Learning Insights';
+        const categoryScores = assessmentResults.category_scores || [];
+        const subjectHeading = formatAssessmentSubjectHeading(assessmentResults, categoryScores);
+        const subjectHeadingEl = document.getElementById('assessmentSubjectHeading');
+        if (subjectHeadingEl) {
+            subjectHeadingEl.textContent = subjectHeading;
+        }
+        document.getElementById('assessmentTitle').textContent = subjectHeading;
         document.getElementById('assessmentId').textContent = assessmentResults.assessment_id || '-';
         document.getElementById('attemptId').textContent = assessmentResults.attempt_id || '-';
         
@@ -378,7 +387,6 @@
 
         // Update summary data
         const summary = assessmentResults.summary || {};
-        const categoryScores = assessmentResults.category_scores || [];
         const percentage = resolveDisplayPercentage(summary, categoryScores);
         
         document.getElementById('finalScore').textContent = `${percentage.toFixed(1)}%`;
@@ -498,6 +506,30 @@
         const offset = circumference - (percentage / 100) * circumference;
         
         ring.style.strokeDashoffset = offset;
+    }
+
+    function formatAssessmentSubjectHeading(results, categoryScores) {
+        const assessment = results.assessment || {};
+        let subjectName = assessment.subject || null;
+        if (typeof subjectName === 'object' && subjectName !== null) {
+            subjectName = subjectName.name || subjectName.title || null;
+        }
+        if (!subjectName && typeof results.subject === 'string') {
+            subjectName = results.subject;
+        }
+        if (!subjectName) {
+            subjectName = assessment.title || results.assessment_title || 'Assessment';
+        }
+
+        const tags = (categoryScores || [])
+            .map(function (c) { return c.category_tag; })
+            .filter(function (tag) { return tag && String(tag).trim(); });
+        const uniqueTags = [...new Set(tags)];
+
+        if (uniqueTags.length > 0) {
+            return subjectName + ' (' + uniqueTags.join(', ') + ')';
+        }
+        return subjectName;
     }
 
     function computeCategoryMarkTotals(categoryScores) {

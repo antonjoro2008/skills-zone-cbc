@@ -376,7 +376,8 @@
 
         // Update summary data
         const summary = assessmentResults.summary || {};
-        const percentage = summary.percentage || 0;
+        const categoryScores = assessmentResults.category_scores || [];
+        const percentage = resolveDisplayPercentage(summary, categoryScores);
         
         document.getElementById('finalScore').textContent = `${percentage.toFixed(1)}%`;
 
@@ -401,7 +402,13 @@
         document.getElementById('questionsAnswered').textContent = summary.questions_answered || 0;
         document.getElementById('autoMarkedQuestions').textContent = summary.auto_marked_questions || 0;
         document.getElementById('manualReviewQuestions').textContent = summary.not_auto_marked_questions || 0;
-        document.getElementById('autoMarkedScore').textContent = `${summary.score || 0}/${summary.out_of || 0}`;
+        const categoryTotals = computeCategoryMarkTotals(categoryScores);
+        if (categoryScores.length >= 2 && categoryTotals.outOf > 0) {
+            document.getElementById('autoMarkedScore').textContent =
+                `${categoryTotals.score}/${categoryTotals.outOf} across subjects`;
+        } else {
+            document.getElementById('autoMarkedScore').textContent = `${summary.score || 0}/${summary.out_of || 0}`;
+        }
 
         // Update time taken with fallback logic
         let timeTaken = assessmentResults.submission_data?.time_taken_seconds || 0;
@@ -452,7 +459,7 @@
         animateScoreRing(percentage);
 
         // Handle category scores if they exist
-        displayCategoryScores(assessmentResults.category_scores || [], percentage);
+        displayCategoryScores(categoryScores);
 
         // Generate question reviews
         generateQuestionReviews(assessmentResults.feedback || []);
@@ -491,6 +498,28 @@
         ring.style.strokeDashoffset = offset;
     }
 
+    function computeCategoryMarkTotals(categoryScores) {
+        if (!categoryScores || !categoryScores.length) {
+            return { score: 0, outOf: 0, percentage: 0 };
+        }
+        const score = categoryScores.reduce((sum, c) => sum + Math.max(0, Number(c.score) || 0), 0);
+        const outOf = categoryScores.reduce((sum, c) => sum + Math.max(0, Number(c.out_of) || 0), 0);
+        const percentage = outOf > 0 ? (score / outOf) * 100 : 0;
+        return { score, outOf, percentage };
+    }
+
+    /**
+     * Overall % for multi-subject assessments: total marks earned / total marks in those subjects.
+     * Avoids diluting with uncategorized or non-scored items in summary.percentage.
+     */
+    function resolveDisplayPercentage(summary, categoryScores) {
+        const totals = computeCategoryMarkTotals(categoryScores || []);
+        if (categoryScores && categoryScores.length >= 2 && totals.outOf > 0) {
+            return Math.round(totals.percentage * 10) / 10;
+        }
+        return summary.percentage || 0;
+    }
+
     /**
      * Turn per-strand accuracy (each vs its own question count) into shares that sum to 100%
      * for this assessment. Uses marks earned per strand; falls back to question count if none scored.
@@ -526,22 +555,19 @@
     }
 
     /**
-     * Points each subject contributed to the overall % (sum equals overall score).
-     * e.g. 75% total → 35% Chemistry + 20% Physics + 20% Biology (+ remainder).
+     * Points each subject contributed to the overall % (sum equals category-based overall).
+     * e.g. 50% total → 10% Chemistry + 30% Biology + 10% Physics.
      */
-    function computeCategoryContributionPercents(categoryScores, overallPercent) {
+    function computeCategoryContributionPercents(categoryScores) {
         const scores = categoryScores.map(c => Math.max(0, Number(c.score) || 0));
         const outOf = categoryScores.map(c => Math.max(0, Number(c.out_of) || 0));
         const totalOutOf = outOf.reduce((a, b) => a + b, 0);
         const totalScore = scores.reduce((a, b) => a + b, 0);
         const computedOverall = totalOutOf > 0 ? (totalScore / totalOutOf) * 100 : 0;
-        const targetOverall = (typeof overallPercent === 'number' && overallPercent >= 0)
-            ? overallPercent
-            : computedOverall;
 
         const raw = scores.map(s => totalOutOf > 0 ? (s / totalOutOf) * 100 : 0);
         const rounded = raw.map(v => Math.round(v * 10) / 10);
-        const drift = Math.round((targetOverall - rounded.reduce((a, b) => a + b, 0)) * 10) / 10;
+        const drift = Math.round((computedOverall - rounded.reduce((a, b) => a + b, 0)) * 10) / 10;
         if (rounded.length > 0 && Math.abs(drift) >= 0.1) {
             let maxIdx = 0;
             for (let i = 1; i < raw.length; i++) {
@@ -556,7 +582,7 @@
         }));
     }
 
-    function displayCategoryScores(categoryScores, overallPercent) {
+    function displayCategoryScores(categoryScores) {
         const categoryScoresSection = document.getElementById('categoryScoresSection');
         const categoryScoresContainer = document.getElementById('categoryScoresContainer');
         const contributionBlock = document.getElementById('categoryContributionBlock');
@@ -633,10 +659,10 @@
             categoryScoresContainer.appendChild(categoryCard);
         });
 
-        displayCategoryContributionScores(categoryScores, overallPercent);
+        displayCategoryContributionScores(categoryScores);
     }
 
-    function displayCategoryContributionScores(categoryScores, overallPercent) {
+    function displayCategoryContributionScores(categoryScores) {
         const contributionBlock = document.getElementById('categoryContributionBlock');
         const contributionContainer = document.getElementById('categoryContributionContainer');
         const overallLabel = document.getElementById('categoryContributionOverallLabel');
@@ -648,13 +674,9 @@
             return;
         }
 
-        const categoriesWithContribution = computeCategoryContributionPercents(categoryScores, overallPercent);
-        const totalContribution = categoriesWithContribution.reduce(
-            (sum, c) => sum + (c.contribution_percentage || 0), 0
-        );
-        const displayOverall = (typeof overallPercent === 'number' && overallPercent >= 0)
-            ? overallPercent
-            : totalContribution;
+        const categoryTotals = computeCategoryMarkTotals(categoryScores);
+        const displayOverall = Math.round(categoryTotals.percentage * 10) / 10;
+        const categoriesWithContribution = computeCategoryContributionPercents(categoryScores);
 
         contributionBlock.classList.remove('hidden');
         contributionContainer.innerHTML = '';
@@ -702,17 +724,6 @@
 
             contributionContainer.appendChild(card);
         });
-
-        const sumNote = document.createElement('p');
-        sumNote.className = 'text-sm text-gray-600 mt-4 col-span-full';
-        sumNote.textContent = 'Subject shares total '
-            + totalContribution.toFixed(1)
-            + '% (your overall score'
-            + (Math.abs(totalContribution - displayOverall) >= 0.2
-                ? '; rounded for display'
-                : '')
-            + ').';
-        contributionContainer.appendChild(sumNote);
     }
 
     function generateQuestionReviews(feedback) {

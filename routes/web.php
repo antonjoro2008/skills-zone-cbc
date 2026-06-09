@@ -57,6 +57,7 @@ Route::get('/learner/{learnerId}', [GuestController::class, 'learnerProfile'])->
 Route::get('/dashboard', [GuestController::class, 'dashboard'])->name('dashboard');
 Route::get('/institution-dashboard', [GuestController::class, 'institutionDashboard'])->name('institution-dashboard');
 Route::get('/teacher-dashboard', [GuestController::class, 'teacherDashboard'])->name('teacher-dashboard');
+Route::get('/teacher-assessment-book', [GuestController::class, 'teacherAssessmentBook'])->name('teacher-assessment-book');
 Route::get('/parent-dashboard', [GuestController::class, 'parentDashboard'])->name('parent-dashboard');
 Route::get('/transactions', [GuestController::class, 'transactions'])->name('transactions');
 Route::get('/profile', [GuestController::class, 'profile'])->name('profile');

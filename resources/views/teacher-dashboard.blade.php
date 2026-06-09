@@ -21,6 +21,25 @@
 </div>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <a href="{{ route('teacher-assessment-book') }}" class="block rounded-2xl border-2 border-teal-600 bg-gradient-to-r from-teal-50 to-emerald-50 p-6 md:p-8 shadow-md hover:shadow-lg transition-shadow group">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex items-start gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-teal-600 text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                    <i class="fas fa-book-open text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-900">Pupil assessment book</h2>
+                    <p class="text-sm text-gray-700 mt-1 max-w-2xl">
+                        Record learner progress daily, weekly, monthly or termly. Guardian reports use these entries first, with digital attempts included below.
+                    </p>
+                </div>
+            </div>
+            <span class="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-600 text-white font-semibold px-6 py-3 shrink-0 group-hover:bg-teal-700 transition-colors">
+                Open assessment book <i class="fas fa-arrow-right"></i>
+            </span>
+        </div>
+    </a>
+
     <div id="teacherNoClassBanner" class="hidden rounded-2xl border border-amber-200 bg-amber-50 text-amber-900 px-5 py-4 text-sm">
         <strong class="font-semibold">No classroom assigned.</strong>
         Ask your institution admin to assign you to a class in CBC Admin. You can still browse assessments, but adding learners and analytics stay disabled until then.

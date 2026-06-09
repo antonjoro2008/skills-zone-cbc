@@ -172,6 +172,14 @@ class GuestController extends Controller
     }
 
     /**
+     * Teacher pupil assessment book (weekly / monthly / termly progress records).
+     */
+    public function teacherAssessmentBook()
+    {
+        return view('teacher-assessment-book');
+    }
+
+    /**
      * Display the parent dashboard page (requires authentication)
      */
     public function parentDashboard()

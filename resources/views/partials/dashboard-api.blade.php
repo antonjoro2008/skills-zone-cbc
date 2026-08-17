@@ -41,6 +41,7 @@
             recent_assessments: data.recent_assessments,
             recent_attempts: data.recent_attempts,
             analytics: data.analytics,
+            settings: data.settings,
         };
         try {
             localStorage.setItem('dashboard', JSON.stringify(snapshot));

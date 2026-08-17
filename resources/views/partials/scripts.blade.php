@@ -1180,14 +1180,10 @@
             }
         });
 
-        // Token calculation function
-        function calculateTokens() {
-            const amount = parseFloat(document.getElementById('buyTokensAmount').value) || 0;
-            
-            // Get settings from dashboard data stored in localStorage
-            let tokensPerShilling = 1; // Default fallback
-            let minutesPerToken = 1; // Default fallback
-            
+        function getTokenPurchaseSettings() {
+            let tokensPerShilling = 1;
+            let minutesPerToken = 1;
+
             try {
                 const dashboardData = localStorage.getItem('dashboard');
                 if (dashboardData) {
@@ -1200,61 +1196,66 @@
             } catch (e) {
                 console.warn('Could not load settings from dashboard data, using defaults');
             }
-            
+
+            return { tokensPerShilling, minutesPerToken };
+        }
+
+        // Token calculation function
+        function calculateTokens() {
+            const amountInput = document.getElementById('buyTokensAmount');
+            if (!amountInput) {
+                return;
+            }
+
+            const amount = parseFloat(amountInput.value) || 0;
+            const { tokensPerShilling, minutesPerToken } = getTokenPurchaseSettings();
             const tokens = Math.floor(amount * tokensPerShilling);
             const minutes = tokens * minutesPerToken;
-            
-            document.getElementById('displayAmount').textContent = `KES ${amount.toLocaleString()}`;
-            document.getElementById('displayTokens').textContent = `${tokens} token${tokens !== 1 ? 's' : ''}`;
-            
-            // Update minutes display if element exists
-            const minutesDisplay = document.getElementById('displayMinutes');
-            if (minutesDisplay) {
-                minutesDisplay.textContent = `${minutes} minute${minutes !== 1 ? 's' : ''}`;
-            }
+
+            const displayAmount = document.getElementById('displayAmount');
+            const displayTokens = document.getElementById('displayTokens');
+            const displayMinutes = document.getElementById('displayMinutes');
+
+            if (displayAmount) displayAmount.textContent = `KES ${amount.toLocaleString()}`;
+            if (displayTokens) displayTokens.textContent = `${tokens} token${tokens !== 1 ? 's' : ''}`;
+            if (displayMinutes) displayMinutes.textContent = `${minutes} minute${minutes !== 1 ? 's' : ''}`;
         }
 
         // Function to update token purchase info with dynamic settings
         function updateTokenPurchaseInfo() {
+            const { tokensPerShilling, minutesPerToken } = getTokenPurchaseSettings();
+            const rateText = `1 Token = KES ${(1 / tokensPerShilling).toFixed(2)} | ${minutesPerToken} min/token`;
             const tokenRateInfo = document.getElementById('tokenRateInfo');
-            if (!tokenRateInfo) return;
-            
-            // Get settings from dashboard data stored in localStorage
-            let tokensPerShilling = 1; // Default fallback
-            let minutesPerToken = 1; // Default fallback
-            
-            try {
-                const dashboardData = localStorage.getItem('dashboard');
-                if (dashboardData) {
-                    const dashboard = JSON.parse(dashboardData);
-                    if (dashboard.settings) {
-                        tokensPerShilling = dashboard.settings.tokens_per_shilling || 1;
-                        minutesPerToken = dashboard.settings.minutes_per_token || 1;
-                    }
-                }
-            } catch (e) {
-                console.warn('Could not load settings from dashboard data, using defaults');
+            if (tokenRateInfo) {
+                tokenRateInfo.textContent = rateText;
             }
-            
-            // Update the rate information
-            const rateText = `1 Token = KES ${(1/tokensPerShilling).toFixed(2)} | ${minutesPerToken} min/token`;
-            tokenRateInfo.textContent = rateText;
         }
 
         // Buy tokens function
         async function buyTokens(event) {
             event.preventDefault();
             
+            if (!currentUser && window.currentUser) {
+                currentUser = window.currentUser;
+            }
+
             if (!currentUser) {
                 showAlert('Authentication Required', 'Please log in to purchase tokens.', 'warning');
+                return;
+            }
+
+            const amountInput = document.getElementById('buyTokensAmount');
+            const phoneInput = document.getElementById('buyTokensMpesaPhone');
+            if (!amountInput || !phoneInput) {
+                showAlert('Payment Error', 'The buy tokens form could not be loaded. Please refresh the page and try again.', 'error');
                 return;
             }
             
             // Some users reported "Invalid amount" even for valid input.
             // Send a clean integer amount to the API to avoid float/format issues.
-            const rawAmount = document.getElementById('buyTokensAmount').value;
+            const rawAmount = amountInput.value;
             const amount = Number.parseInt(String(rawAmount).replace(/[^\d]/g, ''), 10);
-            const phoneNumber = document.getElementById('buyTokensMpesaPhone').value;
+            const phoneNumber = phoneInput.value;
             
             // Always format phone number to 2547... or 2541... format
             const formattedPhoneNumber = standardizePhoneNumber(phoneNumber);
@@ -1611,11 +1612,13 @@
 
         // Initialize buy tokens modal with user's phone number
         function initializeBuyTokensModal() {
-            if (currentUser && currentUser.phone_number) {
-                document.getElementById('buyTokensMpesaPhone').value = currentUser.phone_number;
+            const phoneInput = document.getElementById('buyTokensMpesaPhone');
+            const user = currentUser || window.currentUser;
+            if (phoneInput && user && user.phone_number) {
+                phoneInput.value = user.phone_number;
             }
-            calculateTokens(); // Initialize the display
-            updateTokenPurchaseInfo(); // Update token purchase info with dynamic settings
+            calculateTokens();
+            updateTokenPurchaseInfo();
         }
 
         // Auto-format reset code input (numbers only)

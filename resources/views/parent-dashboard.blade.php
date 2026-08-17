@@ -757,15 +757,21 @@
                 },
                 body: JSON.stringify({
                     amount: amount,
-                    phone_number: formattedPhone
+                    phone_number: formattedPhone,
+                    channel: 'coop',
+                    currency: 'KES',
+                    user_id: window.currentUser?.id
                 })
             });
 
             const result = await response.json();
 
             if (result.success) {
-                showParentAlert('Payment Initiated', 'Please check your phone to complete the payment.', 'success');
+                showParentAlert('Payment Initiated', result.message || 'Please check your phone to complete the payment.', 'success');
                 closeBuyTokensModal();
+                if (result.data && result.data.id && typeof pollCoopPaymentStatus === 'function') {
+                    pollCoopPaymentStatus(result.data.id);
+                }
             } else {
                 const errorMessage = extractErrorMessage(result, 'Failed to initiate payment');
                 showParentAlert('Payment Error', errorMessage, 'error');
@@ -845,7 +851,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
-                    <input type="tel" id="phoneNumber" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Safaricom mobile numbers currently supported">
+                    <input type="tel" id="phoneNumber" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="254700123456">
                 </div>
                 <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
                     <div class="flex items-center justify-between">

@@ -1143,7 +1143,7 @@
                 },
                 body: JSON.stringify({
                     amount: amount,
-                    channel: 'mpesa',
+                    channel: 'coop',
                     currency: 'KES',
                     tokens: tokens,
                     phone_number: formattedPhoneNumber,
@@ -1161,6 +1161,10 @@
                 document.getElementById('buyTokensAmount').value = '';
                 document.getElementById('buyTokensMpesaPhone').value = '';
                 calculateTokens();
+
+                if (data.data && data.data.id && typeof pollCoopPaymentStatus === 'function') {
+                    pollCoopPaymentStatus(data.data.id);
+                }
             } else {
                 const errorMessage = extractErrorMessage(data, 'Failed to initiate payment. Please try again.');
                 showAlert('Payment Failed', errorMessage, 'error');

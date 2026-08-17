@@ -771,7 +771,7 @@
                         <i class="fas fa-coins text-white text-2xl"></i>
                     </div>
                     <h2 class="text-2xl font-bold text-gray-900">Buy Tokens</h2>
-                    <p class="text-gray-600">Purchase tokens using M-PESA</p>
+                    <p class="text-gray-600">Purchase tokens with M-PESA via Co-operative Bank</p>
                 </div>
                 </div>
                 
@@ -800,7 +800,7 @@
                                     <li id="tokenRateInfo">Loading rate information...</li>
                                     <li>You will receive a payment prompt on your phone</li>
                                     <li>Enter your M-PESA PIN to complete the transaction</li>
-                                    <li>Tokens will be added to your account immediately</li>
+                                    <li>Tokens will be added after the payment is confirmed</li>
                                 </ul>
                             </div>
                         </div>
@@ -822,7 +822,7 @@
                     </div>
                     
                     <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-green-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
-                        <i class="fas fa-mobile-alt mr-2"></i>Buy Tokens with M-PESA
+                        <i class="fas fa-mobile-alt mr-2"></i>Pay with M-PESA
                     </button>
                 </form>
                 </div>

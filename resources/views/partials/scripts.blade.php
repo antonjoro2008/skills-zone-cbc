@@ -1307,7 +1307,7 @@
                     },
                     body: JSON.stringify({
                         amount: amount,
-                        channel: 'mpesa',
+                        channel: 'coop',
                         currency: 'KES',
                         tokens: tokens,
                         phone_number: formattedPhoneNumber,
@@ -1319,7 +1319,7 @@
                 
                 if (data.success) {
                     // Show success message
-                    showAlert('Payment Successful', data.message, 'success');
+                    showAlert('Payment Initiated', data.message || 'Please authorize the payment prompt on your phone.', 'success');
                     closeModal('buyTokensModal');
                     
                     // Update user data if provided
@@ -1327,6 +1327,10 @@
                         localStorage.setItem('user', JSON.stringify(data.data.user));
                         currentUser = data.data.user;
                         updateAuthState();
+                    }
+
+                    if (data.data && data.data.id) {
+                        pollCoopPaymentStatus(data.data.id);
                     }
                 } else {
                     // Show error message
@@ -1341,6 +1345,54 @@
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
             }
+        }
+
+        async function pollCoopPaymentStatus(paymentId) {
+            const token = localStorage.getItem('token');
+            if (!token || !paymentId) {
+                return;
+            }
+
+            let attempts = 0;
+            const maxAttempts = 24;
+            const timer = setInterval(async () => {
+                attempts += 1;
+                try {
+                    await fetch(`${API_BASE_URL}/api/payments/${paymentId}/sync`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    const response = await fetch(`${API_BASE_URL}/api/payments/${paymentId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Accept': 'application/json'
+                        }
+                    });
+                    const body = await response.json();
+                    const status = body.data?.status;
+
+                    if (status === 'successful') {
+                        clearInterval(timer);
+                        if (typeof updateTokenBalanceDisplay === 'function') {
+                            updateTokenBalanceDisplay();
+                        }
+                        showAlert('Payment Successful', 'Tokens have been credited to your account.', 'success');
+                    } else if (status === 'failed' || status === 'cancelled') {
+                        clearInterval(timer);
+                        showAlert('Payment Failed', 'The payment was not completed. Please try again.', 'error');
+                    }
+                } catch (error) {
+                    console.warn('Payment status check failed:', error);
+                }
+
+                if (attempts >= maxAttempts) {
+                    clearInterval(timer);
+                }
+            }, 5000);
         }
 
         // Forgot Password Functions

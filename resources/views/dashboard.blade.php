@@ -669,7 +669,7 @@
                 },
                 body: JSON.stringify({
                     amount: amount,
-                    channel: 'mpesa',
+                    channel: 'coop',
                     currency: 'KES',
                     tokens: tokens,
                     phone_number: formattedPhone,
@@ -680,18 +680,17 @@
             const data = await response.json();
             
             if (data.success) {
-                showAlert('Payment Successful', `Payment initiated successfully! You will receive ${tokens} tokens. Check your phone for M-PESA prompt.`, 'success');
+                showAlert('Payment Initiated', data.message || `Please authorize the prompt on your phone. You will receive ${tokens} tokens after confirmation.`, 'success');
                 closeModal('buyTokensModal');
                 
                 // Clear form
                 document.getElementById('buyTokensMpesaPhone').value = '';
                 document.getElementById('buyTokensAmount').value = '';
                 updateTokenDisplay();
-                
-                // Refresh dashboard data
-                setTimeout(() => {
-                    location.reload();
-                }, 2000);
+
+                if (data.data && data.data.id && typeof pollCoopPaymentStatus === 'function') {
+                    pollCoopPaymentStatus(data.data.id);
+                }
             } else {
                 const errorMessage = extractErrorMessage(data, 'Payment failed. Please try again.');
                 showAlert('Payment Failed', errorMessage, 'error');

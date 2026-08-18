@@ -1355,45 +1355,50 @@
             }
 
             let attempts = 0;
-            const maxAttempts = 24;
-            const timer = setInterval(async () => {
+            const maxAttempts = 40;
+
+            const checkOnce = async () => {
                 attempts += 1;
                 try {
-                    await fetch(`${API_BASE_URL}/api/payments/${paymentId}/sync`, {
+                    const syncResponse = await fetch(`${API_BASE_URL}/api/payments/${paymentId}/sync`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${token}`,
                             'Accept': 'application/json'
                         }
                     });
-
-                    const response = await fetch(`${API_BASE_URL}/api/payments/${paymentId}`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Accept': 'application/json'
-                        }
-                    });
-                    const body = await response.json();
-                    const status = body.data?.status;
+                    const syncBody = await syncResponse.json().catch(() => ({}));
+                    const status = syncBody.data?.status;
 
                     if (status === 'successful') {
-                        clearInterval(timer);
                         if (typeof updateTokenBalanceDisplay === 'function') {
                             updateTokenBalanceDisplay();
                         }
                         showAlert('Payment Successful', 'Tokens have been credited to your account.', 'success');
-                    } else if (status === 'failed' || status === 'cancelled') {
-                        clearInterval(timer);
+                        return true;
+                    }
+
+                    if (status === 'failed' || status === 'cancelled') {
                         showAlert('Payment Failed', 'The payment was not completed. Please try again.', 'error');
+                        return true;
                     }
                 } catch (error) {
                     console.warn('Payment status check failed:', error);
                 }
 
-                if (attempts >= maxAttempts) {
+                return false;
+            };
+
+            if (await checkOnce()) {
+                return;
+            }
+
+            const timer = setInterval(async () => {
+                const done = await checkOnce();
+                if (done || attempts >= maxAttempts) {
                     clearInterval(timer);
                 }
-            }, 5000);
+            }, 3000);
         }
 
         // Forgot Password Functions
